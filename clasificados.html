@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <link rel="manifest" href="./manifest.json"/>
+  <meta name="theme-color" content="#000814"/>
+  <title>Clasificados · Bastión</title>
+  <meta name="description" content="Anuncios y clasificados locales en Puerto Vallarta y Bahía de Banderas." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Clasificados · Bastión" />
+  <meta property="og:description" content="Anuncios y clasificados locales en Puerto Vallarta y Bahía de Banderas." />
+  <meta property="og:image" content="img/og-bastion.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <style>
+    :root {
+      --bg-root:        #000814;
+      --bg-app:         #000814;
+      --bg-card:        #001D3D;
+      --bg-card-alt:    #001D3D;
+      --accent:         #FFD60A;
+      --accent-text:    #000814;
+      --text-primary:   #FFFFFF;
+      --text-secondary: #94A3B8;
+      --text-muted:     #64748B;
+      --border:         rgba(255,255,255,0.07);
+      --radius-card:    14px;
+      --font: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: var(--bg-root); }
+    body {
+      font-family: var(--font);
+      background: var(--bg-app);
+      color: var(--text-primary);
+      min-height: 100vh;
+      max-width: 430px;
+      margin: 0 auto;
+      box-shadow: 0 0 60px rgba(0,0,0,0.6);
+    }
+
+    .page-header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(32,33,36,0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .back-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 20px; padding: 7px 14px 7px 10px;
+      color: var(--text-primary); font-size: 13px; font-weight: 600;
+      text-decoration: none; flex-shrink: 0; transition: background 0.15s;
+    }
+    .back-btn:active { background: rgba(255,255,255,0.13); }
+    .back-btn svg { width: 15px; height: 15px; fill: currentColor; }
+    .page-title { font-size: 16px; font-weight: 800; letter-spacing: -0.02em; }
+    .page-title span { color: var(--text-secondary); font-weight: 400; }
+
+    /* AVISO GRATUITO */
+    .free-banner {
+      margin: 14px 14px 0;
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 12px;
+      padding: 13px 15px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .free-text { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+    .free-text strong { display: block; font-size: 13px; color: var(--text-primary); margin-bottom: 2px; }
+    .btn-publicar {
+      flex-shrink: 0;
+      background: var(--accent); color: var(--accent-text);
+      border: none; border-radius: 20px;
+      padding: 9px 16px; font-size: 12px; font-weight: 800;
+      cursor: pointer; white-space: nowrap;
+      transition: filter 0.12s ease, transform 0.10s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-publicar:active { filter: brightness(0.87); transform: scale(0.96); }
+
+    /* FEED */
+    .feed { padding: 12px 14px 90px; display: flex; flex-direction: column; gap: 10px; }
+
+    /* TARJETA DE CLASIFICADO */
+    .listing-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-card);
+      border: 1px solid var(--border);
+      padding: 14px;
+      display: flex; gap: 13px;
+      animation: card-in 0.3s ease both;
+    }
+    .listing-card:nth-child(2) { animation-delay: 0.06s; background: var(--bg-card-alt); }
+    .listing-card:nth-child(3) { animation-delay: 0.12s; }
+    .listing-card:nth-child(4) { animation-delay: 0.18s; background: var(--bg-card-alt); }
+
+    @keyframes card-in {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Imagen del producto */
+    .listing-img {
+      flex-shrink: 0;
+      width: 80px; height: 80px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .listing-img svg { width: 28px; height: 28px; fill: var(--text-muted); opacity: 0.4; }
+
+    .listing-body { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+
+    .listing-name {
+      font-size: 14px; font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .listing-price {
+      font-size: 16px; font-weight: 800;
+      color: var(--accent);
+      letter-spacing: -0.02em;
+    }
+    .listing-desc {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .listing-footer {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+    .listing-meta {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .btn-contactar {
+      display: flex; align-items: center; gap: 5px;
+      background: rgba(37,211,102,0.12);
+      border: 1px solid rgba(37,211,102,0.22);
+      border-radius: 20px;
+      padding: 5px 11px;
+      color: #25D366;
+      font-size: 11px; font-weight: 700;
+      text-decoration: none;
+      transition: background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-contactar:active { background: rgba(37,211,102,0.22); }
+    .btn-contactar svg { width: 13px; height: 13px; fill: currentColor; }
+
+    /* CONDICIÓN */
+    .condition-tag {
+      font-size: 9.5px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      border-radius: 20px; padding: 2px 8px;
+    }
+    .condition-tag.nuevo { background: rgba(26,156,78,0.12); border: 1px solid rgba(26,156,78,0.22); color: #34A853; }
+    .condition-tag.usado { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.10); color: var(--text-muted); }
+
+    /* MODAL PUBLICAR */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(0,0,0,0.7);
+      display: none; align-items: flex-end; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-sheet {
+      background: var(--bg-card);
+      border-radius: 20px 20px 0 0;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 0 16px 32px;
+      width: 100%; max-width: 430px;
+    }
+    .modal-handle {
+      width: 38px; height: 4px;
+      background: rgba(255,255,255,0.18);
+      border-radius: 2px;
+      margin: 14px auto 20px;
+    }
+    .modal-title { font-size: 16px; font-weight: 800; margin-bottom: 18px; }
+    .form-field { margin-bottom: 14px; }
+    .form-label { font-size: 11px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.06em; }
+    .form-input {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 10px;
+      padding: 11px 13px;
+      font-family: var(--font); font-size: 13px;
+      color: var(--text-primary);
+      outline: none;
+    }
+    .form-input:focus { border-color: rgba(237,233,227,0.35); }
+    .form-row { display: flex; gap: 10px; }
+    .form-row .form-field { flex: 1; }
+    .btn-submit {
+      width: 100%; padding: 15px;
+      background: var(--accent); color: var(--accent-text);
+      border: none; border-radius: 24px;
+      font-size: 14px; font-weight: 800;
+      cursor: pointer; margin-top: 6px;
+      transition: filter 0.12s ease, transform 0.10s ease;
+    }
+    .btn-submit:active { filter: brightness(0.87); transform: scale(0.97); }
+    .btn-cancelar {
+      width: 100%; padding: 12px;
+      background: none; border: none;
+      color: var(--text-secondary); font-size: 13px;
+      cursor: pointer; margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<header class="page-header">
+  <a href="index.html" class="back-btn">
+    <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    Bastión
+  </a>
+  <span class="page-title">Clasificados <span>· gratis</span></span>
+</header>
+
+<div class="free-banner">
+  <div class="free-text">
+    <strong>Publica sin costo</strong>
+    Vende lo que ya no usas. Tu anuncio llega a todos los usuarios de la app.
+  </div>
+  <button class="btn-publicar" onclick="document.getElementById('modalPublicar').classList.add('open')">
+    Publicar
+  </button>
+</div>
+
+<main class="feed">
+
+  <div class="listing-card">
+    <div class="listing-img">
+      <svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+    </div>
+    <div class="listing-body">
+      <span class="listing-name">Kayak doble inflable</span>
+      <span class="listing-price">$3,500</span>
+      <p class="listing-desc">Con remos, bomba y bolsa de transporte. Poco uso, excelente estado.</p>
+      <div class="listing-footer">
+        <span class="listing-meta">Zona Romántica · hace 2 días <span class="condition-tag usado">Usado</span></span>
+      </div>
+      <a class="btn-contactar" href="https://wa.me/523221592596?text=Hola%2C%20vi%20el%20kayak%20doble%20en%20Bastión%20Clasificados.%20Me%20interesa." target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+        Contactar
+      </a>
+    </div>
+  </div>
+
+  <div class="listing-card">
+    <div class="listing-img">
+      <svg viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18V17h2v-4.82L9 13.36V17c0 0 2-1 3-1s3 1 3 1v-3.64l4-2.18V17h2v-5.82L23 9 12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9z"/></svg>
+    </div>
+    <div class="listing-body">
+      <span class="listing-name">Tabla de surf shortboard</span>
+      <span class="listing-price">$1,800</span>
+      <p class="listing-desc">6'2''. Con leash y funda de transporte. Ideal para olas medianas.</p>
+      <div class="listing-footer">
+        <span class="listing-meta">Marina Vallarta · hace 4 días <span class="condition-tag usado">Usado</span></span>
+      </div>
+      <a class="btn-contactar" href="https://wa.me/523221592596?text=Hola%2C%20vi%20la%20tabla%20de%20surf%20en%20Bastión%20Clasificados.%20Me%20interesa." target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+        Contactar
+      </a>
+    </div>
+  </div>
+
+  <div class="listing-card">
+    <div class="listing-img">
+      <svg viewBox="0 0 24 24"><path d="M15.5 5H11L7 9v10h10V9l-1.5-4zm-2 11h-3v-2h3v2zm2-4H9v-2h6.5v2z"/></svg>
+    </div>
+    <div class="listing-body">
+      <span class="listing-name">Bicicleta de montaña rodada 29</span>
+      <span class="listing-price">$2,200</span>
+      <p class="listing-desc">Frenos de disco, 21 velocidades. Poco uso, llantas en buen estado.</p>
+      <div class="listing-footer">
+        <span class="listing-meta">5 de Diciembre · hace 1 semana <span class="condition-tag usado">Usado</span></span>
+      </div>
+      <a class="btn-contactar" href="https://wa.me/523221592596?text=Hola%2C%20vi%20la%20bicicleta%20en%20Bastión%20Clasificados.%20Me%20interesa." target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+        Contactar
+      </a>
+    </div>
+  </div>
+
+  <div class="listing-card">
+    <div class="listing-img">
+      <svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.07-.44.18-.86.18-1.3C18 2.12 15.88 0 13.3 0c-1.3 0-2.48.55-3.34 1.44L9 3 7.04 1.44C6.18.55 5 0 3.7 0 1.12 0-1 2.12-1 4.7c0 .44.11.86.18 1.3H-2c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h22c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM9.96 4.4l1.4-1.55C11.9 2.3 12.58 2 13.3 2c1.49 0 2.7 1.21 2.7 2.7 0 .28-.12.61-.2.9H9.21l.75-.2zM4 4.7C4 3.21 5.21 2 6.7 2c.72 0 1.4.3 1.94.85l1.4 1.55.75.9H4.2c-.08-.29-.2-.62-.2-.6zM20 19H2V8h18v11z"/></svg>
+    </div>
+    <div class="listing-body">
+      <span class="listing-name">Equipo de snorkel completo</span>
+      <span class="listing-price">$650</span>
+      <p class="listing-desc">Visor, tubo y aletas talla M. Nuevo, nunca usado, se compró para un viaje.</p>
+      <div class="listing-footer">
+        <span class="listing-meta">Zona Centro · hace 3 días <span class="condition-tag nuevo">Nuevo</span></span>
+      </div>
+      <a class="btn-contactar" href="https://wa.me/523221592596?text=Hola%2C%20vi%20el%20equipo%20de%20snorkel%20en%20Bastión%20Clasificados.%20Me%20interesa." target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+        Contactar
+      </a>
+    </div>
+  </div>
+
+</main>
+
+<!-- MODAL PUBLICAR ANUNCIO -->
+<div class="modal-overlay" id="modalPublicar">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <h2 class="modal-title">Publicar anuncio</h2>
+    <div class="form-row">
+      <div class="form-field">
+        <label class="form-label">Nombre del producto</label>
+        <input class="form-input" type="text" placeholder="Ej. Tabla de surf"/>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-field">
+        <label class="form-label">Precio</label>
+        <input class="form-input" type="text" placeholder="$ 0.00"/>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Condición</label>
+        <input class="form-input" type="text" placeholder="Nuevo / Usado"/>
+      </div>
+    </div>
+    <div class="form-field">
+      <label class="form-label">Descripción breve</label>
+      <input class="form-input" type="text" placeholder="Estado, detalles importantes..."/>
+    </div>
+    <div class="form-field">
+      <label class="form-label">Tu WhatsApp</label>
+      <input class="form-input" type="tel" placeholder="52 322 000 0000"/>
+    </div>
+    <button class="btn-submit">Enviar para publicación</button>
+    <button class="btn-cancelar" onclick="document.getElementById('modalPublicar').classList.remove('open')">Cancelar</button>
+  </div>
+</div>
+
+</body>
+</html>

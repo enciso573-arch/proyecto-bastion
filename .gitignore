@@ -1,0 +1,10 @@
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Carpeta de imágenes reales (se agregan manualmente)
+img/
+
+# Editor
+.vscode/
+*.code-workspace

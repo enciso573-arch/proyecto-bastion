@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="theme-color" content="#000814"/>
+  <title>Bastión — Mapa de Promos</title>
+  <meta name="description" content="Encuentra promociones activas cerca de ti en el mapa. Negocios de Puerto Vallarta y Bahía de Banderas en tiempo real." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Bastión — Mapa de Promos" />
+  <meta property="og:description" content="Encuentra promociones activas cerca de ti. Negocios de Puerto Vallarta y Bahía de Banderas en tiempo real." />
+  <meta property="og:image" content="img/og-bastion.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="manifest" href="./manifest.json"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+  <style>
+    :root {
+      --bg:       #000814;
+      --card:     #001D3D;
+      --gold:     #FFD60A;
+      --gold-dim: rgba(255,214,10,0.18);
+      --white:    #FFFFFF;
+      --secondary:#94A3B8;
+      --muted:    #64748B;
+      --green:    #25D366;
+      --border:   rgba(255,255,255,0.06);
+      --font: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+      --ease: cubic-bezier(0.4,0,0.2,1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; background: var(--bg); font-family: var(--font); overflow: hidden; }
+
+    /* ── SHELL ── */
+    .app { width: 100%; height: 100dvh; position: relative; display: flex; flex-direction: column; }
+
+    /* ── HEADER OVERLAY ── */
+    .map-header {
+      position: absolute; top: 0; left: 0; right: 0; z-index: 900;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: max(env(safe-area-inset-top, 28px), 44px) 20px 18px;
+      background: linear-gradient(to bottom, rgba(0,8,20,0.92) 0%, rgba(0,8,20,0) 100%);
+      pointer-events: none;
+    }
+    .btn-back-map {
+      pointer-events: all;
+      background: rgba(0,29,61,0.88); border: 1px solid var(--border);
+      border-radius: 22px; padding: 8px 16px;
+      font-size: 12px; font-weight: 700; color: var(--secondary);
+      text-decoration: none; letter-spacing: 0.2px;
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      display: flex; align-items: center; gap: 6px;
+      transition: color 0.15s;
+    }
+    .btn-back-map:hover { color: var(--white); }
+    .btn-back-map svg { width: 14px; height: 14px; fill: currentColor; }
+    .wordmark-map {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 16px; font-weight: 700; letter-spacing: 2px;
+      color: rgba(255,255,255,0.30); text-transform: uppercase;
+    }
+    .active-count {
+      pointer-events: all;
+      background: var(--gold); color: #000814;
+      border-radius: 22px; padding: 8px 14px;
+      font-size: 11px; font-weight: 800; letter-spacing: 0.08em;
+      text-transform: uppercase; white-space: nowrap;
+    }
+
+    /* ── MAPA ── */
+    #map { flex: 1; width: 100%; height: 100%; z-index: 1; }
+
+    /* Leaflet overrides */
+    .leaflet-control-zoom {
+      border: none !important; box-shadow: none !important;
+      position: absolute !important;
+      bottom: 170px !important; right: 16px !important;
+      top: auto !important; left: auto !important;
+    }
+    .leaflet-control-zoom a {
+      background: rgba(0,29,61,0.92) !important;
+      border: 1px solid var(--border) !important;
+      color: var(--secondary) !important;
+      width: 38px !important; height: 38px !important;
+      line-height: 36px !important; font-size: 18px !important;
+      backdrop-filter: blur(8px);
+    }
+    .leaflet-control-zoom a:hover { background: var(--card) !important; color: var(--white) !important; }
+    .leaflet-control-attribution { display: none !important; }
+    .leaflet-bottom { bottom: 0 !important; }
+
+    /* ── MARCADORES PERSONALIZADOS ── */
+    .pin-wrap-active {
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .pin-circle-active {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--gold); border: 3px solid #000814;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9.5px; font-weight: 900; color: #000814;
+      text-transform: uppercase; letter-spacing: -0.4px; text-align: center;
+      line-height: 1.2;
+      box-shadow:
+        0 0 0 4px rgba(255,214,10,0.22),
+        0 6px 16px rgba(255,214,10,0.30);
+    }
+    .pin-tail-active {
+      width: 0; height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 8px solid var(--gold);
+    }
+    .pin-wrap-inactive {
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px;
+    }
+    .pin-circle-inactive {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: rgba(30,41,59,0.80); border: 1.5px solid rgba(100,116,139,0.35);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 8px; font-weight: 700; color: var(--muted);
+      text-align: center; line-height: 1.2;
+    }
+
+    /* ── PUNTO DE USUARIO ── */
+    .user-dot-outer {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(59,130,246,0.22); border: 2.5px solid #3B82F6;
+      display: flex; align-items: center; justify-content: center;
+      animation: pulse-user 2s ease-out infinite;
+    }
+    .user-dot-inner { width: 9px; height: 9px; border-radius: 50%; background: #3B82F6; }
+    @keyframes pulse-user {
+      0%   { box-shadow: 0 0 0 0 rgba(59,130,246,0.45); }
+      70%  { box-shadow: 0 0 0 12px rgba(59,130,246,0); }
+      100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); }
+    }
+
+    /* ── BACKDROP ── */
+    .sheet-backdrop {
+      position: fixed; inset: 0; background: rgba(0,8,20,0.55);
+      z-index: 1000; opacity: 0; pointer-events: none;
+      transition: opacity 0.28s var(--ease);
+      backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+    }
+    .sheet-backdrop.open { opacity: 1; pointer-events: all; }
+
+    /* ── BOTTOM SHEET ── */
+    .bottom-sheet {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 1001;
+      background: var(--card);
+      border-radius: 24px 24px 0 0;
+      padding-bottom: max(env(safe-area-inset-bottom, 0px), 28px);
+      transform: translateY(100%);
+      transition: transform 0.34s var(--ease);
+      max-width: 480px; margin: 0 auto;
+      box-shadow: 0 -4px 40px rgba(0,8,20,0.60);
+    }
+    .bottom-sheet.open { transform: translateY(0); }
+
+    .sheet-handle {
+      width: 38px; height: 4px; border-radius: 2px;
+      background: rgba(255,255,255,0.14);
+      margin: 14px auto 22px;
+    }
+    .sheet-body { padding: 0 24px 24px; }
+
+    .sheet-cat {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 6px;
+    }
+    .sheet-biz {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 30px; font-weight: 700; letter-spacing: -0.3px;
+      color: var(--white); line-height: 1.0; margin-bottom: 6px;
+    }
+    .sheet-promo {
+      font-size: 14px; color: var(--secondary); line-height: 1.55;
+      margin-bottom: 18px;
+    }
+    .sheet-chips {
+      display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
+      align-items: center;
+    }
+    .chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      border-radius: 0; border: none; background: transparent;
+      padding: 3px 0 3px 8px;
+      font-size: 11px; font-weight: 700; white-space: nowrap;
+    }
+    .chip-active   { border-left: 2px solid rgba(255,214,10,0.60);  color: var(--gold); }
+    .chip-soon     { border-left: 2px solid rgba(251,191,36,0.60);  color: #FBBF24; }
+    .chip-inactive { border-left: 2px solid rgba(100,116,139,0.45); color: var(--muted); }
+    .chip-dist     { border-left: 2px solid rgba(59,130,246,0.50);  color: #60A5FA; }
+    .chip-coupon   { border-left: 2px solid rgba(148,163,184,0.25); color: var(--muted); font-weight: 600; letter-spacing: 0.04em; }
+    .chip svg { width: 11px; height: 11px; fill: currentColor; flex-shrink: 0; }
+
+    .sheet-countdown {
+      font-size: 13px; color: var(--secondary);
+      margin-bottom: 18px; display: none;
+    }
+    .sheet-countdown strong { color: var(--gold); font-weight: 800; }
+
+    .btn-wa {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%; padding: 17px 0;
+      background: var(--green); color: #fff;
+      border: none; border-radius: 16px;
+      font-family: var(--font); font-size: 15px; font-weight: 800;
+      cursor: pointer; letter-spacing: 0.15px;
+      text-decoration: none;
+      transition: opacity 0.12s, transform 0.1s;
+    }
+    .btn-wa:active { opacity: 0.85; transform: scale(0.98); }
+    .btn-wa svg { width: 22px; height: 22px; fill: #fff; flex-shrink: 0; }
+
+    .btn-sheet-close {
+      display: block; text-align: center; width: 100%;
+      font-size: 12px; color: var(--muted); margin-top: 16px;
+      cursor: pointer; background: none; border: none;
+      font-family: var(--font); letter-spacing: 0.1px;
+      transition: color 0.15s;
+    }
+    .btn-sheet-close:hover { color: var(--secondary); }
+
+    /* ── FAB FEED ── */
+    .fab-feed {
+      position: absolute;
+      bottom: max(env(safe-area-inset-bottom, 0px), 20px);
+      left: 50%; transform: translateX(-50%);
+      z-index: 800;
+      background: rgba(0,8,20,0.92); border: none;
+      border-left: 3px solid rgba(255,255,255,0.20);
+      border-radius: 0; padding: 12px 22px;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 700; color: var(--secondary);
+      text-decoration: none; backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px); white-space: nowrap;
+      transition: color 0.15s;
+      box-shadow: 4px 4px 0 rgba(0,8,20,0.40);
+    }
+    .fab-feed:hover { color: var(--white); }
+    .fab-feed svg { width: 15px; height: 15px; fill: currentColor; }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="map-header">
+    <a class="btn-back-map" href="index.html">
+      <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      Feed
+    </a>
+    <div class="wordmark-map">Bastión</div>
+    <div class="active-count" id="activeCount">…</div>
+  </header>
+
+  <!-- MAPA -->
+  <div id="map"></div>
+
+  <!-- FAB VOLVER -->
+  <a class="fab-feed" href="index.html">
+    <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+    Ver todas las promos
+  </a>
+
+  <!-- BACKDROP -->
+  <div class="sheet-backdrop" id="backdrop" onclick="closeSheet()"></div>
+
+  <!-- BOTTOM SHEET -->
+  <div class="bottom-sheet" id="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-body">
+      <div class="sheet-cat"   id="sCat"></div>
+      <div class="sheet-biz"   id="sBiz"></div>
+      <div class="sheet-promo" id="sPromo"></div>
+      <div class="sheet-chips" id="sChips"></div>
+      <div class="sheet-countdown" id="sCountdown"></div>
+      <a class="btn-wa" id="sWA" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+        Solicitar Promoción vía WhatsApp
+      </a>
+      <button class="btn-sheet-close" onclick="closeSheet()">Cerrar</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+'use strict';
+
+/* ───────────────────────────────────────────
+   DATOS DE PROMOS
+─────────────────────────────────────────── */
+const PROMOS = [
+  {
+    id: 1,
+    biz:   'Mariscos La Marina',
+    cat:   '🍤 Mariscos · Zona Romántica',
+    promo: 'Camarones + 2 cervezas por $180',
+    badge: '30%\nOFF',
+    start: '11:00', end: '22:00',
+    lat: 20.6046, lng: -105.2366,
+    coupon: '#BASTION-101',
+    wa: 'Hola, vengo de la app Bastión. Me interesa el 30% de descuento en Mariscos La Marina. Mi código de cupón es #BASTION-101. ¿Me pueden confirmar la promoción?'
+  },
+  {
+    id: 2,
+    biz:   'Tacos El Güero',
+    cat:   '🌮 Tacos · Col. 5 de Diciembre',
+    promo: '2×1 en tacos de canasta toda la tarde',
+    badge: '2×1',
+    start: '14:00', end: '18:00',
+    lat: 20.6074, lng: -105.2361,
+    coupon: '#BASTION-102',
+    wa: 'Hola, vengo de la app Bastión. Me interesa el 2x1 en tacos de canasta en Tacos El Güero. Mi código de cupón es #BASTION-102. ¿Me pueden confirmar la promoción?'
+  },
+  {
+    id: 3,
+    biz:   'Spa Pacífico',
+    cat:   '💆 Spa · Marina Vallarta',
+    promo: 'Masaje de 60 min por $199 MXN',
+    badge: '$199\nMXN',
+    start: '09:00', end: '20:00',
+    lat: 20.6618, lng: -105.2469,
+    coupon: '#BASTION-103',
+    wa: 'Hola, vengo de la app Bastión. Me interesa el masaje de 60 minutos por $199 MXN en Spa Pacífico. Mi código de cupón es #BASTION-103. ¿Me pueden confirmar disponibilidad?'
+  },
+  {
+    id: 4,
+    biz:   'Cervecería del Muelle',
+    cat:   '🍺 Cervecería · Malecón Norte',
+    promo: '4 cervezas artesanales por $120 con vista al mar',
+    badge: 'HH',
+    start: '16:00', end: '20:00',
+    lat: 20.6196, lng: -105.2381,
+    coupon: '#BASTION-104',
+    wa: 'Hola, vengo de la app Bastión. Me interesa el Happy Hour de 4 cervezas artesanales por $120 en Cervecería del Muelle. Mi código de cupón es #BASTION-104. ¿Me pueden confirmar?'
+  }
+];
+
+/* ───────────────────────────────────────────
+   HELPERS DE TIEMPO Y DISTANCIA
+─────────────────────────────────────────── */
+function nowMin() {
+  const d = new Date();
+  return d.getHours() * 60 + d.getMinutes();
+}
+function toMin(t) {
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + m;
+}
+function getStatus(p) {
+  const now = nowMin(), s = toMin(p.start), e = toMin(p.end);
+  if (now >= s && now < e) return 'active';
+  if (now < s) return 'soon';
+  return 'inactive';
+}
+function fmtTimeLeft(p) {
+  const left = toMin(p.end) - nowMin();
+  if (left <= 0) return null;
+  const h = Math.floor(left / 60), m = left % 60;
+  return h > 0 ? `${h} h ${m} min` : `${m} min`;
+}
+function haversine(lat1, lng1, lat2, lng2) {
+  const R = 6371000, r = Math.PI / 180;
+  const dLat = (lat2 - lat1) * r, dLng = (lng2 - lng1) * r;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*r)*Math.cos(lat2*r)*Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+function fmtDist(m) {
+  return m < 1000 ? `${Math.round(m)} m` : `${(m/1000).toFixed(1)} km`;
+}
+
+/* ───────────────────────────────────────────
+   MAPA LEAFLET
+─────────────────────────────────────────── */
+const map = L.map('map', {
+  center: [20.6296, -105.2365],
+  zoom: 13,
+  zoomControl: true,
+  attributionControl: false
+});
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  maxZoom: 19, subdomains: 'abcd'
+}).addTo(map);
+
+/* ───────────────────────────────────────────
+   ICONOS PERSONALIZADOS
+─────────────────────────────────────────── */
+function makeActiveIcon(badge) {
+  return L.divIcon({
+    html: `<div class="pin-wrap-active">
+             <div class="pin-circle-active">${badge}</div>
+             <div class="pin-tail-active"></div>
+           </div>`,
+    className: '',
+    iconSize:   [48, 58],
+    iconAnchor: [24, 58],
+    popupAnchor:[0, -60]
+  });
+}
+function makeInactiveIcon(badge) {
+  return L.divIcon({
+    html: `<div class="pin-wrap-inactive">
+             <div class="pin-circle-inactive">${badge}</div>
+           </div>`,
+    className: '',
+    iconSize:   [36, 36],
+    iconAnchor: [18, 18]
+  });
+}
+const userIcon = L.divIcon({
+  html: `<div class="user-dot-outer"><div class="user-dot-inner"></div></div>`,
+  className: '',
+  iconSize:   [22, 22],
+  iconAnchor: [11, 11]
+});
+
+/* ───────────────────────────────────────────
+   ESTADO
+─────────────────────────────────────────── */
+let userLat = null, userLng = null;
+let userMarker = null;
+const markerMap = {};   // id → Leaflet marker
+let activePromo = null; // promo object currently in sheet
+
+/* ───────────────────────────────────────────
+   BOTTOM SHEET
+─────────────────────────────────────────── */
+function openSheet(promo) {
+  activePromo = promo;
+  const status = getStatus(promo);
+  const left   = fmtTimeLeft(promo);
+
+  document.getElementById('sCat').textContent   = promo.cat;
+  document.getElementById('sBiz').textContent   = promo.biz;
+  document.getElementById('sPromo').textContent = promo.promo;
+  document.getElementById('sWA').href =
+    `https://wa.me/523221592596?text=${encodeURIComponent(promo.wa)}`;
+
+  /* chips */
+  const statusLabel = { active:'Activo ahora', soon:'Abre pronto', inactive:'Fuera de horario' }[status];
+  const statusClass = { active:'chip-active',  soon:'chip-soon',   inactive:'chip-inactive'   }[status];
+  const distHTML = (userLat !== null)
+    ? `<span class="chip chip-dist">
+        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+        ${fmtDist(haversine(userLat, userLng, promo.lat, promo.lng))}
+       </span>`
+    : '';
+
+  document.getElementById('sChips').innerHTML = `
+    <span class="chip ${statusClass}">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/></svg>
+      ${statusLabel}
+    </span>
+    ${distHTML}
+    <span class="chip chip-coupon">${promo.coupon}</span>
+  `;
+
+  /* countdown */
+  const cd = document.getElementById('sCountdown');
+  if (status === 'active' && left) {
+    cd.innerHTML = `Termina en <strong>${left}</strong>`;
+    cd.style.display = 'block';
+  } else if (status === 'soon') {
+    cd.innerHTML = `Comienza a las <strong>${promo.start}</strong>`;
+    cd.style.display = 'block';
+  } else {
+    cd.style.display = 'none';
+  }
+
+  document.getElementById('sheet').classList.add('open');
+  document.getElementById('backdrop').classList.add('open');
+  map.panTo([promo.lat, promo.lng]);
+}
+
+function closeSheet() {
+  document.getElementById('sheet').classList.remove('open');
+  document.getElementById('backdrop').classList.remove('open');
+  activePromo = null;
+}
+
+/* ───────────────────────────────────────────
+   AGREGAR MARCADORES
+─────────────────────────────────────────── */
+let activeCount = 0;
+PROMOS.forEach(p => {
+  const status = getStatus(p);
+  if (status === 'active') activeCount++;
+  const icon   = status === 'active' ? makeActiveIcon(p.badge) : makeInactiveIcon(p.badge);
+  const marker = L.marker([p.lat, p.lng], { icon }).addTo(map);
+  marker.on('click', () => openSheet(p));
+  markerMap[p.id] = marker;
+});
+document.getElementById('activeCount').textContent =
+  activeCount > 0 ? `${activeCount} activas` : 'Sin activas';
+
+/* ───────────────────────────────────────────
+   GPS DEL USUARIO
+─────────────────────────────────────────── */
+if ('geolocation' in navigator) {
+  navigator.geolocation.watchPosition(
+    pos => {
+      userLat = pos.coords.latitude;
+      userLng = pos.coords.longitude;
+      if (!userMarker) {
+        userMarker = L.marker([userLat, userLng], {
+          icon: userIcon, zIndexOffset: -100, interactive: false
+        }).addTo(map);
+        map.setView([userLat, userLng], 14);
+      } else {
+        userMarker.setLatLng([userLat, userLng]);
+      }
+    },
+    null,
+    { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
+  );
+}
+
+/* ───────────────────────────────────────────
+   ACTUALIZACIÓN PERIÓDICA (cada 60s)
+─────────────────────────────────────────── */
+setInterval(() => {
+  let ac = 0;
+  PROMOS.forEach(p => {
+    const status = getStatus(p);
+    if (status === 'active') ac++;
+    markerMap[p.id].setIcon(
+      status === 'active' ? makeActiveIcon(p.badge) : makeInactiveIcon(p.badge)
+    );
+  });
+  document.getElementById('activeCount').textContent =
+    ac > 0 ? `${ac} activas` : 'Sin activas';
+  /* Actualizar countdown si el sheet está abierto */
+  if (activePromo) openSheet(activePromo);
+}, 60000);
+</script>
+</body>
+</html>
+                                             
