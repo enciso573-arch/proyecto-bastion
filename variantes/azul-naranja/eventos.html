@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <link rel="manifest" href="./manifest.json"/>
+  <meta name="theme-color" content="#000000"/>
+  <title>Eventos · Bastión</title>
+  <meta name="description" content="Eventos y actividades en Puerto Vallarta y Bahía de Banderas. No te pierdas nada." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Eventos · Bastión" />
+  <meta property="og:description" content="Eventos y actividades en Puerto Vallarta y Bahía de Banderas. No te pierdas nada." />
+  <meta property="og:image" content="img/og-bastion.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <style>
+    :root {
+      --bg-root:        #000000;
+      --bg-app:         #000000;
+      --bg-card:        #021F59;
+      --bg-card-alt:    #021F59;
+      --accent:         #F28705;
+      --accent-text:    #000000;
+      --text-primary:   #FFFFFF;
+      --text-secondary: #9FB0D6;
+      --text-muted:     #66779E;
+      --border:         rgba(255,255,255,0.07);
+      --radius-card:    14px;
+      --font: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: var(--bg-root); }
+    body {
+      font-family: var(--font);
+      background: var(--bg-app);
+      color: var(--text-primary);
+      min-height: 100vh;
+      max-width: 430px;
+      margin: 0 auto;
+      box-shadow: 0 0 60px rgba(0,0,0,0.6);
+    }
+
+    .page-header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(32,33,36,0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .back-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 20px; padding: 7px 14px 7px 10px;
+      color: var(--text-primary); font-size: 13px; font-weight: 600;
+      text-decoration: none; flex-shrink: 0; transition: background 0.15s;
+    }
+    .back-btn:active { background: rgba(255,255,255,0.13); }
+    .back-btn svg { width: 15px; height: 15px; fill: currentColor; }
+    .page-title { font-size: 16px; font-weight: 800; letter-spacing: -0.02em; }
+    .page-title span { color: var(--text-secondary); font-weight: 400; }
+
+    .feed { padding: 14px 14px 80px; display: flex; flex-direction: column; gap: 10px; }
+
+    /* TARJETA EVENTO */
+    .event-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-card);
+      border: 1px solid var(--border);
+      padding: 16px;
+      display: flex;
+      gap: 14px;
+      animation: card-in 0.3s ease both;
+    }
+    .event-card:nth-child(2) { animation-delay: 0.06s; background: var(--bg-card-alt); }
+    .event-card:nth-child(3) { animation-delay: 0.12s; }
+    .event-card:nth-child(4) { animation-delay: 0.18s; background: var(--bg-card-alt); }
+    .event-card:nth-child(5) { animation-delay: 0.24s; }
+
+    @keyframes card-in {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* COLUMNA DE FECHA */
+    .event-date-col {
+      flex-shrink: 0;
+      width: 48px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-start;
+      padding-top: 2px;
+      gap: 1px;
+    }
+    .date-day {
+      font-size: 24px; font-weight: 800;
+      line-height: 1;
+      color: var(--text-primary);
+      letter-spacing: -0.03em;
+    }
+    .date-month {
+      font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    /* BARRA DE COLOR POR TIPO */
+    .event-date-col::after {
+      content: '';
+      display: block;
+      width: 2px; height: 100%;
+      border-radius: 2px;
+      flex: 1;
+      margin-top: 10px;
+    }
+    .event-card.musica .event-date-col::after { background: #B57AEE; }
+    .event-card.gastronomia .event-date-col::after { background: #FFBA57; }
+    .event-card.deporte .event-date-col::after { background: #34D36A; }
+    .event-card.arte .event-date-col::after { background: #F25C05; }
+    .event-card.familia .event-date-col::after { background: #035AA6; }
+
+    .event-body { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+
+    .event-tag {
+      font-size: 9.5px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.07em;
+      border-radius: 20px; padding: 3px 9px;
+      display: inline-block; align-self: flex-start;
+    }
+    .event-card.musica .event-tag      { background: rgba(143,89,220,0.15); border: 1px solid rgba(143,89,220,0.25); color: #B57AEE; }
+    .event-card.gastronomia .event-tag { background: rgba(255,167,38,0.15); border: 1px solid rgba(255,167,38,0.25); color: #FFBA57; }
+    .event-card.deporte .event-tag     { background: rgba(26,156,78,0.15); border: 1px solid rgba(26,156,78,0.25); color: #34D36A; }
+    .event-card.arte .event-tag        { background: rgba(229,57,53,0.15); border: 1px solid rgba(229,57,53,0.25); color: #F25C05; }
+    .event-card.familia .event-tag     { background: rgba(13,180,219,0.15); border: 1px solid rgba(13,180,219,0.25); color: #035AA6; }
+
+    .event-name {
+      font-size: 14px; font-weight: 800;
+      line-height: 1.3; letter-spacing: -0.01em;
+      color: var(--text-primary);
+    }
+    .event-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+    .event-meta {
+      font-size: 10.5px; color: var(--text-muted);
+      display: flex; flex-direction: column; gap: 2px;
+      padding-top: 6px;
+      border-top: 1px solid var(--border);
+      margin-top: 4px;
+    }
+    .event-meta span { display: flex; align-items: center; gap: 4px; }
+    .event-meta svg { width: 10px; height: 10px; fill: currentColor; flex-shrink: 0; }
+
+    .btn-info {
+      margin-top: 8px;
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 20px; padding: 6px 12px;
+      color: var(--text-secondary); font-size: 11px; font-weight: 700;
+      text-decoration: none; transition: background 0.15s;
+    }
+    .btn-info:active { background: rgba(255,255,255,0.13); }
+
+    /* EVENTO DESTACADO */
+    .event-card.featured {
+      flex-direction: column;
+      gap: 10px;
+      background: linear-gradient(160deg, #2A0D3A 0%, #180922 100%);
+      border-color: rgba(143,89,220,0.22);
+      padding-bottom: 16px;
+    }
+    .event-card.featured .event-name { font-size: 16px; }
+    .event-card.featured .featured-header {
+      display: flex; align-items: center;
+      justify-content: space-between;
+    }
+    .event-card.featured .event-meta { border-color: rgba(255,255,255,0.09); }
+  </style>
+</head>
+<body>
+
+<header class="page-header">
+  <a href="index.html" class="back-btn">
+    <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    Bastión
+  </a>
+  <span class="page-title">Eventos <span>· junio–julio</span></span>
+</header>
+
+<main class="feed">
+
+  <!-- EVENTO DESTACADO -->
+  <div class="event-card musica featured">
+    <div class="featured-header">
+      <span class="event-tag">Musica en vivo</span>
+      <span style="font-size:10px;color:var(--text-muted)">27–28 Jun</span>
+    </div>
+    <h2 class="event-name">Festival de Jazz Vallarta 2026</h2>
+    <p class="event-desc">Dos noches de jazz en el anfiteatro del malecón. Artistas invitados de Guadalajara y Ciudad de Mexico. Acceso libre a los jardines; zona reservada con consumo mínimo de $300.</p>
+    <div class="event-meta">
+      <span>
+        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+        Anfiteatro del Malecon · Puerto Vallarta
+      </span>
+      <span>
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5v5.25l4.5 2.67-.75 1.23L11 13V7h1.5z"/></svg>
+        8:00 pm · Puertas desde las 7:30 pm
+      </span>
+    </div>
+  </div>
+
+  <div class="event-card gastronomia">
+    <div class="event-date-col">
+      <span class="date-day">29</span>
+      <span class="date-month">Jun</span>
+    </div>
+    <div class="event-body">
+      <span class="event-tag">Gastronomia</span>
+      <h2 class="event-name">Feria del Aguachile Negro</h2>
+      <p class="event-desc">Tercer edicion de la feria gastronómica en la playa El Anclote, Punta Mita. Mas de 12 restaurantes compiten por la mejor versión del platillo emblema de Nayarit.</p>
+      <div class="event-meta">
+        <span>
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Playa El Anclote, Punta Mita
+        </span>
+        <span>
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5v5.25l4.5 2.67-.75 1.23L11 13V7h1.5z"/></svg>
+          11:00 am – 6:00 pm · Acceso libre
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="event-card deporte">
+    <div class="event-date-col">
+      <span class="date-day">5</span>
+      <span class="date-month">Jul</span>
+    </div>
+    <div class="event-body">
+      <span class="event-tag">Deporte</span>
+      <h2 class="event-name">Carrera 5K Malecon al Amanecer</h2>
+      <p class="event-desc">Recorrido a orillas del mar desde el Malecon norte hasta los Arcos. Inscripciones en el kiosco del Parque Hidalgo hasta el viernes anterior. Kit deportivo incluido.</p>
+      <div class="event-meta">
+        <span>
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Salida: Parque Hidalgo · Centro
+        </span>
+        <span>
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5v5.25l4.5 2.67-.75 1.23L11 13V7h1.5z"/></svg>
+          6:30 am · Inscripción $150
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="event-card arte">
+    <div class="event-date-col">
+      <span class="date-day">12</span>
+      <span class="date-month">Jul</span>
+    </div>
+    <div class="event-body">
+      <span class="event-tag">Arte</span>
+      <h2 class="event-name">Exhibicion Colectiva de Arte Urbano</h2>
+      <p class="event-desc">Diez muralistas locales intervienen los muros del barrio 5 de Diciembre durante tres dias. El proceso es abierto: se puede observar el trabajo en tiempo real desde la calle.</p>
+      <div class="event-meta">
+        <span>
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Colonia 5 de Diciembre
+        </span>
+        <span>
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5v5.25l4.5 2.67-.75 1.23L11 13V7h1.5z"/></svg>
+          12–14 Jul · Todo el dia · Sin costo
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="event-card familia">
+    <div class="event-date-col">
+      <span class="date-day">19</span>
+      <span class="date-month">Jul</span>
+    </div>
+    <div class="event-body">
+      <span class="event-tag">Familia</span>
+      <h2 class="event-name">Noche de Tortugas en Los Ayala</h2>
+      <p class="event-desc">Temporada de desove de tortuga golfina. Voluntarios del campamento tortuguero guian caminatas nocturnas para ver las nidadas. Cupo limitado, registro previo obligatorio.</p>
+      <div class="event-meta">
+        <span>
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Playa Los Ayala, Nayarit
+        </span>
+        <span>
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 5v5.25l4.5 2.67-.75 1.23L11 13V7h1.5z"/></svg>
+          9:00 pm · Donativo voluntario
+        </span>
+      </div>
+    </div>
+  </div>
+
+</main>
+</body>
+</html>

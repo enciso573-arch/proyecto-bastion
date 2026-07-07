@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <link rel="manifest" href="./manifest.json"/>
+  <meta name="theme-color" content="#000000"/>
+  <title>Bastión — Panel del Anunciante</title>
+  <meta name="description" content="Gestiona tus promociones activas, revisa métricas de impresiones y conversiones en tiempo real. Panel exclusivo para anunciantes Bastión." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Bastión — Panel del Anunciante" />
+  <meta property="og:description" content="Gestiona tus promociones activas y revisa métricas en tiempo real." />
+  <meta property="og:image" content="img/og-bastion.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <style>
+    :root {
+      --bg-root:        #000000;
+      --bg-app:         #000000;
+      --bg-card:        #0B4B8B;
+      --bg-card-alt:    #0B4B8B;
+      --accent:         #F0A533;
+      --accent-soft:    rgba(240,165,51,0.10);
+      --accent-border:  rgba(240,165,51,0.22);
+      --accent-text:    #000000;
+      --text-primary:   #FCF5AF;
+      --text-secondary: #D8CE9C;
+      --text-muted:     #A79E6F;
+      --border:         rgba(255,255,255,0.06);
+      --border-strong:  rgba(255,255,255,0.10);
+      --radius-card:    16px;
+      --radius-btn:     24px;
+      --green:          #25D366;
+      --blue:           #4ECDE8;
+      --yellow:         #F0A533;
+      --red:            #E44F0A;
+      --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html { background: var(--bg-root); }
+    body {
+      font-family: var(--font);
+      background: var(--bg-root);
+      color: var(--text-primary);
+      min-height: 100dvh;
+      display: flex; justify-content: center;
+      -webkit-font-smoothing: antialiased;
+    }
+    .app {
+      width: 100%; max-width: 430px;
+      background: var(--bg-app);
+      min-height: 100dvh;
+      display: flex; flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* ── HEADER ── */
+    .dash-header {
+      padding: 52px 20px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .dash-header-left { display: flex; flex-direction: column; gap: 3px; }
+    .dash-back {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 600; color: var(--text-muted);
+      background: none; border: none; cursor: pointer; padding: 0;
+      text-decoration: none; margin-bottom: 4px;
+    }
+    .dash-back svg { width: 14px; height: 14px; fill: var(--text-muted); }
+    .dash-title { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 26px; font-weight: 700; letter-spacing: -0.3px; }
+    .dash-sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+    .dash-period {
+      font-size: 10px; font-weight: 700; padding: 5px 12px;
+      background: var(--accent-soft); border: 1px solid var(--accent-border);
+      color: var(--accent); border-radius: 20px; white-space: nowrap;
+    }
+
+    /* ── NEGOCIO SELECTOR ── */
+    .biz-selector { padding: 14px 16px; border-bottom: 1px solid var(--border); }
+    .biz-tabs { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+    .biz-tabs::-webkit-scrollbar { display: none; }
+    .biz-tab {
+      flex-shrink: 0; padding: 7px 14px; border-radius: 20px;
+      font-size: 12px; font-weight: 700; border: 1px solid var(--border);
+      background: var(--bg-card); color: var(--text-secondary);
+      cursor: pointer; transition: all 0.15s ease; white-space: nowrap;
+    }
+    .biz-tab.active {
+      background: var(--accent-soft); border-color: var(--accent-border);
+      color: var(--accent);
+    }
+
+    /* ── CONTENIDO ── */
+    .dash-body { padding: 16px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; }
+
+    /* ── KPI GRID ── */
+    .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .kpi-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-card); padding: 16px 14px;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .kpi-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); }
+    .kpi-value { font-size: 28px; font-weight: 800; letter-spacing: -1px; line-height: 1; }
+    .kpi-delta {
+      font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 4px;
+    }
+    .kpi-delta svg { width: 12px; height: 12px; flex-shrink: 0; }
+    .delta-up   { color: var(--green); }
+    .delta-down { color: var(--red); }
+    .kpi-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 2px; }
+    .kpi-icon svg { width: 15px; height: 15px; }
+
+    /* ── SECCIÓN TITULAR ── */
+    .section-head { display: flex; align-items: center; justify-content: space-between; }
+    .section-title { font-size: 13px; font-weight: 800; color: var(--text-primary); }
+    .section-link { font-size: 11px; font-weight: 600; color: var(--text-muted); text-decoration: none; }
+
+    /* ── GRÁFICA DE BARRAS ── */
+    .chart-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-card); padding: 16px;
+    }
+    .chart-label-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 12px; }
+    .chart-legend { display: flex; gap: 12px; }
+    .chart-legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 600; color: var(--text-secondary); }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    .bar-chart { display: flex; align-items: flex-end; gap: 5px; height: 100px; }
+    .bar-group { flex: 1; display: flex; align-items: flex-end; gap: 2px; }
+    .bar {
+      flex: 1; border-radius: 4px 4px 0 0; min-height: 4px;
+      transition: opacity 0.2s ease;
+      position: relative;
+    }
+    .bar:hover { opacity: 0.75; }
+    .bar-a { background: var(--accent); }
+    .bar-b { background: var(--green); }
+    .bar-labels { display: flex; gap: 5px; padding-top: 8px; border-top: 1px solid var(--border); }
+    .bar-label { flex: 1; text-align: center; font-size: 9px; font-weight: 600; color: var(--text-muted); }
+
+    /* ── TABLA DE PROMOS ── */
+    .promo-table-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-card); overflow: hidden;
+    }
+    .pt-head { padding: 14px 16px 10px; border-bottom: 1px solid var(--border); }
+    .pt-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.04);
+      transition: background 0.12s ease;
+    }
+    .pt-row:last-child { border-bottom: none; }
+    .pt-row:hover { background: rgba(255,255,255,0.03); }
+    .pt-badge {
+      flex-shrink: 0; width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800;
+    }
+    .pt-info { flex: 1; min-width: 0; }
+    .pt-name { font-size: 12px; font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pt-meta { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+    .pt-stats { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+    .pt-stat-main { font-size: 14px; font-weight: 800; color: var(--text-primary); }
+    .pt-stat-sub { font-size: 10px; font-weight: 600; color: var(--text-muted); }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .dot-active { background: var(--green); box-shadow: 0 0 6px rgba(52,211,106,0.6); }
+    .dot-inactive { background: var(--text-muted); }
+
+    /* ── EMBUDO DE CONVERSIÓN ── */
+    .funnel-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-card); padding: 16px;
+    }
+    .funnel-step {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 10px;
+    }
+    .funnel-bar-wrap { flex: 1; }
+    .funnel-bar-label { display: flex; justify-content: space-between; margin-bottom: 5px; }
+    .funnel-bar-label span { font-size: 11px; font-weight: 600; color: var(--text-secondary); }
+    .funnel-bar-label strong { font-size: 11px; font-weight: 800; color: var(--text-primary); }
+    .funnel-track { height: 8px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; }
+    .funnel-fill { height: 100%; border-radius: 4px; }
+    .funnel-pct { font-size: 11px; font-weight: 800; width: 38px; text-align: right; flex-shrink: 0; }
+
+    /* ── CTA BOTTOM ── */
+    .dash-cta { padding: 16px; border-top: 1px solid var(--border); margin-top: auto; }
+    .btn-primary {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; min-height: 52px; background: var(--accent); color: #1A1A1A;
+      font-family: var(--font); font-size: 14px; font-weight: 800;
+      border: none; border-radius: var(--radius-btn); cursor: pointer;
+      text-decoration: none; transition: filter 0.12s ease, transform 0.10s ease;
+    }
+    .btn-primary:active { transform: scale(0.97); filter: brightness(0.88); }
+    .btn-primary svg { width: 18px; height: 18px; fill: #1A1A1A; }
+    .btn-sec {
+      display: flex; align-items: center; justify-content: center;
+      width: 100%; min-height: 44px; background: none;
+      color: var(--text-secondary); font-family: var(--font);
+      font-size: 13px; font-weight: 600; border: 1px solid var(--border);
+      border-radius: var(--radius-btn); cursor: pointer; margin-top: 10px;
+      text-decoration: none; transition: border-color 0.15s ease;
+    }
+    .btn-sec:hover { border-color: var(--border-strong); }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="dash-header">
+    <div class="dash-header-left">
+      <a class="dash-back" href="index.html">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        Volver al feed
+      </a>
+      <div class="dash-title">Mi Dashboard</div>
+      <div class="dash-sub">Últimos 30 días</div>
+    </div>
+    <span class="dash-period">Jun 2025</span>
+  </header>
+
+  <!-- NEGOCIO SELECTOR -->
+  <div class="biz-selector">
+    <div class="biz-tabs">
+      <button class="biz-tab active" onclick="selectBiz(this, 0)">Mariscos La Marina</button>
+      <button class="biz-tab" onclick="selectBiz(this, 1)">Tacos El Güero</button>
+      <button class="biz-tab" onclick="selectBiz(this, 2)">Spa Pacífico</button>
+      <button class="biz-tab" onclick="selectBiz(this, 3)">Cervecería del Muelle</button>
+    </div>
+  </div>
+
+  <!-- CUERPO -->
+  <main class="dash-body">
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:rgba(237,233,227,0.10)">
+          <svg viewBox="0 0 24 24" fill="var(--accent)"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+        </div>
+        <div class="kpi-label">Impresiones</div>
+        <div class="kpi-value" id="kpi-imp">2,847</div>
+        <div class="kpi-delta delta-up">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14l5-5 5 5z"/></svg>
+          +18% vs mes anterior
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:rgba(37,211,102,0.12)">
+          <svg viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+        </div>
+        <div class="kpi-label">Clics WhatsApp</div>
+        <div class="kpi-value" id="kpi-wa" style="color:#25D366">341</div>
+        <div class="kpi-delta delta-up">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14l5-5 5 5z"/></svg>
+          +24% vs mes anterior
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:rgba(78,205,232,0.12)">
+          <svg viewBox="0 0 24 24" fill="var(--blue)"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.33C18 2.54 15.96.5 13.5.5c-1.5 0-2.81.75-3.5 2l-.5.83-.5-.84C8.31 1.25 7 .5 5.5.5 3.04.5 1 2.54 1 4.67c0 .45.11.89.18 1.33H1c-1.1 0-2 .9-2 2v13c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-1 14H3V8h16v12z"/><path d="M12 10l-5 5h10l-5-5z" opacity=".3"/></svg>
+        </div>
+        <div class="kpi-label">Cupones canjeados</div>
+        <div class="kpi-value" id="kpi-cup" style="color:var(--blue)">127</div>
+        <div class="kpi-delta delta-up">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 14l5-5 5 5z"/></svg>
+          +11% vs mes anterior
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:rgba(255,186,87,0.12)">
+          <svg viewBox="0 0 24 24" fill="var(--yellow)"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+        </div>
+        <div class="kpi-label">Tasa conversión</div>
+        <div class="kpi-value" id="kpi-conv" style="color:var(--yellow)">37%</div>
+        <div class="kpi-delta delta-down">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+          -3% vs mes anterior
+        </div>
+      </div>
+
+    </div>
+
+    <!-- GRÁFICA IMPRESIONES vs CLICS POR HORA -->
+    <div>
+      <div class="section-head" style="margin-bottom:10px">
+        <span class="section-title">Actividad por hora del día</span>
+      </div>
+      <div class="chart-card">
+        <div class="chart-label-row">
+          <div class="chart-legend">
+            <div class="chart-legend-item"><span class="legend-dot" style="background:var(--accent)"></span>Impresiones</div>
+            <div class="chart-legend-item"><span class="legend-dot" style="background:var(--green)"></span>Clics WA</div>
+          </div>
+        </div>
+        <div class="bar-chart" id="barChart">
+          <!-- Generado por JS -->
+        </div>
+        <div class="bar-labels" id="barLabels"></div>
+      </div>
+    </div>
+
+    <!-- EMBUDO DE CONVERSIÓN -->
+    <div>
+      <div class="section-head" style="margin-bottom:10px">
+        <span class="section-title">Embudo de conversión</span>
+      </div>
+      <div class="funnel-card">
+        <div class="funnel-step">
+          <div class="funnel-bar-wrap">
+            <div class="funnel-bar-label"><span>Impresiones</span><strong id="f-imp">2,847</strong></div>
+            <div class="funnel-track"><div class="funnel-fill" style="width:100%;background:var(--accent);"></div></div>
+          </div>
+          <div class="funnel-pct" style="color:var(--accent)">100%</div>
+        </div>
+        <div class="funnel-step">
+          <div class="funnel-bar-wrap">
+            <div class="funnel-bar-label"><span>Abrieron la promo</span><strong id="f-open">921</strong></div>
+            <div class="funnel-track"><div class="funnel-fill" style="width:32%;background:var(--blue);"></div></div>
+          </div>
+          <div class="funnel-pct" style="color:var(--blue)">32%</div>
+        </div>
+        <div class="funnel-step">
+          <div class="funnel-bar-wrap">
+            <div class="funnel-bar-label"><span>Clic en WhatsApp</span><strong id="f-wa">341</strong></div>
+            <div class="funnel-track"><div class="funnel-fill" style="width:12%;background:#25D366;"></div></div>
+          </div>
+          <div class="funnel-pct" style="color:#25D366">12%</div>
+        </div>
+        <div class="funnel-step" style="margin-bottom:0">
+          <div class="funnel-bar-wrap">
+            <div class="funnel-bar-label"><span>Cupón canjeado</span><strong id="f-cup">127</strong></div>
+            <div class="funnel-track"><div class="funnel-fill" style="width:4%;background:var(--yellow);"></div></div>
+          </div>
+          <div class="funnel-pct" style="color:var(--yellow)">4.5%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLA PROMOS ACTIVAS -->
+    <div>
+      <div class="section-head" style="margin-bottom:10px">
+        <span class="section-title">Mis promociones</span>
+        <a class="section-link" href="registro.html">+ Agregar</a>
+      </div>
+      <div class="promo-table-card">
+        <div class="pt-head">
+          <div class="kpi-label" style="margin:0">Rendimiento individual</div>
+        </div>
+        <div class="pt-row">
+          <div class="pt-badge" style="background:rgba(52,211,106,0.12); font-size:18px;">🍤</div>
+          <div class="pt-info">
+            <div class="pt-name">30% OFF camarones + 2 cervezas</div>
+            <div class="pt-meta">11:00 – 22:00 · #BASTION-101</div>
+          </div>
+          <div class="pt-stats">
+            <div class="pt-stat-main">89</div>
+            <div class="pt-stat-sub">canjes</div>
+          </div>
+          <span class="status-dot dot-active"></span>
+        </div>
+        <div class="pt-row">
+          <div class="pt-badge" style="background:rgba(78,205,232,0.12); font-size:18px;">🌮</div>
+          <div class="pt-info">
+            <div class="pt-name">2×1 tacos toda la tarde</div>
+            <div class="pt-meta">14:00 – 18:00 · #BASTION-102</div>
+          </div>
+          <div class="pt-stats">
+            <div class="pt-stat-main">38</div>
+            <div class="pt-stat-sub">canjes</div>
+          </div>
+          <span class="status-dot dot-inactive"></span>
+        </div>
+        <div class="pt-row">
+          <div class="pt-badge" style="background:rgba(255,186,87,0.12); font-size:18px;">💆</div>
+          <div class="pt-info">
+            <div class="pt-name">Masaje 60 min por $199 MXN</div>
+            <div class="pt-meta">09:00 – 20:00 · #BASTION-103</div>
+          </div>
+          <div class="pt-stats">
+            <div class="pt-stat-main">22</div>
+            <div class="pt-stat-sub">canjes</div>
+          </div>
+          <span class="status-dot dot-active"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPACER -->
+    <div style="height:8px"></div>
+  </main>
+
+  <!-- CTA -->
+  <div class="dash-cta">
+    <a class="btn-primary" href="registro.html">
+      <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>
+      Agregar nueva promoción
+    </a>
+    <a class="btn-sec" href="index.html">Ver feed del pasajero</a>
+  </div>
+
+</div>
+
+<script>
+/* ── Datos mock por negocio ── */
+const BIZ_DATA = [
+  { imp: 2847, wa: 341, cup: 127, conv: '37%', hourData: [12,8,18,22,35,48,65,80,72,90,110,95,102,88,76,70,82,98,104,87,62,44,28,15] },
+  { imp: 1623, wa: 198, cup: 74,  conv: '42%', hourData: [5,3,8,10,15,22,30,42,50,60,72,65,80,85,90,78,70,62,50,38,24,16,10,6] },
+  { imp: 948,  wa: 112, cup: 43,  conv: '28%', hourData: [8,5,10,14,20,28,35,40,38,42,48,52,55,50,46,44,40,36,30,22,16,10,7,4] },
+  { imp: 2104, wa: 264, cup: 98,  conv: '31%', hourData: [3,2,5,8,12,18,24,36,44,52,60,68,72,65,58,62,70,78,86,80,64,45,28,12] }
+];
+
+let currentBiz = 0;
+
+function selectBiz(btn, idx) {
+  document.querySelectorAll('.biz-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentBiz = idx;
+  renderData();
+}
+
+function fmt(n) { return n >= 1000 ? (n/1000).toFixed(1)+'k' : n; }
+
+function renderData() {
+  const d = BIZ_DATA[currentBiz];
+  document.getElementById('kpi-imp').textContent  = fmt(d.imp);
+  document.getElementById('kpi-wa').textContent   = d.wa;
+  document.getElementById('kpi-cup').textContent  = d.cup;
+  document.getElementById('kpi-conv').textContent = d.conv;
+
+  /* Gráfica de barras */
+  const chart  = document.getElementById('barChart');
+  const labels = document.getElementById('barLabels');
+  const hours  = [0,2,4,6,8,10,12,14,16,18,20,22]; // cada 2h
+  const hourLabels = ['0h','2h','4h','6h','8h','10h','12h','14h','16h','18h','20h','22h'];
+  const max = Math.max(...d.hourData);
+
+  chart.innerHTML = '';
+  labels.innerHTML = '';
+
+  hours.forEach((h, i) => {
+    const imp  = d.hourData[h];
+    const wa   = Math.round(imp * 0.12 + Math.random() * 8);
+    const hImp = (imp / max) * 100;
+    const hWa  = (wa  / max) * 100;
+
+    chart.innerHTML += `
+      <div class="bar-group">
+        <div class="bar bar-a" style="height:${hImp}%" title="${imp} impresiones"></div>
+        <div class="bar bar-b" style="height:${hWa}%" title="${wa} clics WA"></div>
+      </div>`;
+    labels.innerHTML += `<div class="bar-label">${hourLabels[i]}</div>`

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <link rel="manifest" href="./manifest.json"/>
+  <meta name="theme-color" content="#100C0B"/>
+  <title>Vallarta · Bastión</title>
+  <meta name="description" content="Promociones y novedades de Puerto Vallarta. Descubre lo mejor de la ciudad." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Vallarta · Bastión" />
+  <meta property="og:description" content="Promociones y novedades de Puerto Vallarta. Descubre lo mejor de la ciudad." />
+  <meta property="og:image" content="img/og-bastion.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <style>
+    :root {
+      --bg-root:        #100C0B;
+      --bg-app:         #100C0B;
+      --bg-card:        #1C1B17;
+      --bg-card-alt:    #1C1B17;
+      --accent:         #F77E0D;
+      --accent-text:    #100C0B;
+      --text-primary:   #FFFFFF;
+      --text-secondary: #99A57D;
+      --text-muted:     #6F7561;
+      --border:         rgba(255,255,255,0.07);
+      --radius-card:    14px;
+      --font: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: var(--bg-root); }
+    body {
+      font-family: var(--font);
+      background: var(--bg-app);
+      color: var(--text-primary);
+      min-height: 100vh;
+      max-width: 430px;
+      margin: 0 auto;
+      box-shadow: 0 0 60px rgba(0,0,0,0.6);
+    }
+
+    .page-header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(32,33,36,0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .back-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 20px; padding: 7px 14px 7px 10px;
+      color: var(--text-primary); font-size: 13px; font-weight: 600;
+      text-decoration: none; flex-shrink: 0; transition: background 0.15s;
+    }
+    .back-btn:active { background: rgba(255,255,255,0.13); }
+    .back-btn svg { width: 15px; height: 15px; fill: currentColor; }
+    .page-title { font-size: 16px; font-weight: 800; letter-spacing: -0.02em; }
+    .page-title span { color: var(--text-secondary); font-weight: 400; }
+
+    .feed { padding: 14px 14px 80px; display: flex; flex-direction: column; gap: 10px; }
+
+    /* TARJETA SPOT */
+    .spot-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-card);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      animation: card-in 0.3s ease both;
+    }
+    .spot-card:nth-child(2) { animation-delay: 0.06s; }
+    .spot-card:nth-child(3) { animation-delay: 0.12s; }
+    .spot-card:nth-child(4) { animation-delay: 0.18s; }
+    .spot-card:nth-child(5) { animation-delay: 0.24s; }
+
+    @keyframes card-in {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* IMAGEN HERO DEL SPOT */
+    .spot-hero {
+      width: 100%; height: 150px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .spot-hero svg { width: 36px; height: 36px; fill: rgba(255,255,255,0.15); }
+    .spot-type-tag {
+      position: absolute; top: 10px; left: 12px;
+      font-size: 9.5px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.07em;
+      border-radius: 20px; padding: 3px 9px;
+      backdrop-filter: blur(8px);
+    }
+
+    /* VARIANTES DE HERO */
+    .spot-card.playa .spot-hero   { background: linear-gradient(160deg, #0D3349 0%, #07202E 100%); }
+    .spot-card.rio .spot-hero     { background: linear-gradient(160deg, #0A2E1A 0%, #061A0F 100%); }
+    .spot-card.mirador .spot-hero { background: linear-gradient(160deg, #2A1A3A 0%, #180F23 100%); }
+    .spot-card.cultura .spot-hero { background: linear-gradient(160deg, #3A2510 0%, #231508 100%); }
+    .spot-card.gastronomia .spot-hero { background: linear-gradient(160deg, #3A1010 0%, #230A0A 100%); }
+
+    .spot-card.playa .spot-type-tag      { background: rgba(13,180,219,0.18); border: 1px solid rgba(13,180,219,0.25); color: #99A57D; }
+    .spot-card.rio .spot-type-tag        { background: rgba(26,156,78,0.18); border: 1px solid rgba(26,156,78,0.25); color: #34D36A; }
+    .spot-card.mirador .spot-type-tag    { background: rgba(143,89,220,0.18); border: 1px solid rgba(143,89,220,0.25); color: #B57AEE; }
+    .spot-card.cultura .spot-type-tag    { background: rgba(255,167,38,0.18); border: 1px solid rgba(255,167,38,0.25); color: #FFBA57; }
+    .spot-card.gastronomia .spot-type-tag{ background: rgba(229,57,53,0.18); border: 1px solid rgba(229,57,53,0.25); color: #EB4604; }
+
+    .spot-body { padding: 14px 14px 16px; }
+    .spot-name {
+      font-size: 15px; font-weight: 800;
+      letter-spacing: -0.01em;
+      margin-bottom: 6px;
+    }
+    .spot-desc {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+    .spot-footer {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .spot-meta {
+      font-size: 10px; color: var(--text-muted);
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .spot-meta strong { font-weight: 600; color: var(--text-secondary); }
+    .btn-mapa {
+      display: flex; align-items: center; gap: 5px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 20px;
+      padding: 7px 13px;
+      color: var(--text-primary);
+      font-size: 11px; font-weight: 700;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .btn-mapa:active { background: rgba(255,255,255,0.14); }
+    .btn-mapa svg { width: 12px; height: 12px; fill: currentColor; }
+  </style>
+</head>
+<body>
+
+<header class="page-header">
+  <a href="index.html" class="back-btn">
+    <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    Bastión
+  </a>
+  <span class="page-title">Vallarta <span>· spots</span></span>
+</header>
+
+<main class="feed">
+
+  <div class="spot-card playa">
+    <div class="spot-hero">
+      <span class="spot-type-tag">Playa</span>
+      <svg viewBox="0 0 24 24"><path d="M13.5 6c-.28 3.6-.96 6.11-2.15 8H5.22C5.08 13.36 5 12.69 5 12c0-3.86 2.42-7.17 5.97-8.46-.36 1.17-.68 2.71-.67 4.13C10.3 9.39 11.87 10 13 10h.01L13 9.17C13 7.91 13.17 6.85 13.5 6zm3.88 8c.41-.87.75-1.85 1.02-2.91.17-.65.3-1.36.43-2.09C20.52 10 21 11.42 21 13c0 .96-.14 1.88-.38 2.76-.04.15-.09.29-.13.24H17.38zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.2 16.56C11.18 19.48 11.59 20 12 20s.82-.52 1.2-1.44c.35-.84.65-2.03.86-3.56H9.94c.21 1.53.51 2.72.86 3.56z"/></svg>
+    </div>
+    <div class="spot-body">
+      <h2 class="spot-name">Playa Los Muertos</h2>
+      <p class="spot-desc">La playa mas animada de la Zona Romántica. Frente al muelle de Los Muertos, con restaurantes a pie de arena, sombrillas en renta y aguas tranquilas todo el año.</p>
+      <div class="spot-footer">
+        <div class="spot-meta">
+          <strong>Zona Romántica</strong>
+          <span>Acceso libre · Sombrilla desde $120</span>
+        </div>
+        <a class="btn-mapa" href="mapa.html">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Ver en mapa
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="spot-card rio">
+    <div class="spot-hero">
+      <span class="spot-type-tag">Rio</span>
+      <svg viewBox="0 0 24 24"><path d="M17 16.99c-1.35 0-2.2.42-2.95.8-.65.33-1.18.6-2.05.6-.9 0-1.4-.25-2.05-.6-.75-.38-1.57-.8-2.95-.8s-2.2.42-2.95.8c-.65.33-1.18.6-2.05.6v1.95c1.35 0 2.2-.42 2.95-.8.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8s2.2-.42 2.95-.8c.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8v-1.95c-.9 0-1.4-.25-2.05-.6-.75-.38-1.6-.8-2.95-.8zm0-4.45c-1.35 0-2.2.43-2.95.8-.65.32-1.18.6-2.05.6-.9 0-1.4-.26-2.05-.6-.75-.38-1.57-.8-2.95-.8s-2.2.43-2.95.8c-.65.32-1.18.6-2.05.6v1.95c1.35 0 2.2-.43 2.95-.8.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8s2.2-.43 2.95-.8c.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8v-1.95c-.9 0-1.4-.26-2.05-.6-.75-.38-1.6-.8-2.95-.8zM18.5 7.07c-.96-.58-1.56-1.35-1.5-2.07h-2c.06 1.42.93 2.67 2.22 3.61.98.71 1.55 1.54 1.62 2.39H21c-.07-1.42-.97-2.66-2.5-3.93zM7 8.6c1.28-.94 2.15-2.19 2.22-3.6h-2c.06.72-.54 1.49-1.5 2.07C4.2 8.34 3.07 9.58 3 11h2.38C5.44 10.14 6 9.32 7 8.6z"/></svg>
+    </div>
+    <div class="spot-body">
+      <h2 class="spot-name">Rio Cuale</h2>
+      <p class="spot-desc">El rio que divide la ciudad. La isla que forma en su desembocadura tiene una zona arbolada perfecta para el descanso, mercado de artesanías y el Teatro Vallarta. Sin costo, solo caminar.</p>
+      <div class="spot-footer">
+        <div class="spot-meta">
+          <strong>Centro / Zona Romántica</strong>
+          <span>Acceso libre todo el dia</span>
+        </div>
+        <a class="btn-mapa" href="mapa.html">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Ver en mapa
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="spot-card mirador">
+    <div class="spot-hero">
+      <span class="spot-type-tag">Mirador</span>
+      <svg viewBox="0 0 24 24"><path d="M14 6l-1-2H5v17h2v-7h5l1 2h7V6h-6zm4 8h-4l-1-2H7V6h5l1 2h5v6z"/></svg>
+    </div>
+    <div class="spot-body">
+      <h2 class="spot-name">Mirador de la Cruz</h2>
+      <p class="spot-desc">La vista de 180 grados mas accesible de la ciudad. Desde aqui se ve la bahia completa, el malecón y los cerros de la Sierra Madre. Subir toma unos 10 minutos desde la calle Zaragoza.</p>
+      <div class="spot-footer">
+        <div class="spot-meta">
+          <strong>Col. Gringo Gulch</strong>
+          <span>Acceso libre · Mejor al atardecer</span>
+        </div>
+        <a class="btn-mapa" href="mapa.html">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Ver en mapa
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="spot-card cultura">
+    <div class="spot-hero">
+      <span class="spot-type-tag">Cultura</span>
+      <svg viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h14v-8h3L12 3zm0 2.43L19 12h-1v7H6v-7H5l7-6.57zM10 14h4v5h-4z"/></svg>
+    </div>
+    <div class="spot-body">
+      <h2 class="spot-name">Malecon y esculturas</h2>
+      <p class="spot-desc">El malecón de 1.5 km alberga mas de 20 esculturas de artistas locales e internacionales. La mas fotografiada es El Caballito de Mar. Caminar de noche es una experiencia distinta: luces, musicos y vista al mar.</p>
+      <div class="spot-footer">
+        <div class="spot-meta">
+          <strong>Centro</strong>
+          <span>Abierto 24 horas · Sin costo</span>
+        </div>
+        <a class="btn-mapa" href="mapa.html">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Ver en mapa
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="spot-card gastronomia">
+    <div class="spot-hero">
+      <span class="spot-type-tag">Gastronomia</span>
+      <svg viewBox="0 0 24 24"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg>
+    </div>
+    <div class="spot-body">
+      <h2 class="spot-name">Mercado Municipal Lazaro Cardenas</h2>
+      <p class="spot-desc">El mercado tradicional de la ciudad, donde los vallartenses compran a diario. Los puestos del segundo piso sirven el mejor caldo tlalpeño y enchiladas de la ciudad a precios que no cambian.</p>
+      <div class="spot-footer">
+        <div class="spot-meta">
+          <strong>Centro · Av. Miramar</strong>
+          <span>Lun–Sab 6am–8pm</span>
+        </div>
+        <a class="btn-mapa" href="mapa.html">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Ver en mapa
+        </a>
+      </div>
+    </div>
+  </div>
+
+</main>
+</body>
+</html>
