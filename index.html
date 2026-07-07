@@ -504,15 +504,16 @@
       padding: 0 18px 6px; display: block;
     }
     .carousel-track {
-      position: relative;
-      /* Ajustado al alto real de la card (cat + título 2 líneas + badge).
-         Antes 128px: dejaba una banda vacía bajo la card. */
-      min-height: 100px;
+      /* Grid-stack: todas las cards ocupan la misma celda y la pista mide
+         lo que la card más alta — sin alturas fijas. Antes, con
+         position:absolute + min-height fija, una card más alta que la
+         pista se desbordaba y se pintaba encima del contenido de abajo
+         en cada rotación (~5 s): se veía cortada/encimada. */
+      display: grid;
       margin: 0 18px;
     }
     .carousel-card {
-      position: absolute;
-      top: 0; left: 0; right: 0;
+      grid-area: 1 / 1;
       opacity: 0;
       visibility: hidden;        /* oculta completamente — no hay bleeding de texto */
       pointer-events: none;
@@ -2340,9 +2341,12 @@ setInterval(loadWeather, 10 * 60 * 1000);
         /* Al terminar la animación la card queda como card normal:
            re-insertarla en el DOM (reordenamiento por distancia) ya
            no reinicia la animación → sin parpadeos en el feed. */
-        card.addEventListener('animationend', () => {
-          card.classList.remove('card-lazy', 'card-visible');
-        }, { once: true });
+        const fijar = () => card.classList.remove('card-lazy', 'card-visible');
+        card.addEventListener('animationend', fijar, { once: true });
+        /* Si la animación se cancela (p. ej. la card fue re-insertada en
+           el DOM a mitad de animación), fijarla igual para que nunca
+           vuelva a animarse. */
+        card.addEventListener('animationcancel', fijar, { once: true });
       }, i * 90);
     });
   }
@@ -2491,17 +2495,23 @@ function actualizarBadgeMapa(lat, lng) {
      al final (en su orden original) para el reveal por lotes. */
   const visibles = cards.filter(c =>
     !c.classList.contains('card-lazy') || c.classList.contains('card-visible'));
+  /* Distancias en cubetas de 100 m: el jitter del GPS (±20-50 m estando
+     quieto) intercambiaba el orden de cards casi equidistantes en CADA
+     update → re-inserciones constantes → el feed "parpadeaba" en bucle
+     periódico. Con cubetas, el orden es estable ante el jitter. */
+  const cubeta = c => Math.round((parseFloat(c.dataset.dist) || 9999) / 100);
   visibles.sort((a, b) => {
     const so = statusOrder(a) - statusOrder(b);
     if (so !== 0) return so;
-    return (parseFloat(a.dataset.dist) || 9999) - (parseFloat(b.dataset.dist) || 9999);
+    return cubeta(a) - cubeta(b);
   });
-  /* Tocar el DOM solo si el orden realmente cambió: re-insertar nodos
-     reinicia animaciones CSS y hacía "parpadear" todo el feed en cada
-     update del GPS aunque nada cambiara. */
   const cambio = visibles.some((c, i) =>
     i > 0 && !(visibles[i - 1].compareDocumentPosition(c) & Node.DOCUMENT_POSITION_FOLLOWING));
-  if (cambio) {
+  /* Y aunque cambie: máximo un reorden cada 45 s. Re-insertar nodos mueve
+     el scroll y repinta el feed — mejor pocas veces y bien. */
+  const ahora = Date.now();
+  if (cambio && ahora - (actualizarBadgeMapa._ultimoOrden || 0) > 45000) {
+    actualizarBadgeMapa._ultimoOrden = ahora;
     const ancla = feed.querySelector('.card-lazy:not(.card-visible)') || feedEmpty;
     visibles.forEach(c => feed.insertBefore(c, ancla));
   }
