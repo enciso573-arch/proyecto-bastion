@@ -2552,7 +2552,10 @@ const _notifiedIds = new Set(); // evitar spam por negocio
 async function registrarSW() {
   if (!('serviceWorker' in navigator)) return;
   try {
-    _swReg = await navigator.serviceWorker.register('./sw.js');
+    /* updateViaCache:'none' → el navegador SIEMPRE revisa sw.js en red,
+       sin caché HTTP: las actualizaciones llegan en la primera apertura
+       (el SW ya hace skipWaiting + clients.claim al activarse). */
+    _swReg = await navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' });
   } catch (e) {
     console.warn('SW no disponible:', e);
   }

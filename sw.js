@@ -3,7 +3,7 @@
    PWA offline cache + Push notifications
 ============================================= */
 
-const CACHE_NAME = 'bastion-v2'; /* bump → invalida caches con el JS viejo */
+const CACHE_NAME = 'bastion-v3'; /* bump → invalida caches con el JS viejo */
 const PRECACHE = [
   './',
   './index.html',
