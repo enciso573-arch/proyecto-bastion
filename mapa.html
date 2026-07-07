@@ -88,8 +88,60 @@
       backdrop-filter: blur(8px);
     }
     .leaflet-control-zoom a:hover { background: var(--card) !important; color: var(--white) !important; }
-    .leaflet-control-attribution { display: none !important; }
+    /* Atribución visible (requisito de OSM/Carto) pero discreta */
+    .leaflet-control-attribution {
+      background: rgba(0,8,20,0.55) !important;
+      color: var(--muted) !important;
+      font-size: 8px !important; padding: 1px 5px !important;
+    }
+    .leaflet-control-attribution a { color: var(--secondary) !important; }
     .leaflet-bottom { bottom: 0 !important; }
+
+    /* ── TOGGLE DE RADIO (500 m / 1 km) ── */
+    .radius-toggle {
+      position: absolute; z-index: 900;
+      top: calc(max(env(safe-area-inset-top, 28px), 44px) + 52px);
+      left: 50%; transform: translateX(-50%);
+      display: flex; gap: 4px;
+      background: rgba(0,29,61,0.88); border: 1px solid var(--border);
+      border-radius: 22px; padding: 4px;
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    }
+    .radius-btn {
+      border: none; background: none; cursor: pointer;
+      border-radius: 18px; padding: 6px 14px;
+      font-family: var(--font); font-size: 11px; font-weight: 800;
+      letter-spacing: 0.06em; color: var(--secondary);
+      transition: background 0.15s, color 0.15s;
+    }
+    .radius-btn.sel { background: var(--gold); color: #000814; }
+
+    /* ── BOTÓN RECENTRAR ── */
+    .btn-recenter {
+      position: absolute; z-index: 900;
+      bottom: 170px; left: 16px;
+      width: 42px; height: 42px; border-radius: 50%;
+      border: 1px solid var(--border); cursor: pointer;
+      background: rgba(0,29,61,0.92); color: var(--secondary);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      display: none; align-items: center; justify-content: center;
+    }
+    .btn-recenter.visible { display: flex; }
+    .btn-recenter svg { width: 20px; height: 20px; fill: currentColor; }
+
+    /* ── AVISO SIN PROMOS / SIN GPS ── */
+    .map-notice {
+      position: absolute; z-index: 900;
+      bottom: 120px; left: 50%; transform: translateX(-50%);
+      max-width: 78%; text-align: center;
+      background: rgba(0,29,61,0.92); border: 1px solid var(--border);
+      border-radius: 12px; padding: 10px 16px;
+      font-size: 12px; font-weight: 600; color: var(--secondary);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      display: none;
+    }
+    .map-notice.visible { display: block; }
+    .map-notice strong { color: var(--gold); }
 
     /* ── MARCADORES PERSONALIZADOS ── */
     .pin-wrap-active {
@@ -262,6 +314,20 @@
   <!-- MAPA -->
   <div id="map"></div>
 
+  <!-- TOGGLE DE RADIO -->
+  <div class="radius-toggle" role="group" aria-label="Radio de búsqueda">
+    <button class="radius-btn" data-r="500">500 m</button>
+    <button class="radius-btn sel" data-r="1000">1 km</button>
+  </div>
+
+  <!-- RECENTRAR EN MI UBICACIÓN -->
+  <button class="btn-recenter" id="btnRecenter" aria-label="Volver a mi ubicación">
+    <svg viewBox="0 0 24 24"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0013 3.06V1h-2v2.06A8.994 8.994 0 003.06 11H1v2h2.06A8.994 8.994 0 0011 20.94V23h2v-2.06A8.994 8.994 0 0020.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
+  </button>
+
+  <!-- AVISO -->
+  <div class="map-notice" id="mapNotice"></div>
+
   <!-- FAB VOLVER -->
   <a class="fab-feed" href="index.html">
     <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
@@ -380,15 +446,19 @@ function fmtDist(m) {
 /* ───────────────────────────────────────────
    MAPA LEAFLET
 ─────────────────────────────────────────── */
+/* Vista inicial: Zona Romántica, zoom cercano.
+   En cuanto llega el GPS, el mapa se centra en el usuario y se
+   ajusta al círculo del radio (500 m / 1 km). */
 const map = L.map('map', {
-  center: [20.6296, -105.2365],
-  zoom: 13,
+  center: [20.6070, -105.2360],
+  zoom: 15,
   zoomControl: true,
-  attributionControl: false
+  attributionControl: true
 });
 
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-  maxZoom: 19, subdomains: 'abcd'
+  maxZoom: 19, subdomains: 'abcd',
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
 }).addTo(map);
 
 /* ───────────────────────────────────────────
@@ -430,6 +500,15 @@ let userLat = null, userLng = null;
 let userMarker = null;
 const markerMap = {};   // id → Leaflet marker
 let activePromo = null; // promo object currently in sheet
+
+/* Radio de cobertura. Con la densidad actual de afiliados (4, en dos
+   zonas separadas ~5 km) un radio de 500 m casi siempre quedaría vacío;
+   1 km cubre el corredor Zona Romántica–Centro completo → default 1 km. */
+let RADIUS_M = 1000;
+let radiusCircle = null;
+let follow = true;                 // el mapa sigue al usuario
+const dentroRadio = new Set();     // ids actualmente dentro del radio
+const _notifiedIds = new Set();    // anti-spam de notificaciones
 
 /* ───────────────────────────────────────────
    BOTTOM SHEET
@@ -488,22 +567,109 @@ function closeSheet() {
 }
 
 /* ───────────────────────────────────────────
-   AGREGAR MARCADORES
+   CÍRCULO DE RADIO + VISTA QUE SIGUE AL USUARIO
 ─────────────────────────────────────────── */
-let activeCount = 0;
-PROMOS.forEach(p => {
-  const status = getStatus(p);
-  if (status === 'active') activeCount++;
-  const icon   = status === 'active' ? makeActiveIcon(p.badge) : makeInactiveIcon(p.badge);
-  const marker = L.marker([p.lat, p.lng], { icon }).addTo(map);
-  marker.on('click', () => openSheet(p));
-  markerMap[p.id] = marker;
-});
-document.getElementById('activeCount').textContent =
-  activeCount > 0 ? `${activeCount} activas` : 'Sin activas';
+function ajustarVista() {
+  if (userLat === null) return;
+  if (!radiusCircle) {
+    radiusCircle = L.circle([userLat, userLng], {
+      radius: RADIUS_M,
+      color: '#FFD60A', weight: 1.5, dashArray: '6 6',
+      fillColor: '#FFD60A', fillOpacity: 0.05,
+      interactive: false
+    }).addTo(map);
+  } else {
+    radiusCircle.setLatLng([userLat, userLng]);
+    radiusCircle.setRadius(RADIUS_M);
+  }
+  if (follow) {
+    map.fitBounds(radiusCircle.getBounds(), { padding: [24, 24], maxZoom: 17 });
+  }
+}
 
 /* ───────────────────────────────────────────
-   GPS DEL USUARIO
+   NOTIFICACIÓN: un afiliado ENTRÓ a tu radio
+─────────────────────────────────────────── */
+function notificarEntrada(p, dist) {
+  if (_notifiedIds.has(p.id)) return;
+  _notifiedIds.add(p.id);
+  setTimeout(() => _notifiedIds.delete(p.id), 10 * 60 * 1000); // re-avisar tras 10 min
+
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  const title = `Bastión · ${p.biz} en tu radio`;
+  const opts  = {
+    body: `${p.promo} — a ${fmtDist(dist)}`,
+    icon: './icon-192.png', badge: './icon-192.png',
+    tag: 'bastion-radio-' + p.id, renotify: false,
+    vibrate: [120, 60, 120], data: { url: './mapa.html' }
+  };
+  if (navigator.serviceWorker) {
+    navigator.serviceWorker.getRegistration()
+      .then(reg => reg ? reg.showNotification(title, opts)
+                       : new Notification(title, { body: opts.body }))
+      .catch(() => { try { new Notification(title, { body: opts.body }); } catch (_) {} });
+  } else {
+    try { new Notification(title, { body: opts.body }); } catch (_) {}
+  }
+}
+
+/* ───────────────────────────────────────────
+   MARCADORES FILTRADOS POR DISTANCIA (Haversine)
+   Solo afiliados dentro del radio. Sin GPS:
+   se muestran todos + aviso de activar ubicación.
+─────────────────────────────────────────── */
+function refrescarMarcadores() {
+  let visibles = 0, activos = 0;
+
+  PROMOS.forEach(p => {
+    const status  = getStatus(p);
+    const dist    = (userLat === null) ? null : haversine(userLat, userLng, p.lat, p.lng);
+    const enRadio = (dist === null) ? true : dist <= RADIUS_M;
+
+    if (enRadio) {
+      visibles++;
+      if (status === 'active') activos++;
+      const icon = status === 'active' ? makeActiveIcon(p.badge) : makeInactiveIcon(p.badge);
+      if (markerMap[p.id]) {
+        markerMap[p.id].setIcon(icon);
+      } else {
+        const m = L.marker([p.lat, p.lng], { icon }).addTo(map);
+        m.on('click', () => openSheet(p));
+        markerMap[p.id] = m;
+        /* Transición fuera→dentro con GPS y promo activa → notificar */
+        if (dist !== null && status === 'active' && !dentroRadio.has(p.id)) {
+          notificarEntrada(p, dist);
+        }
+      }
+      if (dist !== null) dentroRadio.add(p.id);
+    } else {
+      if (markerMap[p.id]) { map.removeLayer(markerMap[p.id]); delete markerMap[p.id]; }
+      dentroRadio.delete(p.id);
+    }
+  });
+
+  /* Contador del header + avisos */
+  const count  = document.getElementById('activeCount');
+  const notice = document.getElementById('mapNotice');
+  if (userLat === null) {
+    count.textContent = 'Sin GPS';
+    notice.innerHTML  = 'Activa tu <strong>ubicación</strong> para ver solo las promos de tu radio.';
+    notice.classList.add('visible');
+  } else {
+    count.textContent = activos > 0 ? `${activos} en tu radio` : 'Sin activas';
+    if (visibles === 0) {
+      notice.innerHTML = (RADIUS_M === 500)
+        ? 'Sin afiliados en <strong>500 m</strong>. Prueba con 1 km.'
+        : 'Sin afiliados en <strong>1 km</strong>. Sigue tu ruta: te avisamos cuando una promo entre a tu radio.';
+      notice.classList.add('visible');
+    } else {
+      notice.classList.remove('visible');
+    }
+  }
+}
+
+/* ───────────────────────────────────────────
+   GPS CONTINUO — watchPosition
 ─────────────────────────────────────────── */
 if ('geolocation' in navigator) {
   navigator.geolocation.watchPosition(
@@ -514,34 +680,50 @@ if ('geolocation' in navigator) {
         userMarker = L.marker([userLat, userLng], {
           icon: userIcon, zIndexOffset: -100, interactive: false
         }).addTo(map);
-        map.setView([userLat, userLng], 14);
       } else {
         userMarker.setLatLng([userLat, userLng]);
       }
+      ajustarVista();
+      refrescarMarcadores();
     },
-    null,
+    _err => { refrescarMarcadores(); },
     { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
   );
 }
+
+/* Arrastrar el mapa pausa el seguimiento; botón para recentrar */
+map.on('dragstart', () => {
+  follow = false;
+  document.getElementById('btnRecenter').classList.add('visible');
+});
+document.getElementById('btnRecenter').addEventListener('click', () => {
+  follow = true;
+  document.getElementById('btnRecenter').classList.remove('visible');
+  ajustarVista();
+});
+
+/* Toggle de radio 500 m / 1 km */
+document.querySelectorAll('.radius-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.radius-btn').forEach(b => b.classList.remove('sel'));
+    btn.classList.add('sel');
+    RADIUS_M = parseInt(btn.dataset.r, 10);
+    ajustarVista();
+    refrescarMarcadores();
+  });
+});
+
+/* Primer render (aún sin GPS) */
+refrescarMarcadores();
 
 /* ───────────────────────────────────────────
    ACTUALIZACIÓN PERIÓDICA (cada 60s)
 ─────────────────────────────────────────── */
 setInterval(() => {
-  let ac = 0;
-  PROMOS.forEach(p => {
-    const status = getStatus(p);
-    if (status === 'active') ac++;
-    markerMap[p.id].setIcon(
-      status === 'active' ? makeActiveIcon(p.badge) : makeInactiveIcon(p.badge)
-    );
-  });
-  document.getElementById('activeCount').textContent =
-    ac > 0 ? `${ac} activas` : 'Sin activas';
+  refrescarMarcadores();
   /* Actualizar countdown si el sheet está abierto */
   if (activePromo) openSheet(activePromo);
 }, 60000);
 </script>
 </body>
 </html>
-                                             

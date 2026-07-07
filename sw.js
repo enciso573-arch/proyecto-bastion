@@ -3,7 +3,7 @@
    PWA offline cache + Push notifications
 ============================================= */
 
-const CACHE_NAME = 'bastion-v1';
+const CACHE_NAME = 'bastion-v2'; /* bump → invalida caches con el JS viejo */
 const PRECACHE = [
   './',
   './index.html',
@@ -30,17 +30,22 @@ self.addEventListener('activate', e => {
   );
 });
 
-/* ── Fetch: network-first, fallback a cache ── */
+/* ── Fetch: network-first, fallback a cache ──
+   Solo mismo origen: las peticiones cross-origin (API del clima,
+   tiles del mapa, CDNs) van directo a la red, sin intermediario. */
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+  if (new URL(e.request.url).origin !== self.location.origin) return;
   e.respondWith(
     fetch(e.request)
       .then(res => {
-        const clone = res.clone();
-        caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
+        if (res && res.ok) {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
+        }
         return res;
       })
-      .catch(() => caches.match(e.request))
+      .catch(() => caches.match(e.request).then(m => m || Response.error()))
   );
 });
 

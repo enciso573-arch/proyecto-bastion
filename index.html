@@ -1383,34 +1383,31 @@
   <section class="carousel-section" aria-label="Promociones destacadas">
     <span class="carousel-label">Destacadas ahora</span>
     <div class="carousel-track" id="carouselTrack">
-      <!-- Tarjetas originales -->
-      <!-- BANNER 1: agregar style="--banner-img: url('img/banner-mariscos.jpg')" al inner -->
-      <div class="carousel-card" onclick="window.location.href='index.html#promo-101'">
-        <div class="carousel-card-inner">
+      <!-- Sin fotos aún: cada card usa un degradado por categoría vía --banner-img.
+           Cuando haya imágenes reales: --banner-img: url('img/banner-mariscos.jpg') -->
+      <div class="carousel-card active" onclick="window.location.href='index.html#promo-101'">
+        <div class="carousel-card-inner" style="--banner-img: linear-gradient(135deg, #0D3349 0%, #07202E 55%, #F28705 160%)">
           <div class="carousel-card-cat">🍤 Mariscos</div>
           <div class="carousel-card-title">Camarones + 2 cervezas por $180</div>
           <span class="carousel-card-badge">30% OFF</span>
         </div>
       </div>
-      <!-- BANNER 2: agregar style="--banner-img: url('img/banner-tacos.jpg')" al inner -->
       <div class="carousel-card" onclick="window.location.href='index.html#promo-102'">
-        <div class="carousel-card-inner">
+        <div class="carousel-card-inner" style="--banner-img: linear-gradient(135deg, #3A2510 0%, #231508 55%, #FFB43C 160%)">
           <div class="carousel-card-cat">🌮 Tacos</div>
           <div class="carousel-card-title">2×1 en tacos de canasta toda la tarde</div>
           <span class="carousel-card-badge">2×1</span>
         </div>
       </div>
-      <!-- BANNER 3: agregar style="--banner-img: url('img/banner-spa.jpg')" al inner -->
       <div class="carousel-card" onclick="window.location.href='index.html#promo-103'">
-        <div class="carousel-card-inner">
+        <div class="carousel-card-inner" style="--banner-img: linear-gradient(135deg, #2A1040 0%, #180922 55%, #B57AEE 160%)">
           <div class="carousel-card-cat">💆 Spa</div>
           <div class="carousel-card-title">Masaje de 60 min por $199 MXN</div>
           <span class="carousel-card-badge">$199</span>
         </div>
       </div>
-      <!-- BANNER 4: agregar style="--banner-img: url('img/banner-bar.jpg')" al inner -->
       <div class="carousel-card" onclick="window.location.href='index.html#promo-104'">
-        <div class="carousel-card-inner">
+        <div class="carousel-card-inner" style="--banner-img: linear-gradient(135deg, #4A2C08 0%, #2A1804 55%, #FFD60A 160%)">
           <div class="carousel-card-cat">🍺 Bar</div>
           <div class="carousel-card-title">4 cervezas artesanales por $120</div>
           <span class="carousel-card-badge">Happy Hour</span>
@@ -2198,43 +2195,84 @@ function getWeatherConfig(code) {
   };
 }
 
-async function loadWeather() {
-  const chip   = document.getElementById('weatherChip');
-  const icon   = document.getElementById('weatherIcon');
-  const temp   = document.getElementById('weatherTemp');
-  const cond   = document.getElementById('weatherCond');
+function pintarClima(cfg, tempTxt) {
+  const chip = document.getElementById('weatherChip');
+  const icon = document.getElementById('weatherIcon');
+  const temp = document.getElementById('weatherTemp');
+  const cond = document.getElementById('weatherCond');
+  if (!chip || !icon || !temp || !cond) return;
+  temp.textContent = tempTxt;
+  cond.textContent = cfg.label;
+  icon.innerHTML   = cfg.icon;
+  chip.style.borderColor = cfg.border;
+}
 
-  /* Timeout de 5 segundos — si la API no responde, muestra fallback */
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 5000);
+function climaFallback() {
+  /* Clima típico de PV cuando no hay red / API caída / WebView viejo */
+  pintarClima(getWeatherConfig(0), '32°');
+}
+
+async function loadWeather() {
+  /* Watchdog: pase lo que pase, el chip nunca se queda en "Cargando".
+     Si en 6 s nadie actualizó el chip, se pinta el fallback. */
+  const watchdog = setTimeout(() => {
+    const cond = document.getElementById('weatherCond');
+    if (cond && cond.textContent === 'Cargando') climaFallback();
+  }, 6000);
 
   try {
-    const res  = await fetch(WEATHER_URL, { signal: controller.signal });
-    clearTimeout(timeout);
-    const data = await res.json();
-    const t    = Math.round(data.current.temperature_2m);
-    const code = data.current.weather_code;
-    const cfg  = getWeatherConfig(code);
+    /* AbortController no existe en WebViews viejos — detectar antes de usar.
+       (Bug original: se creaba FUERA del try; si no existía, la función
+       moría sin ejecutar ni el try ni el catch y el chip quedaba congelado.) */
+    let signal = undefined, timeout = null;
+    if (typeof AbortController === 'function') {
+      const controller = new AbortController();
+      timeout = setTimeout(() => controller.abort(), 5000);
+      signal  = controller.signal;
+    }
 
-    temp.textContent = t + '°';
-    cond.textContent = cfg.label;
-    icon.innerHTML   = cfg.icon;
-    chip.style.borderColor = cfg.border;
+    const res = await fetch(WEATHER_URL, signal ? { signal } : {});
+    if (timeout) clearTimeout(timeout);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    if (!data || !data.current) throw new Error('respuesta sin current');
+
+    const t   = Math.round(data.current.temperature_2m);
+    pintarClima(getWeatherConfig(data.current.weather_code), t + '°');
 
   } catch (_) {
-    clearTimeout(timeout);
-    /* Fallback sin red: muestra el clima típico de PV */
-    const cfg = getWeatherConfig(0);
-    temp.textContent = '32°';
-    cond.textContent = 'Despejado';
-    icon.innerHTML   = cfg.icon;
-    chip.style.borderColor = cfg.border;
+    climaFallback();
+  } finally {
+    clearTimeout(watchdog);
   }
 }
 
 /* Carga al abrir y refresca cada 10 minutos */
 loadWeather();
 setInterval(loadWeather, 10 * 60 * 1000);
+
+/* =============================================
+   CARRUSEL DE DESTACADAS — rotación automática
+   (Bug original: las cards nacían con opacity:0 +
+   visibility:hidden y NINGÚN script les ponía la
+   clase .active → el carrusel nunca era visible.)
+============================================= */
+(function initCarousel() {
+  const cards = document.querySelectorAll('#carouselTrack .carousel-card');
+  if (!cards.length) return;
+
+  let idx = 0;
+  /* Asegurar estado inicial: solo la primera visible */
+  cards.forEach((c, i) => c.classList.toggle('active', i === 0));
+
+  if (cards.length > 1) {
+    setInterval(() => {
+      cards[idx].classList.remove('active');
+      idx = (idx + 1) % cards.length;
+      cards[idx].classList.add('active');
+    }, 5000);
+  }
+})();
 
 /* =============================================
    INFINITE SCROLL — Reveal por lotes de 4
@@ -2426,6 +2464,9 @@ function actualizarBadgeMapa(lat, lng) {
   } else {
     alert.classList.remove('visible');
   }
+
+  /* ── Notificaciones de proximidad ── */
+  if (typeof notificarProxima === 'function') notificarProxima(lat, lng);
 }
 
 /* GPS en vivo — watchPosition para actualizaciones continuas */
@@ -2525,11 +2566,43 @@ function notificarProxima(lat, lng) {
   });
 }
 
-/* Enchufe al watchPosition existente */
-const _origActualizar = actualizarBadgeMapa;
-function actualizarBadgeMapa(lat, lng) {
-  _origActualizar(lat, lng);
-  notificarProxima(lat, lng);
+/* Nota: notificarProxima() se invoca directamente al final de
+   actualizarBadgeMapa(). El "enchufe" anterior redeclaraba la función
+   y por hoisting _origActualizar apuntaba a la nueva versión →
+   recursión infinita (stack overflow) en cada update del GPS. */
+
+/* =============================================
+   TOAST + INIT BOTÓN DE NOTIFICACIONES
+   (El archivo estaba truncado justo aquí: un comentario
+   sin cerrar dejaba TODO el script con error de sintaxis
+   → nada se ejecutaba: ni clima, ni GPS, ni carrusel.)
+============================================= */
+function mostrarToast(msg) {
+  let t = document.getElementById('bastionToast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'bastionToast';
+    t.style.cssText = 'position:fixed;bottom:96px;left:50%;transform:translateX(-50%);' +
+      'background:rgba(0,29,61,0.95);color:#FFFFFF;border:1px solid rgba(255,255,255,0.10);' +
+      'padding:10px 18px;border-radius:22px;font-size:13px;font-weight:600;z-index:9999;' +
+      'max-width:82%;text-align:center;transition:opacity 0.3s;opacity:0;pointer-events:none;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._hide);
+  t._hide = setTimeout(() => { t.style.opacity = '0'; }, 2600);
 }
 
-/* Init botón notificaciones — estado 
+/* Init botón notificaciones — estado inicial + click */
+(function initNotifBtn() {
+  const btn = document.getElementById('notifBtn');
+  if (!btn) return;
+  if ('Notification' in window && Notification.permission === 'granted') {
+    actualizarBtnNotif('on');
+  }
+  btn.addEventListener('click', activarNotificaciones);
+})();
+</script>
+</body>
+</html>
