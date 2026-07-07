@@ -74,7 +74,8 @@
       font-family: var(--font);
       background: var(--bg-root);
       color: var(--text-primary);
-      min-height: 100dvh;
+      height: 100dvh;
+      overflow: hidden; /* el scroll vive dentro de .promo-feed */
       display: flex;
       justify-content: center;
       align-items: flex-start;
@@ -87,7 +88,7 @@
     .app-container {
       width: 100%;
       max-width: 430px;
-      min-height: 100dvh;
+      height: 100dvh; /* alto fijo: la zona superior queda anclada */
       background: var(--bg-app);
       box-shadow: var(--shadow-app);
       position: relative;
@@ -95,6 +96,11 @@
       flex-direction: column;
       overflow-x: hidden;
     }
+    /* ── ZONA SUPERIOR ANCLADA ──
+       Header, perfil, destacadas, filtro, categorías y canales
+       (todo lo anterior al feed) quedan fijos; solo .promo-feed
+       se desliza. */
+    .app-container > *:not(.promo-feed) { flex-shrink: 0; }
 
     /* =============================================
        HEADER — Premium compacto con blur
@@ -736,6 +742,12 @@
       display: flex;
       flex-direction: column;
       gap: 20px;
+      /* Solo el feed tiene scroll propio */
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
     }
 
     /* =============================================
@@ -1383,31 +1395,36 @@
   <section class="carousel-section" aria-label="Promociones destacadas">
     <span class="carousel-label">Destacadas ahora</span>
     <div class="carousel-track" id="carouselTrack">
-      <!-- Sin fotos aún: cada card usa un degradado por categoría vía --banner-img.
-           Cuando haya imágenes reales: --banner-img: url('img/banner-mariscos.jpg') -->
+      <!-- ══ FOTO DEL NEGOCIO ══
+           Para poner la foto de fondo de una card, escribe la ruta en su
+           atributo data-img, por ejemplo:
+             data-img="img/negocios/mariscos-la-marina.jpg"
+           La foto se superpone al degradado y el degradado queda como
+           fallback (mientras carga o si el archivo no existe).
+           No hay que tocar nada más: el JS del carrusel la aplica solo. -->
       <div class="carousel-card active" onclick="window.location.href='index.html#promo-101'">
-        <div class="carousel-card-inner" style="--banner-img: linear-gradient(135deg, #0D3349 0%, #07202E 55%, #F28705 160%)">
+        <div class="carousel-card-inner" data-img="" style="--banner-img: linear-gradient(135deg, #0D3349 0%, #07202E 55%, #F28705 160%)">
           <div class="carousel-card-cat">🍤 Mariscos</div>
           <div class="carousel-card-title">Camarones + 2 cervezas por $180</div>
           <span class="carousel-card-badge">30% OFF</span>
         </div>
       </div>
       <div class="carousel-card" onclick="window.location.href='index.html#promo-102'">
-        <div class="carousel-card-inner" style="--banner-img: linear-gradient(135deg, #3A2510 0%, #231508 55%, #FFB43C 160%)">
+        <div class="carousel-card-inner" data-img="" style="--banner-img: linear-gradient(135deg, #3A2510 0%, #231508 55%, #FFB43C 160%)">
           <div class="carousel-card-cat">🌮 Tacos</div>
           <div class="carousel-card-title">2×1 en tacos de canasta toda la tarde</div>
           <span class="carousel-card-badge">2×1</span>
         </div>
       </div>
       <div class="carousel-card" onclick="window.location.href='index.html#promo-103'">
-        <div class="carousel-card-inner" style="--banner-img: linear-gradient(135deg, #2A1040 0%, #180922 55%, #B57AEE 160%)">
+        <div class="carousel-card-inner" data-img="" style="--banner-img: linear-gradient(135deg, #2A1040 0%, #180922 55%, #B57AEE 160%)">
           <div class="carousel-card-cat">💆 Spa</div>
           <div class="carousel-card-title">Masaje de 60 min por $199 MXN</div>
           <span class="carousel-card-badge">$199</span>
         </div>
       </div>
       <div class="carousel-card" onclick="window.location.href='index.html#promo-104'">
-        <div class="carousel-card-inner" style="--banner-img: linear-gradient(135deg, #4A2C08 0%, #2A1804 55%, #FFD60A 160%)">
+        <div class="carousel-card-inner" data-img="" style="--banner-img: linear-gradient(135deg, #4A2C08 0%, #2A1804 55%, #FFD60A 160%)">
           <div class="carousel-card-cat">🍺 Bar</div>
           <div class="carousel-card-title">4 cervezas artesanales por $120</div>
           <span class="carousel-card-badge">Happy Hour</span>
@@ -2260,6 +2277,17 @@ setInterval(loadWeather, 10 * 60 * 1000);
 (function initCarousel() {
   const cards = document.querySelectorAll('#carouselTrack .carousel-card');
   if (!cards.length) return;
+
+  /* ── FOTOS DE NEGOCIOS ──
+     Lee data-img de cada .carousel-card-inner y superpone la foto al
+     degradado (que queda como fallback si la imagen falta o no carga).
+     Solo hay que rellenar data-img en el HTML — nada más. */
+  document.querySelectorAll('#carouselTrack .carousel-card-inner[data-img]').forEach(el => {
+    const src = (el.dataset.img || '').trim();
+    if (!src) return;
+    const grad = el.style.getPropertyValue('--banner-img');
+    el.style.setProperty('--banner-img', "url('" + src + "')" + (grad ? ', ' + grad : ''));
+  });
 
   let idx = 0;
   /* Asegurar estado inicial: solo la primera visible */
