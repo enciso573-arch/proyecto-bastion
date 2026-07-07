@@ -335,7 +335,7 @@
        PERFIL / BIOGRAFÍA
     ============================================= */
     .profile-section {
-      padding: 12px 18px;
+      padding: 7px 18px;
       display: flex;
       flex-direction: column;
       gap: 0;
@@ -495,17 +495,19 @@
     /* Contenedor con fade derecho que indica scroll */
     /* ── CARRUSEL DE DESTACADAS ── */
     .carousel-section {
-      padding: 14px 0 12px;
+      padding: 8px 0 8px;
       border-bottom: 1px solid var(--border);
     }
     .carousel-label {
       font-size: 9px; font-weight: 700; letter-spacing: 0.14em;
       text-transform: uppercase; color: var(--text-muted);
-      padding: 0 18px 10px; display: block;
+      padding: 0 18px 6px; display: block;
     }
     .carousel-track {
       position: relative;
-      min-height: 128px; /* suficiente para cat + title 2 líneas + badge + padding */
+      /* Ajustado al alto real de la card (cat + título 2 líneas + badge).
+         Antes 128px: dejaba una banda vacía bajo la card. */
+      min-height: 100px;
       margin: 0 18px;
     }
     .carousel-card {
@@ -528,7 +530,7 @@
        La imagen aparece con 30% de opacidad para mantener legibilidad. */
     .carousel-card-inner {
       background: var(--bg-card);
-      padding: 16px 20px;
+      padding: 12px 16px;
       border-radius: 10px;
       position: relative;
       overflow: hidden;
@@ -565,7 +567,7 @@
 
     /* ── TOGGLE CATEGORÍAS ── */
     .cat-toggle-wrap {
-      padding: 9px 18px;
+      padding: 4px 18px;
       border-bottom: 1px solid var(--border);
     }
     .cat-toggle-btn {
@@ -664,11 +666,11 @@
        CANALES / GLOBOS TEMÁTICOS
     ============================================= */
     .topics-section {
-      padding: 14px 16px 16px;
+      padding: 7px 16px 9px;
       border-bottom: 1px solid var(--border);
       display: flex;
       flex-direction: column;
-      gap: 11px;
+      gap: 6px;
     }
 
     .topics-header {
@@ -693,9 +695,9 @@
     /* Globo / canal temático */
     .topic-card {
       flex-shrink: 0;
-      width: 80px;
-      height: 80px;
-      border-radius: 20px;
+      width: 66px;
+      height: 66px;
+      border-radius: 16px;
       background: var(--tg, var(--bg-card));
       border: 1px solid rgba(255,255,255,0.07);
       display: flex;
@@ -716,12 +718,12 @@
     }
 
     .topic-icon {
-      width: 28px; height: 28px;
+      width: 24px; height: 24px;
       display: flex; align-items: center; justify-content: center;
     }
 
     .topic-icon svg {
-      width: 26px; height: 26px;
+      width: 22px; height: 22px;
       fill: rgba(255,255,255,0.88);
     }
 
