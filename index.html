@@ -1149,11 +1149,15 @@
 
     /* ── LAZY LOAD — cards ocultas hasta que llega el scroll ── */
     .card-lazy {
+      display: none;             /* no ocupa espacio hasta revelarse:
+                                    antes (opacity:0) dejaba huecos
+                                    invisibles en la zona de scroll */
       opacity: 0;
       transform: translateY(32px) scale(0.97);
       pointer-events: none;
     }
     .card-lazy.card-visible {
+      display: flex;             /* recupera el layout de .promo-card */
       animation: card-in 0.52s cubic-bezier(0.16, 1, 0.3, 1) both;
       pointer-events: auto;
     }
@@ -2333,6 +2337,12 @@ setInterval(loadWeather, 10 * 60 * 1000);
     cards.forEach((card, i) => {
       setTimeout(() => {
         card.classList.add('card-visible');
+        /* Al terminar la animación la card queda como card normal:
+           re-insertarla en el DOM (reordenamiento por distancia) ya
+           no reinicia la animación → sin parpadeos en el feed. */
+        card.addEventListener('animationend', () => {
+          card.classList.remove('card-lazy', 'card-visible');
+        }, { once: true });
       }, i * 90);
     });
   }
@@ -2477,12 +2487,24 @@ function actualizarBadgeMapa(lat, lng) {
     return 2;
   };
   const feedEmpty = feed.querySelector('.feed-empty');
-  cards.sort((a, b) => {
+  /* Solo se reordenan cards ya reveladas; las lazy pendientes se quedan
+     al final (en su orden original) para el reveal por lotes. */
+  const visibles = cards.filter(c =>
+    !c.classList.contains('card-lazy') || c.classList.contains('card-visible'));
+  visibles.sort((a, b) => {
     const so = statusOrder(a) - statusOrder(b);
     if (so !== 0) return so;
     return (parseFloat(a.dataset.dist) || 9999) - (parseFloat(b.dataset.dist) || 9999);
   });
-  cards.forEach(c => feed.insertBefore(c, feedEmpty));
+  /* Tocar el DOM solo si el orden realmente cambió: re-insertar nodos
+     reinicia animaciones CSS y hacía "parpadear" todo el feed en cada
+     update del GPS aunque nada cambiara. */
+  const cambio = visibles.some((c, i) =>
+    i > 0 && !(visibles[i - 1].compareDocumentPosition(c) & Node.DOCUMENT_POSITION_FOLLOWING));
+  if (cambio) {
+    const ancla = feed.querySelector('.card-lazy:not(.card-visible)') || feedEmpty;
+    visibles.forEach(c => feed.insertBefore(c, ancla));
+  }
 
   /* ── Badge FAB ── */
   const cerca  = cards.filter(c => (parseFloat(c.dataset.dist) || 9999) <= 500);
