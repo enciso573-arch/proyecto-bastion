@@ -80,21 +80,21 @@ async function cargarProductos() {
 // ============================================================
 const ICONOS = {
   pulseras:
-    '<circle cx="100" cy="105" r="38" fill="none" stroke="#e8eaf1" stroke-width="5" opacity="0.9"/><circle cx="100" cy="105" r="38" fill="none" stroke="#9aa0b4" stroke-width="1.5" stroke-dasharray="4 6" transform="rotate(20 100 105)"/><circle cx="100" cy="67" r="6" fill="#f4f5f9"/>',
+    '<circle cx="100" cy="105" r="38" fill="none" stroke="#A7ACB8" stroke-width="5" opacity="0.9"/><circle cx="100" cy="105" r="38" fill="none" stroke="#82889A" stroke-width="1.5" stroke-dasharray="4 6" transform="rotate(20 100 105)"/><circle cx="100" cy="67" r="6" fill="#FFFFFF"/>',
   collares:
-    '<path d="M55 70 Q100 135 145 70" fill="none" stroke="#e8eaf1" stroke-width="4.5" opacity="0.9"/><path d="M55 70 Q100 128 145 70" fill="none" stroke="#9aa0b4" stroke-width="1.2" stroke-dasharray="3 5"/><path d="M100 118 l9 12 -9 16 -9 -16 z" fill="#f4f5f9"/>',
+    '<path d="M55 70 Q100 135 145 70" fill="none" stroke="#A7ACB8" stroke-width="4.5" opacity="0.9"/><path d="M55 70 Q100 128 145 70" fill="none" stroke="#82889A" stroke-width="1.2" stroke-dasharray="3 5"/><path d="M100 118 l9 12 -9 16 -9 -16 z" fill="#FFFFFF"/>',
   aretes:
-    '<circle cx="76" cy="72" r="9" fill="none" stroke="#e8eaf1" stroke-width="4"/><path d="M76 81 q-7 22 0 34" stroke="#e8eaf1" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="124" cy="72" r="9" fill="none" stroke="#e8eaf1" stroke-width="4"/><path d="M124 81 q7 22 0 34" stroke="#e8eaf1" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="76" cy="120" r="4.5" fill="#f4f5f9"/><circle cx="124" cy="120" r="4.5" fill="#f4f5f9"/>',
+    '<circle cx="76" cy="72" r="9" fill="none" stroke="#A7ACB8" stroke-width="4"/><path d="M76 81 q-7 22 0 34" stroke="#A7ACB8" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="124" cy="72" r="9" fill="none" stroke="#A7ACB8" stroke-width="4"/><path d="M124 81 q7 22 0 34" stroke="#A7ACB8" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="76" cy="120" r="4.5" fill="#FFFFFF"/><circle cx="124" cy="120" r="4.5" fill="#FFFFFF"/>',
 };
 
 const DEGRADADOS = {
-  pulseras: ["#42465a", "#181a22"],
-  collares: ["#3a4152", "#14161d"],
-  aretes: ["#4a4658", "#1a1720"],
+  pulseras: ["#F6F0E3", "#E7DAC0"],
+  collares: ["#F8F3E9", "#EADFC9"],
+  aretes: ["#F5EEE1", "#E5D6BC"],
 };
 
 function imagenPlaceholder(categoria) {
-  const [c1, c2] = DEGRADADOS[categoria] || ["#3d3d4a", "#16161d"];
+  const [c1, c2] = DEGRADADOS[categoria] || ["#F6F0E4", "#E6D9BF"];
   const icono = ICONOS[categoria] || "";
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
     <defs>
@@ -102,7 +102,7 @@ function imagenPlaceholder(categoria) {
         <stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/>
       </linearGradient>
       <radialGradient id="brillo" cx="0.3" cy="0.25" r="0.9">
-        <stop offset="0" stop-color="#ffffff" stop-opacity="0.16"/>
+        <stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/>
         <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
       </radialGradient>
     </defs>
@@ -110,7 +110,7 @@ function imagenPlaceholder(categoria) {
     <rect width="200" height="200" fill="url(#brillo)"/>
     ${icono}
     <text x="100" y="172" text-anchor="middle" font-family="Georgia, serif" font-size="11"
-      fill="#aab0c2" letter-spacing="3">PLATA .925</text>
+      fill="#9C8654" letter-spacing="3">PLATA .925</text>
   </svg>`;
   // encodeURIComponent convierte el SVG en texto seguro para usarlo como URL
   return "data:image/svg+xml," + encodeURIComponent(svg);

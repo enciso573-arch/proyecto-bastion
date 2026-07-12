@@ -4,17 +4,19 @@
    y con @media se ajusta para pantallas grandes.
    ============================================================ */
 
-/* ---- Variables: cambiar la paleta completa desde un solo lugar ---- */
+/* ---- Variables: cambiar la paleta completa desde un solo lugar ----
+   Tema claro "boutique de lujo": marfil, beige arena, dorado champagne
+   suave de acento y gris perla para textos. La plata luce sobre claro. ---- */
 :root {
-  --fondo: #101014;          /* casi negro, hace resaltar la "plata" */
-  --superficie: #1a1a21;     /* tarjetas */
-  --superficie-2: #23232c;
-  --plata: #c9ccd6;          /* gris plateado principal */
-  --plata-brillo: #eef0f5;   /* plateado claro para títulos */
-  --acento: #8f95a8;         /* gris azulado para detalles */
+  --fondo: #FAF7F1;          /* marfil */
+  --superficie: #FFFFFF;     /* tarjetas blancas */
+  --superficie-2: #F4EFE6;   /* beige arena (panel del carrito) */
+  --plata: #5D5A54;          /* gris perla oscuro: texto principal legible */
+  --plata-brillo: #2E2B26;   /* carbón cálido: títulos y botones */
+  --acento: #9C8654;         /* dorado champagne (oscuro, legible en claro) */
   --whatsapp: #25d366;
   --whatsapp-oscuro: #128c4a;
-  --borde: rgba(201, 204, 214, 0.15);
+  --borde: rgba(156, 134, 84, 0.22);   /* champagne sutil */
   --radio: 14px;
   --fuente-titulos: "Cormorant Garamond", Georgia, serif;
   --fuente-texto: "Jost", "Segoe UI", sans-serif;
@@ -27,7 +29,7 @@ html { scroll-behavior: smooth; }
 body {
   font-family: var(--fuente-texto);
   background:
-    radial-gradient(1200px 500px at 80% -10%, rgba(143,149,168,0.18), transparent 60%),
+    radial-gradient(1200px 500px at 80% -10%, rgba(196,169,122,0.16), transparent 60%),
     var(--fondo);
   color: var(--plata);
   min-height: 100vh;
@@ -42,7 +44,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 0.7rem 1rem;
-  background: rgba(16, 16, 20, 0.85);
+  background: rgba(250, 247, 241, 0.88);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--borde);
 }
@@ -51,8 +53,8 @@ body {
 
 .header__logo {
   font-size: 1.6rem;
-  color: var(--plata-brillo);
-  background: linear-gradient(135deg, #3a3d4d, #15151b);
+  color: #8A7444;
+  background: linear-gradient(135deg, #F5EDDC, #E2D3B2);
   border: 1px solid var(--borde);
   border-radius: 50%;
   width: 42px; height: 42px;
@@ -141,7 +143,7 @@ body {
 
 .filtros__btn--activo {
   background: var(--plata-brillo);
-  color: #15151b;
+  color: #FAF7F1;
   border-color: var(--plata-brillo);
   font-weight: 500;
 }
@@ -184,7 +186,7 @@ body {
   flex-direction: column;
   transition: transform 0.2s ease, border-color 0.2s ease;
 }
-.tarjeta:hover { transform: translateY(-3px); border-color: rgba(201,204,214,0.35); }
+.tarjeta:hover { transform: translateY(-3px); border-color: rgba(156,134,84,0.45); }
 
 .tarjeta__imagen { width: 100%; aspect-ratio: 1 / 1; display: block; object-fit: cover; }
 
@@ -225,7 +227,7 @@ body {
 .tarjeta__agregar {
   font-size: 0.78rem;
   font-weight: 500;
-  color: #15151b;
+  color: #FAF7F1;
   background: var(--plata-brillo);
   border: none;
   border-radius: 9px;
@@ -241,7 +243,7 @@ body {
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(64, 54, 36, 0.30);
   z-index: 90;
 }
 
