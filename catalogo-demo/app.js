@@ -33,6 +33,9 @@ const estado = {
   whatsapp: WHATSAPP_FALLBACK,
   carrito: new Map(),     // Map: id del producto → cantidad
   filtro: "todas",
+  credito: null,          // config de pagos semanales (productos.json → negocio.credito)
+  modalidad: "contado",   // "contado" | "semanal"
+  semanas: null,          // semanas elegidas para el plan
 };
 
 // Accesos rápidos a elementos del HTML
@@ -62,6 +65,7 @@ async function cargarProductos() {
       if (datos.negocio.whatsapp) estado.whatsapp = datos.negocio.whatsapp;
       if (datos.negocio.nombre) $("#nombre-negocio").textContent = datos.negocio.nombre;
       if (datos.negocio.eslogan) $("#eslogan-negocio").textContent = datos.negocio.eslogan;
+      configurarCredito(datos.negocio.credito);
     }
   } catch (err) {
     console.warn("No se pudo leer productos.json (¿abriste con file://?). Usando datos de respaldo.", err);
@@ -253,6 +257,8 @@ function pintarCarrito() {
 
   elTotal.textContent = formatoPrecio.format(totalPesos);
   elFinalizar.disabled = lineas.length === 0;
+
+  actualizarModalidad(totalPesos);
 }
 
 // Botones + / − dentro del carrito (delegación de eventos otra vez)
@@ -260,6 +266,69 @@ elItems.addEventListener("click", (e) => {
   const btn = e.target.closest(".item__btn");
   if (!btn) return;
   cambiarCantidad(btn.dataset.id, btn.dataset.accion === "mas" ? 1 : -1);
+});
+
+// ============================================================
+// 5b) PAGOS SEMANALES (crédito de palabra, sin pasarela)
+// Se configura en productos.json → negocio.credito:
+//   habilitado (true/false), semanas [4,6,8], montoMinimo,
+//   mensajeBanner. Aquí NO se valida crédito ni se cobra:
+//   solo se calcula un estimado y se informa en el WhatsApp;
+//   la dueña cierra el trato en el chat.
+// ============================================================
+function configurarCredito(cfg) {
+  if (!cfg || cfg.habilitado === false) return;
+  estado.credito = {
+    semanas: Array.isArray(cfg.semanas) && cfg.semanas.length ? cfg.semanas : [4, 6, 8],
+    montoMinimo: Number(cfg.montoMinimo) || 0,
+  };
+  estado.semanas = estado.credito.semanas[0];
+  $("#banner-credito").hidden = false;
+  if (cfg.mensajeBanner) $("#banner-credito-texto").textContent = cfg.mensajeBanner;
+  $("#modalidad").hidden = false;
+}
+
+function seleccionarModalidad(m) {
+  estado.modalidad = m;
+  document.querySelectorAll(".modalidad__btn").forEach((b) =>
+    b.classList.toggle("modalidad__btn--activo", b.dataset.modalidad === m)
+  );
+  pintarCarrito();
+}
+
+function actualizarModalidad(total) {
+  if (!estado.credito) return;
+  const btnSemanal = document.querySelector('.modalidad__btn[data-modalidad="semanal"]');
+  const elPlan = $("#modalidad-plan");
+  const elMinimo = $("#modalidad-minimo");
+  const bajoMinimo = total > 0 && total < estado.credito.montoMinimo;
+
+  btnSemanal.disabled = bajoMinimo || total === 0;
+  elMinimo.hidden = !bajoMinimo;
+  if (bajoMinimo) {
+    elMinimo.textContent =
+      `El plan de pagos semanales aplica en compras desde ${formatoPrecio.format(estado.credito.montoMinimo)}.`;
+    if (estado.modalidad === "semanal") { seleccionarModalidad("contado"); return; }
+  }
+
+  const mostrarPlan = estado.modalidad === "semanal" && !bajoMinimo && total > 0;
+  elPlan.hidden = !mostrarPlan;
+  if (mostrarPlan) {
+    $("#modalidad-semanas").innerHTML = estado.credito.semanas.map((n) =>
+      `<button class="semana-chip${n === estado.semanas ? " semana-chip--activa" : ""}" data-semanas="${n}">${n} sem</button>`
+    ).join("");
+    const cuota = Math.ceil(total / estado.semanas);
+    $("#modalidad-estimado").innerHTML =
+      `${estado.semanas} pagos semanales de aprox. <strong>${formatoPrecio.format(cuota)}</strong>`;
+  }
+}
+
+// Clics en el selector de modalidad y en los chips de semanas
+$("#modalidad").addEventListener("click", (e) => {
+  const btn = e.target.closest(".modalidad__btn");
+  if (btn && !btn.disabled) { seleccionarModalidad(btn.dataset.modalidad); return; }
+  const chip = e.target.closest(".semana-chip");
+  if (chip) { estado.semanas = Number(chip.dataset.semanas); pintarCarrito(); }
 });
 
 // ============================================================
@@ -291,7 +360,17 @@ function construirMensaje() {
   for (const { producto: p, cantidad, subtotal } of lineas) {
     msg += `• ${cantidad} × ${p.nombre} — ${formatoPrecio.format(subtotal)}\n`;
   }
-  msg += `\n*Total estimado: ${formatoPrecio.format(total)}*\n\n`;
+  msg += `\n*Total estimado: ${formatoPrecio.format(total)}*\n`;
+
+  // Modalidad elegida — para que la vendedora cierre el trato en el chat
+  if (estado.modalidad === "semanal" && estado.credito && estado.semanas) {
+    const cuota = Math.ceil(total / estado.semanas);
+    msg += `Modalidad: pagos semanales — ${estado.semanas} semanas de aprox. ${formatoPrecio.format(cuota)} 📅\n`;
+    msg += "(Es un estimado del catálogo; ¿me confirmas el plan y las fechas?)\n\n";
+  } else {
+    msg += "Modalidad: pago de contado\n\n";
+  }
+
   msg += "¿Me confirmas disponibilidad y forma de entrega? ¡Gracias!";
   return msg;
 }

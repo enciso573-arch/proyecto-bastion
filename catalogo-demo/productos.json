@@ -2,7 +2,13 @@
   "negocio": {
     "nombre": "Plata & Luna",
     "eslogan": "Joyería de plata hecha con amor",
-    "whatsapp": "521XXXXXXXXXX"
+    "whatsapp": "521XXXXXXXXXX",
+    "credito": {
+      "habilitado": true,
+      "semanas": [4, 6, 8],
+      "montoMinimo": 500,
+      "mensajeBanner": "Pregunta por nuestro plan de pagos semanales sin tarjeta."
+    }
   },
   "actualizado": "2026-07-12",
   "productos": [

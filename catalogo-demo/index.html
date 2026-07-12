@@ -36,6 +36,17 @@
     <p class="hero__text">Explora el catálogo, arma tu pedido y recíbelo directo por WhatsApp.</p>
   </section>
 
+  <!-- ===== BANNER: plan de pagos semanales =====
+       Se muestra solo si productos.json → negocio.credito.habilitado = true.
+       Texto configurable en negocio.credito.mensajeBanner. -->
+  <section class="banner-credito" id="banner-credito" hidden>
+    <span class="banner-credito__icono">✨</span>
+    <div>
+      <p class="banner-credito__titulo">Paga a semanas</p>
+      <p class="banner-credito__texto" id="banner-credito-texto">Pregunta por nuestro plan de pagos semanales sin tarjeta.</p>
+    </div>
+  </section>
+
   <!-- ===== FILTRO de categorías ===== -->
   <nav class="filtros" id="filtros" aria-label="Categorías">
     <button class="filtros__btn filtros__btn--activo" data-categoria="todas">Todo</button>
@@ -60,6 +71,20 @@
       <p class="carrito__vacio">Tu carrito está vacío. ¡Agrega algo bonito! ✨</p>
     </div>
     <div class="carrito__pie">
+      <!-- Modalidad de pago (visible solo si el crédito está habilitado) -->
+      <div class="modalidad" id="modalidad" hidden>
+        <p class="modalidad__titulo">¿Cómo quieres pagar?</p>
+        <div class="modalidad__opciones">
+          <button class="modalidad__btn modalidad__btn--activo" data-modalidad="contado">Pago de contado</button>
+          <button class="modalidad__btn" data-modalidad="semanal">Pagos semanales</button>
+        </div>
+        <div class="modalidad__plan" id="modalidad-plan" hidden>
+          <div class="modalidad__semanas" id="modalidad-semanas"></div>
+          <p class="modalidad__estimado" id="modalidad-estimado"></p>
+          <p class="modalidad__leyenda">Estimado orientativo. La vendedora confirma contigo el plan y las fechas por WhatsApp.</p>
+        </div>
+        <p class="modalidad__minimo" id="modalidad-minimo" hidden></p>
+      </div>
       <div class="carrito__total">
         <span>Total estimado</span>
         <strong id="carrito-total">$0</strong>
