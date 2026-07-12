@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <!-- viewport: hace que el diseño se adapte al ancho del celular (mobile-first) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plata &amp; Luna — Catálogo de Joyería de Plata</title>
+  <meta name="description" content="Catálogo digital de joyería de plata .925: pulseras, collares y aretes. Pide por WhatsApp.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Tipografías: Cormorant (elegante, para títulos) + Jost (limpia, para texto) -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ===== ENCABEZADO fijo con botón de carrito ===== -->
+  <header class="header">
+    <div class="header__brand">
+      <span class="header__logo">☽</span>
+      <div>
+        <h1 class="header__title" id="nombre-negocio">Plata &amp; Luna</h1>
+        <p class="header__tagline" id="eslogan-negocio">Joyería de plata hecha con amor</p>
+      </div>
+    </div>
+    <button class="header__cart-btn" id="btn-carrito" aria-label="Abrir carrito">
+      🛍
+      <span class="header__cart-count" id="contador-carrito" hidden>0</span>
+    </button>
+  </header>
+
+  <!-- ===== HERO: presentación breve ===== -->
+  <section class="hero">
+    <p class="hero__kicker">Plata .925 · Hecho en México</p>
+    <h2 class="hero__title">Brilla con piezas únicas</h2>
+    <p class="hero__text">Explora el catálogo, arma tu pedido y recíbelo directo por WhatsApp.</p>
+  </section>
+
+  <!-- ===== FILTRO de categorías ===== -->
+  <nav class="filtros" id="filtros" aria-label="Categorías">
+    <button class="filtros__btn filtros__btn--activo" data-categoria="todas">Todo</button>
+    <button class="filtros__btn" data-categoria="pulseras">Pulseras</button>
+    <button class="filtros__btn" data-categoria="collares">Collares</button>
+    <button class="filtros__btn" data-categoria="aretes">Aretes</button>
+  </nav>
+
+  <!-- ===== CATÁLOGO: JS pinta aquí las secciones y tarjetas ===== -->
+  <main class="catalogo" id="catalogo">
+    <p class="catalogo__cargando" id="mensaje-carga">Cargando catálogo…</p>
+  </main>
+
+  <!-- ===== CARRITO: panel deslizante ===== -->
+  <div class="overlay" id="overlay" hidden></div>
+  <aside class="carrito" id="carrito" aria-label="Carrito de compras">
+    <div class="carrito__cabecera">
+      <h2>Tu pedido</h2>
+      <button class="carrito__cerrar" id="btn-cerrar-carrito" aria-label="Cerrar carrito">✕</button>
+    </div>
+    <div class="carrito__items" id="carrito-items">
+      <p class="carrito__vacio">Tu carrito está vacío. ¡Agrega algo bonito! ✨</p>
+    </div>
+    <div class="carrito__pie">
+      <div class="carrito__total">
+        <span>Total estimado</span>
+        <strong id="carrito-total">$0</strong>
+      </div>
+      <button class="carrito__finalizar" id="btn-finalizar" disabled>
+        Finalizar pedido por WhatsApp
+      </button>
+      <p class="carrito__nota">Al finalizar se abre WhatsApp con tu pedido ya escrito. El precio final se confirma con la vendedora.</p>
+    </div>
+  </aside>
+
+  <!-- ===== PIE DE PÁGINA ===== -->
+  <footer class="footer">
+    <p>Plata &amp; Luna · Joyería de plata .925</p>
+    <p class="footer__small">Catálogo digital · Los pedidos se confirman por WhatsApp</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+{
+  "negocio": {
+    "nombre": "Plata & Luna",
+    "eslogan": "Joyería de plata hecha con amor",
+    "whatsapp": "521XXXXXXXXXX"
+  },
+  "actualizado": "2026-07-12",
+  "productos": [
+    {
+      "id": "pul-001",
+      "categoria": "pulseras",
+      "nombre": "Pulsera Trenzada Clásica",
+      "descripcion": "Pulsera de plata .925 con tejido trenzado, cierre de gancho. Elegante para uso diario.",
+      "precio": 380,
+      "imagen": "",
+      "disponible": true
+    },
+    {
+      "id": "pul-002",
+      "categoria": "pulseras",
+      "nombre": "Pulsera de Corazones",
+      "descripcion": "Eslabones en forma de corazón, plata .925. Ideal para regalo.",
+      "precio": 450,
+      "imagen": "",
+      "disponible": true
+    },
+    {
+      "id": "pul-003",
+      "categoria": "pulseras",
+      "nombre": "Pulsera Rígida Minimalista",
+      "descripcion": "Aro rígido pulido espejo, ajuste abierto. Estilo moderno y limpio.",
+      "precio": 520,
+      "imagen": "",
+      "disponible": true
+    },
+    {
+      "id": "col-001",
+      "categoria": "collares",
+      "nombre": "Collar Gota de Luna",
+      "descripcion": "Dije de gota con circonia, cadena de 45 cm en plata .925.",
+      "precio": 650,
+      "imagen": "",
+      "disponible": true
+    },
+    {
+      "id": "col-002",
+      "categoria": "collares",
+      "nombre": "Cadena Veneciana 50 cm",
+      "descripcion": "Cadena veneciana clásica, brillo intenso, cierre reforzado.",
+      "precio": 580,
+      "imagen": "",
+      "disponible": true
+    },
+    {
+      "id": "col-003",
+      "categoria": "collares",
+      "nombre": "Collar Inicial Personalizada",
+      "descripcion": "Dije con letra inicial a elegir, cadena de 40 cm. Pregunta por tu letra.",
+      "precio": 490,
+      "imagen": "",
+      "disponible": true
+    },
+    {
+      "id": "are-001",
+      "categoria": "aretes",
+      "nombre": "Aretes Huggie con Zirconias",
+      "descripcion": "Arracadas pequeñas tipo huggie con línea de zirconias. Cómodos todo el día.",
+      "precio": 320,
+      "imagen": "",
+      "disponible": true
+    },
+    {
+      "id": "are-002",
+      "categoria": "aretes",
+      "nombre": "Broqueles de Estrella",
+      "descripcion": "Broqueles en forma de estrella, plata .925 con poste hipoalergénico.",
+      "precio": 250,
+      "imagen": "",
+      "disponible": true
+    },
+    {
+      "id": "are-003",
+      "categoria": "aretes",
+      "nombre": "Aretes Largos de Cascada",
+      "descripcion": "Aretes colgantes con cadenitas en cascada. Perfectos para ocasión especial.",
+      "precio": 410,
+      "imagen": "",
+      "disponible": true
+    }
+  ]
+}
