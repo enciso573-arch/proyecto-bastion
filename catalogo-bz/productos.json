@@ -1,0 +1,119 @@
+{
+  "negocio": {
+    "nombre": "BZ Plata Fina & Joyería",
+    "eslogan": "Plata .925 que deja huella",
+    "whatsapp": "521XXXXXXXXXX",
+    "credito": {
+      "habilitado": true,
+      "semanas": [
+        4,
+        6,
+        8
+      ],
+      "montoMinimo": 500,
+      "mensajeBanner": "Aparta tu pieza favorita con pagos semanales, sin tarjeta."
+    }
+  },
+  "actualizado": "2026-07-12",
+  "productos": [
+    {
+      "id": "an-001",
+      "categoria": "anillos",
+      "nombre": "Anillo Gatito Liso",
+      "descripcion": "Gatito de plata .925 pulida a espejo, para quien lleva a su michi en el corazón.",
+      "precio": 360,
+      "imagen": "fotos/an-001.webp",
+      "disponible": true
+    },
+    {
+      "id": "ar-001",
+      "categoria": "arracadas",
+      "nombre": "Arracadas 4.5 cm",
+      "descripcion": "Arracadas amplias de plata .925, presencia y brillo en cada movimiento.",
+      "precio": 330,
+      "imagen": "fotos/ar-001.webp",
+      "disponible": true
+    },
+    {
+      "id": "di-001",
+      "categoria": "dijes",
+      "nombre": "Charm Eclipse",
+      "descripcion": "Charm de eclipse en plata .925: sol y luna en una sola pieza.",
+      "precio": 700,
+      "imagen": "fotos/di-001.webp",
+      "disponible": true
+    },
+    {
+      "id": "di-002",
+      "categoria": "dijes",
+      "nombre": "Dije Sirena Chica",
+      "descripcion": "Sirena en plata .925 con detalle fino de escamas. Pequeña y encantadora.",
+      "precio": 150,
+      "imagen": "fotos/di-002.webp",
+      "disponible": true
+    },
+    {
+      "id": "di-003",
+      "categoria": "dijes",
+      "nombre": "Dije Sol Blanco",
+      "descripcion": "Sol radiante de plata .925 con acabado blanco brillante.",
+      "precio": 250,
+      "imagen": "fotos/di-003.webp",
+      "disponible": true
+    },
+    {
+      "id": "di-004",
+      "categoria": "dijes",
+      "nombre": "Dije Mom Corazón",
+      "descripcion": "Corazón con la palabra Mom en plata .925. El regalo que siempre queda bien.",
+      "precio": 320,
+      "imagen": "fotos/di-004.webp",
+      "disponible": true
+    },
+    {
+      "id": "co-001",
+      "categoria": "collares",
+      "nombre": "Cadena Eslabón 40 cm",
+      "descripcion": "Cadena de eslabón clásico en plata .925, 40 cm. Base perfecta para tu dije favorito.",
+      "precio": 150,
+      "imagen": "fotos/co-001.webp",
+      "disponible": true
+    },
+    {
+      "id": "co-002",
+      "categoria": "collares",
+      "nombre": "Cadena Ligera 55 cm",
+      "descripcion": "Cadena ligera de plata .925, 55 cm de caída elegante para el diario.",
+      "precio": 200,
+      "imagen": "fotos/co-002.webp",
+      "disponible": true
+    },
+    {
+      "id": "co-003",
+      "categoria": "collares",
+      "nombre": "Collar Kuromi",
+      "descripcion": "Collar de plata .925 con el personaje consentido. Travesura y brillo a la vez.",
+      "precio": 100,
+      "imagen": "fotos/co-003.webp",
+      "disponible": true
+    },
+    {
+      "id": "co-004",
+      "categoria": "collares",
+      "nombre": "Collar Elsa Frozen",
+      "descripcion": "Collar de plata .925 inspirado en Elsa. El favorito de las princesas de la casa.",
+      "precio": 120,
+      "imagen": "fotos/co-004.webp",
+      "disponible": true
+    },
+    {
+      "id": "pu-001",
+      "categoria": "pulseras",
+      "nombre": "Pulsera Tubos 18 cm",
+      "descripcion": "Pulsera de tubos de plata .925, 18 cm. Estructura moderna, brillo clásico.",
+      "precio": 200,
+      "imagen": "fotos/pu-001.webp",
+      "disponible": true
+    }
+  ]
+}
