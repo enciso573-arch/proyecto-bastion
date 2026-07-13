@@ -21,7 +21,9 @@
   --borde: rgba(156, 134, 84, 0.22);   /* champagne sutil */
   --radio: 14px;
   --fuente-titulos: "Cormorant Garamond", Georgia, serif;
-  --fuente-texto: "Jost", "Segoe UI", sans-serif;
+  /* Questrial: sans minimalista "quiet luxury" (un solo peso, 400).
+     La elegancia sale del espaciado entre letras, no de las negritas. */
+  --fuente-texto: "Questrial", "Segoe UI", sans-serif;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -240,8 +242,10 @@ body {
 .tarjeta__precio { font-size: 1rem; font-weight: 600; color: var(--plata-brillo); }
 
 .tarjeta__agregar {
-  font-size: 0.78rem;
-  font-weight: 500;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;      /* mayúsculas espaciadas = sello "quiet luxury" */
+  text-transform: uppercase;
   color: #FAF7F1;
   background: var(--plata-brillo);
   border: none;
@@ -348,8 +352,10 @@ body {
 .carrito__finalizar {
   width: 100%;
   font-family: var(--fuente-texto);
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 0.95rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: #06220f;
   background: var(--whatsapp);
   border: none;
