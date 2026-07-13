@@ -5,12 +5,14 @@
    ============================================================ */
 
 /* ---- Variables: cambiar la paleta completa desde un solo lugar ----
-   Tema claro "boutique de lujo": marfil, beige arena, dorado champagne
-   suave de acento y gris perla para textos. La plata luce sobre claro. ---- */
+   Tema claro "boutique de lujo": fondo blanco hueso cálido, tarjetas
+   en beige arena (el beige vive DENTRO de las cards, no en el fondo),
+   dorado champagne de acento y gris perla para textos. ---- */
 :root {
-  --fondo: #FAF7F1;          /* marfil */
-  --superficie: #FFFFFF;     /* tarjetas blancas */
-  --superficie-2: #F4EFE6;   /* beige arena (panel del carrito) */
+  --fondo: #FFFDF9;          /* blanco hueso cálido (fondo general) */
+  --superficie: #FFFFFF;     /* controles: botones, chips, pills */
+  --superficie-card: #F6F0E4;/* beige arena suave (tarjetas de producto) */
+  --superficie-2: #FAF6ED;   /* panel del carrito (entre fondo y cards) */
   --plata: #5D5A54;          /* gris perla oscuro: texto principal legible */
   --plata-brillo: #2E2B26;   /* carbón cálido: títulos y botones */
   --acento: #9C8654;         /* dorado champagne (oscuro, legible en claro) */
@@ -29,7 +31,7 @@ html { scroll-behavior: smooth; }
 body {
   font-family: var(--fuente-texto);
   background:
-    radial-gradient(1200px 500px at 80% -10%, rgba(196,169,122,0.16), transparent 60%),
+    radial-gradient(1200px 500px at 80% -10%, rgba(196,169,122,0.10), transparent 60%),
     var(--fondo);
   color: var(--plata);
   min-height: 100vh;
@@ -44,7 +46,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 0.7rem 1rem;
-  background: rgba(250, 247, 241, 0.88);
+  background: rgba(255, 253, 249, 0.88);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--borde);
 }
@@ -138,6 +140,7 @@ body {
   border-radius: 999px;
   padding: 0.5rem 1.1rem;
   cursor: pointer;
+  box-shadow: 0 1px 3px rgba(92, 74, 40, 0.06);
   transition: all 0.2s ease;
 }
 
@@ -176,17 +179,29 @@ body {
   gap: 0.8rem;
 }
 
-/* ---- Tarjeta de producto ---- */
+/* ---- Tarjeta de producto ----
+   Aquí vive el beige: la card arena resalta sobre el fondo blanco
+   hueso gracias a un borde champagne un poco más presente y una
+   sombra cálida suave (doble capa: contacto + difusa). */
 .tarjeta {
-  background: var(--superficie);
-  border: 1px solid var(--borde);
+  background: var(--superficie-card);
+  border: 1px solid rgba(156, 134, 84, 0.30);
   border-radius: var(--radio);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  box-shadow:
+    0 1px 3px rgba(92, 74, 40, 0.06),
+    0 10px 26px rgba(92, 74, 40, 0.08);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
-.tarjeta:hover { transform: translateY(-3px); border-color: rgba(156,134,84,0.45); }
+.tarjeta:hover {
+  transform: translateY(-3px);
+  border-color: rgba(156, 134, 84, 0.5);
+  box-shadow:
+    0 2px 5px rgba(92, 74, 40, 0.08),
+    0 16px 34px rgba(92, 74, 40, 0.12);
+}
 
 .tarjeta__imagen { width: 100%; aspect-ratio: 1 / 1; display: block; object-fit: cover; }
 
@@ -254,6 +269,7 @@ body {
   width: min(92vw, 400px);
   background: var(--superficie-2);
   border-left: 1px solid var(--borde);
+  box-shadow: -12px 0 32px rgba(92, 74, 40, 0.10);  /* lo separa del fondo blanco */
   z-index: 100;
   display: flex;
   flex-direction: column;
@@ -368,6 +384,7 @@ body {
   background: linear-gradient(120deg, #FBF6EA, #F2E7CF);
   border: 1px solid rgba(156, 134, 84, 0.35);
   border-radius: var(--radio);
+  box-shadow: 0 6px 18px rgba(92, 74, 40, 0.08);  /* mismo "peso" que las cards */
 }
 .banner-credito__icono { font-size: 1.35rem; }
 .banner-credito__titulo {
