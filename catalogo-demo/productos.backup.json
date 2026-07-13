@@ -5,16 +5,12 @@
     "whatsapp": "521XXXXXXXXXX",
     "credito": {
       "habilitado": true,
-      "semanas": [
-        4,
-        6,
-        8
-      ],
+      "semanas": [4, 6, 8],
       "montoMinimo": 500,
       "mensajeBanner": "Pregunta por nuestro plan de pagos semanales sin tarjeta."
     }
   },
-  "actualizado": "2026-07-13",
+  "actualizado": "2026-07-12",
   "productos": [
     {
       "id": "pul-001",
@@ -96,15 +92,6 @@
       "precio": 410,
       "imagen": "",
       "disponible": true
-    },
-    {
-      "id": "col-004",
-      "nombre": "Cadena Kingston",
-      "descripcion": "Cadena Kingston en plata .925. Caída elegante y cierre seguro, para el diario o la ocasión.",
-      "precio": 660,
-      "categoria": "collares",
-      "disponible": true,
-      "imagen": "fotos/col-004.webp"
     }
   ]
 }
