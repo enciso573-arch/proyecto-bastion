@@ -105,7 +105,8 @@
 </div>
 
 <div class="barra">
-  <button class="btn" id="btn-publicar" onclick="publicar()">Publicar cambios en la página</button>
+  <button class="btn btn--sec" id="btn-previa" onclick="vistaPrevia()" style="flex:0 0 auto;">👁 Ver cómo se vería</button>
+  <button class="btn" id="btn-publicar" onclick="publicar()">Publicar en la página</button>
 </div>
 <div class="contenido"><p id="log"></p></div>
 
@@ -289,6 +290,23 @@ async function publicar() {
   } catch (err) {
     log("⚠ " + err.message + (token() ? "\nSi persiste, avisa a tu proveedor." : ""), "err");
   } finally { btn.disabled = false; }
+}
+
+// ---------- Vista previa (funciona también en modo demo) ----------
+// Guarda un "borrador" del catálogo en el navegador y abre la página
+// pública con ?previa: ella lee el borrador en lugar del JSON publicado.
+// Nada viaja a internet — es un ensayo local, ideal para demostrar.
+async function vistaPrevia() {
+  try {
+    validar();
+    const borrador = JSON.parse(JSON.stringify(catalogo, (k,v) => k.startsWith("_") ? undefined : v));
+    for (const f of fotosNuevas) {              // fotos aún no publicadas: se incrustan
+      const p = borrador.productos.find(x => x.imagen === f.ruta);
+      if (p) p.imagen = "data:" + f.blob.type + ";base64," + await b64(f.blob);
+    }
+    localStorage.setItem("bz_borrador", JSON.stringify(borrador));
+    window.open("../?previa=1&nc=" + Date.now(), "_blank");
+  } catch (err) { log("⚠ " + err.message, "err"); }
 }
 
 avisar(); cargar();

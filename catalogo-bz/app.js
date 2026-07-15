@@ -59,9 +59,21 @@ const elFinalizar = $("#btn-finalizar");
 // ============================================================
 async function cargarProductos() {
   try {
-    const respuesta = await fetch("productos.json", { cache: "no-store" });
-    if (!respuesta.ok) throw new Error("HTTP " + respuesta.status);
-    const datos = await respuesta.json();
+    // ---- VISTA PREVIA del panel de administración ----
+    // Si la URL trae ?previa y el panel dejó un borrador guardado
+    // en este navegador, se muestra ESE borrador en lugar del JSON
+    // publicado. Nada viaja a internet: es un ensayo local.
+    let datos;
+    const esPrevia = new URLSearchParams(location.search).has("previa");
+    const borrador = esPrevia ? localStorage.getItem("bz_borrador") : null;
+    if (borrador) {
+      datos = JSON.parse(borrador);
+      mostrarBannerPrevia();
+    } else {
+      const respuesta = await fetch("productos.json", { cache: "no-store" });
+      if (!respuesta.ok) throw new Error("HTTP " + respuesta.status);
+      datos = await respuesta.json();
+    }
     estado.productos = datos.productos.filter((p) => p.disponible !== false);
     if (datos.negocio) {
       if (datos.negocio.whatsapp) estado.whatsapp = datos.negocio.whatsapp;
@@ -74,6 +86,15 @@ async function cargarProductos() {
     estado.productos = DATOS_RESPALDO;
   }
   pintarCatalogo();
+}
+
+// Barrita fija que avisa que estás viendo un ensayo, no la página real
+function mostrarBannerPrevia() {
+  const b = document.createElement("div");
+  b.textContent = "Vista previa — estos cambios aún no están publicados";
+  b.style.cssText = "position:sticky;top:0;z-index:200;text-align:center;font-size:.75rem;" +
+    "letter-spacing:.08em;padding:.45rem .8rem;background:#2E2B26;color:#F2E7CF;";
+  document.body.prepend(b);
 }
 
 // ============================================================
@@ -420,5 +441,5 @@ const DATOS_RESPALDO = [
   { id: "ar-001", categoria: "arracadas", nombre: "Arracadas Mickey y Minnie", descripcion: "Arracadas de plata .925 con silueta divertida.", precio: 180 },
 ];
 
-// 🚀 Arranque
+// 🚀 Arranque del catálogo
 cargarProductos();
