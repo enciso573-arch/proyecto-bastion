@@ -23,7 +23,8 @@
       "descripcion": "Gatito de plata .925 pulida a espejo, para quien lleva a su michi en el corazón.",
       "precio": 360,
       "imagen": "fotos/an-001.webp",
-      "disponible": true
+      "disponible": true,
+      "stock": 2
     },
     {
       "id": "ar-001",
@@ -32,7 +33,8 @@
       "descripcion": "Arracadas amplias de plata .925, presencia y brillo en cada movimiento.",
       "precio": 330,
       "imagen": "fotos/ar-001.webp",
-      "disponible": true
+      "disponible": true,
+      "stock": 3
     },
     {
       "id": "di-001",
@@ -41,7 +43,8 @@
       "descripcion": "Charm de eclipse en plata .925: sol y luna en una sola pieza.",
       "precio": 700,
       "imagen": "fotos/di-001.webp",
-      "disponible": true
+      "disponible": true,
+      "stock": 1
     },
     {
       "id": "di-002",
@@ -50,7 +53,8 @@
       "descripcion": "Sirena en plata .925 con detalle fino de escamas. Pequeña y encantadora.",
       "precio": 150,
       "imagen": "fotos/di-002.webp",
-      "disponible": true
+      "disponible": true,
+      "stock": 4
     },
     {
       "id": "di-003",
@@ -59,7 +63,8 @@
       "descripcion": "Sol radiante de plata .925 con acabado blanco brillante.",
       "precio": 250,
       "imagen": "fotos/di-003.webp",
-      "disponible": true
+      "disponible": true,
+      "stock": 2
     },
     {
       "id": "di-004",
@@ -68,7 +73,8 @@
       "descripcion": "Corazón con la palabra Mom en plata .925. El regalo que siempre queda bien.",
       "precio": 320,
       "imagen": "fotos/di-004.webp",
-      "disponible": true
+      "disponible": true,
+      "stock": 3
     },
     {
       "id": "co-001",
@@ -77,7 +83,8 @@
       "descripcion": "Cadena de eslabón clásico en plata .925, 40 cm. Base perfecta para tu dije favorito.",
       "precio": 150,
       "imagen": "fotos/co-001.webp",
-      "disponible": true
+      "disponible": true,
+      "stock": 5
     },
     {
       "id": "co-002",
@@ -86,7 +93,8 @@
       "descripcion": "Cadena ligera de plata .925, 55 cm de caída elegante para el diario.",
       "precio": 200,
       "imagen": "fotos/co-002.webp",
-      "disponible": true
+      "disponible": true,
+      "stock": 4
     },
     {
       "id": "co-003",
@@ -95,7 +103,8 @@
       "descripcion": "Collar de plata .925 con el personaje consentido. Travesura y brillo a la vez.",
       "precio": 100,
       "imagen": "fotos/co-003.webp",
-      "disponible": true
+      "disponible": true,
+      "stock": 2
     },
     {
       "id": "co-004",
@@ -104,7 +113,9 @@
       "descripcion": "Collar de plata .925 inspirado en Elsa. El favorito de las princesas de la casa.",
       "precio": 120,
       "imagen": "fotos/co-004.webp",
-      "disponible": true
+      "disponible": true,
+      "stock": 3,
+      "precioAntes": 160
     },
     {
       "id": "pu-001",
@@ -113,7 +124,8 @@
       "descripcion": "Pulsera de tubos de plata .925, 18 cm. Estructura moderna, brillo clásico.",
       "precio": 200,
       "imagen": "fotos/pu-001.webp",
-      "disponible": true
+      "disponible": true,
+      "stock": 2
     }
   ]
 }

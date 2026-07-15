@@ -462,3 +462,30 @@ body {
 .modalidad__minimo { margin-top: 0.5rem; font-size: 0.72rem; color: var(--acento); font-weight: 300; }
 
 /* =====
+/* ============ PROMOCIONES Y EXISTENCIAS (panel de administración) ============ */
+.tarjeta { position: relative; }
+.tarjeta__promo {
+  position: absolute;
+  top: 10px; left: 10px;
+  z-index: 2;
+  font-family: var(--fuente-texto);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  background: var(--acento);
+  border-radius: 999px;
+  padding: 0.28rem 0.65rem;
+}
+.tarjeta__antes {
+  font-size: 0.78rem;
+  color: var(--acento);
+  opacity: 0.75;
+  margin-right: 0.25rem;
+}
+.tarjeta__agregar:disabled {
+  background: transparent;
+  color: var(--acento);
+  border: 1px solid var(--borde);
+  cursor: not-allowed;
+}

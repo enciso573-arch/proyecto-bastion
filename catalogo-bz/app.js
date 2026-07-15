@@ -158,16 +158,31 @@ function pintarCatalogo() {
     grid.className = "grid";
 
     for (const p of productos) {
+      // Campos OPCIONALES del panel de administración:
+      // - stock: si existe y llega a 0, la pieza se muestra "Agotado".
+      // - precioAntes: si existe y es mayor, se pinta tachado (promoción).
+      const agotado = typeof p.stock === "number" && p.stock <= 0;
+      const enPromo = typeof p.precioAntes === "number" && p.precioAntes > p.precio;
+
+      const htmlPrecio = enPromo
+        ? `<span class="tarjeta__precio"><s class="tarjeta__antes">${formatoPrecio.format(p.precioAntes)}</s> ${formatoPrecio.format(p.precio)}</span>`
+        : `<span class="tarjeta__precio">${formatoPrecio.format(p.precio)}</span>`;
+
+      const htmlBoton = agotado
+        ? `<button class="tarjeta__agregar" disabled>Agotado</button>`
+        : `<button class="tarjeta__agregar" data-id="${p.id}">Agregar</button>`;
+
       const tarjeta = document.createElement("article");
       tarjeta.className = "tarjeta";
       tarjeta.innerHTML = `
+        ${enPromo ? '<span class="tarjeta__promo">Oferta</span>' : ""}
         <img class="tarjeta__imagen" src="${urlImagen(p)}" alt="${p.nombre}" loading="lazy">
         <div class="tarjeta__cuerpo">
           <h3 class="tarjeta__nombre">${p.nombre}</h3>
           <p class="tarjeta__descripcion">${p.descripcion}</p>
           <div class="tarjeta__pie">
-            <span class="tarjeta__precio">${formatoPrecio.format(p.precio)}</span>
-            <button class="tarjeta__agregar" data-id="${p.id}">Agregar</button>
+            ${htmlPrecio}
+            ${htmlBoton}
           </div>
         </div>`;
       grid.appendChild(tarjeta);

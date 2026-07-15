@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel — BZ Plata Fina & Joyería</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Questrial&display=swap" rel="stylesheet">
+<style>
+  /* ===== Panel de administración: misma paleta boutique del catálogo ===== */
+  :root {
+    --fondo:#FFFDF9; --card:#F6F0E4; --panel:#FAF6ED; --oro:#9C8654;
+    --oro-suave:rgba(156,134,84,.30); --carbon:#2E2B26; --gris:#5D5A54;
+    --ok:#2E7D32; --error:#A94436;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:"Questrial","Segoe UI",sans-serif; background:var(--fondo); color:var(--gris); padding-bottom:7rem; }
+  header { position:sticky; top:0; z-index:10; display:flex; align-items:center; gap:.6rem;
+    padding:.8rem 1rem; background:rgba(255,253,249,.92); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--oro-suave); }
+  header h1 { font-family:"Cormorant Garamond",serif; font-size:1.15rem; color:var(--carbon); }
+  header small { display:block; font-size:.66rem; color:var(--oro); letter-spacing:.08em; }
+  .contenido { max-width:720px; margin:0 auto; padding:1rem; }
+  .aviso { border-radius:12px; padding:.7rem .9rem; font-size:.82rem; margin-bottom:1rem; border:1px solid var(--oro-suave); background:var(--panel); }
+  .aviso--demo { border-color:#C9A24B; }
+  h2 { font-family:"Cormorant Garamond",serif; font-size:1.25rem; color:var(--carbon); margin:1.3rem 0 .6rem; }
+  .prod { display:grid; grid-template-columns:56px 1fr; gap:.7rem; background:var(--card);
+    border:1px solid var(--oro-suave); border-radius:12px; padding:.7rem; margin-bottom:.6rem; }
+  .prod img { width:56px; height:56px; object-fit:cover; border-radius:9px; }
+  .prod__nombre { font-size:.9rem; color:var(--carbon); margin-bottom:.35rem; }
+  .prod__campos { display:flex; flex-wrap:wrap; gap:.45rem; align-items:center; }
+  .campo { display:flex; flex-direction:column; font-size:.62rem; letter-spacing:.06em; text-transform:uppercase; color:var(--oro); gap:2px; }
+  input, select, textarea, button { font-family:inherit; font-size:.9rem; }
+  input, select, textarea { border:1px solid var(--oro-suave); border-radius:8px; padding:.4rem .5rem; background:#FFF; color:var(--carbon); }
+  input[type=number] { width:5.2rem; }
+  input[type=checkbox] { width:1.15rem; height:1.15rem; accent-color:var(--oro); }
+  .btn { border:none; border-radius:10px; padding:.7rem 1rem; cursor:pointer; background:var(--carbon); color:#FAF7F1;
+    letter-spacing:.08em; text-transform:uppercase; font-size:.78rem; }
+  .btn--sec { background:transparent; color:var(--carbon); border:1px solid var(--oro-suave); text-transform:none; letter-spacing:0; }
+  .btn:disabled { opacity:.5; cursor:wait; }
+  form.alta { background:var(--panel); border:1px solid var(--oro-suave); border-radius:12px; padding:.9rem; display:grid; gap:.6rem; }
+  form.alta input, form.alta select, form.alta textarea { width:100%; }
+  .fila2 { display:grid; grid-template-columns:1fr 1fr; gap:.6rem; }
+  #preview { width:110px; height:110px; object-fit:cover; border-radius:10px; border:1px solid var(--oro-suave); display:none; }
+  .barra { position:fixed; bottom:0; left:0; right:0; background:rgba(255,253,249,.95); border-top:1px solid var(--oro-suave);
+    padding:.7rem 1rem; display:flex; gap:.6rem; align-items:center; justify-content:center; }
+  .barra .btn { flex:1; max-width:420px; padding:.9rem; }
+  #log { font-size:.78rem; margin-top:.5rem; white-space:pre-line; }
+  .ok { color:var(--ok); } .err { color:var(--error); }
+  details { margin-top:1.2rem; font-size:.82rem; }
+  summary { cursor:pointer; color:var(--oro); }
+  details .cajita { background:var(--panel); border:1px solid var(--oro-suave); border-radius:10px; padding:.8rem; margin-top:.5rem; display:grid; gap:.5rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <svg width="26" height="26" viewBox="0 0 100 100" aria-hidden="true"><g fill="#8A7444"><ellipse cx="50" cy="62" rx="26" ry="21"/><ellipse cx="20" cy="42" rx="9" ry="12"/><ellipse cx="40" cy="28" rx="10" ry="13"/><ellipse cx="62" cy="28" rx="10" ry="13"/><ellipse cx="81" cy="42" rx="9" ry="12"/></g></svg>
+  <div>
+    <h1>Panel del catálogo</h1>
+    <small>BZ PLATA FINA & JOYERÍA</small>
+  </div>
+</header>
+
+<div class="contenido">
+  <div id="aviso" class="aviso"></div>
+
+  <h2>Nueva pieza</h2>
+  <form class="alta" id="forma-alta">
+    <div class="fila2">
+      <label class="campo">Nombre de la pieza
+        <input id="a-nombre" placeholder="Anillo corazón" required></label>
+      <label class="campo">Categoría
+        <select id="a-categoria"></select></label>
+    </div>
+    <div class="fila2">
+      <label class="campo">Precio $
+        <input id="a-precio" type="number" min="1" required></label>
+      <label class="campo">Piezas en existencia
+        <input id="a-stock" type="number" min="0" value="1" required></label>
+    </div>
+    <label class="campo">Descripción (si la dejas vacía, se escribe sola)
+      <textarea id="a-desc" rows="2"></textarea></label>
+    <label class="campo">Foto de la pieza
+      <input id="a-foto" type="file" accept="image/*" required></label>
+    <img id="preview" alt="Vista previa">
+    <button type="submit" class="btn btn--sec">＋ Agregar a la lista</button>
+  </form>
+
+  <h2>Tus piezas</h2>
+  <div id="lista">Cargando…</div>
+
+  <details>
+    <summary>⚙ Conexión para publicar (configuración inicial)</summary>
+    <div class="cajita">
+      <p>Pega aquí la llave que te entregó tu proveedor. Se guarda solo en este teléfono/computadora. Sin llave, el panel funciona en modo demostración.</p>
+      <input id="token" type="password" placeholder="github_pat_...">
+      <div class="fila2">
+        <button class="btn btn--sec" onclick="guardarToken()">Guardar llave</button>
+        <button class="btn btn--sec" onclick="borrarToken()">Quitar llave</button>
+      </div>
+    </div>
+  </details>
+</div>
+
+<div class="barra">
+  <button class="btn" id="btn-publicar" onclick="publicar()">Publicar cambios en la página</button>
+</div>
+<div class="contenido"><p id="log"></p></div>
+
+<script>
+/* ============================================================
+   PANEL DE ADMINISTRACIÓN — sin servidor.
+   Publica directo a GitHub desde el navegador usando su API
+   oficial. La página pública se reconstruye sola en ~1-2 min.
+   Sin llave (token) corre en MODO DEMO: todo funciona pero
+   nada se publica — perfecto para enseñar el producto.
+   ============================================================ */
+const CONFIG = {
+  owner: "enciso573-arch",
+  repo: "proyecto-bastion",
+  rama: "main",
+  carpeta: "catalogo-bz",          // carpeta de ESTE cliente dentro del repo
+  urlPagina: "https://enciso573-arch.github.io/proyecto-bastion/catalogo-bz/"
+};
+const CATEGORIAS = { anillos:"Anillos", arracadas:"Arracadas", dijes:"Dijes y charms", collares:"Collares y cadenas", pulseras:"Pulseras" };
+const PREFIJOS   = { anillos:"an", arracadas:"ar", dijes:"di", collares:"co", pulseras:"pu" };
+const PLANTILLAS = {
+  anillos:(n)=>`${n} en plata .925, brillo pulido para todos los días.`,
+  arracadas:(n)=>`${n} de plata .925, ligeras y llenas de presencia.`,
+  dijes:(n)=>`${n} en plata .925, el detalle que completa tu cadena favorita.`,
+  collares:(n)=>`${n} de plata .925, caída elegante y cierre seguro.`,
+  pulseras:(n)=>`${n} en plata .925, cómoda para el diario y con brillo de ocasión.`
+};
+
+let catalogo = null;          // el productos.json completo (negocio + productos)
+let fotosNuevas = [];         // [{id, blob}] pendientes de subir
+const $ = (s) => document.querySelector(s);
+const token = () => localStorage.getItem("bz_token") || "";
+
+function avisar() {
+  const a = $("#aviso");
+  if (token()) { a.className = "aviso"; a.innerHTML = "🟢 <b>Conectado.</b> Lo que publiques aparecerá en tu página en 1-2 minutos."; }
+  else { a.className = "aviso aviso--demo"; a.innerHTML = "🟡 <b>Modo demostración.</b> Puedes probar todo; los cambios no se publican hasta configurar la llave (abajo)."; }
+}
+function guardarToken(){ const v=$("#token").value.trim(); if(v){ localStorage.setItem("bz_token", v); $("#token").value=""; } avisar(); }
+function borrarToken(){ localStorage.removeItem("bz_token"); avisar(); }
+
+// ---------- Cargar catálogo actual ----------
+async function cargar() {
+  const r = await fetch("../productos.json?nc=" + Date.now());
+  catalogo = await r.json();
+  pintar();
+}
+function pintar() {
+  const cont = $("#lista"); cont.innerHTML = "";
+  for (const p of catalogo.productos) {
+    const div = document.createElement("div");
+    div.className = "prod";
+    const src = p._fotoLocal || (p.imagen ? "../" + p.imagen : "");
+    div.innerHTML = `
+      ${src ? `<img src="${src}" alt="">` : `<div></div>`}
+      <div>
+        <p class="prod__nombre">${p.nombre} <span style="color:var(--oro);font-size:.7rem">· ${CATEGORIAS[p.categoria]||p.categoria}</span></p>
+        <div class="prod__campos">
+          <label class="campo">Precio $<input type="number" min="1" value="${p.precio}" data-id="${p.id}" data-k="precio"></label>
+          <label class="campo">Antes $ (oferta)<input type="number" min="0" value="${p.precioAntes ?? ""}" placeholder="—" data-id="${p.id}" data-k="precioAntes"></label>
+          <label class="campo">Existencia<input type="number" min="0" value="${p.stock ?? ""}" placeholder="—" data-id="${p.id}" data-k="stock"></label>
+          <label class="campo">Visible<input type="checkbox" ${p.disponible ? "checked" : ""} data-id="${p.id}" data-k="disponible"></label>
+        </div>
+      </div>`;
+    cont.appendChild(div);
+  }
+}
+// Un solo listener recoge TODOS los cambios de la lista (delegación)
+$("#lista").addEventListener("change", (e) => {
+  const el = e.target, p = catalogo.productos.find(x => x.id === el.dataset.id);
+  if (!p) return;
+  const k = el.dataset.k;
+  if (k === "disponible") p.disponible = el.checked;
+  else if (el.value === "") delete p[k];               // campo vacío = quitar oferta/stock
+  else p[k] = Number(el.value);
+});
+
+// ---------- Nueva pieza ----------
+$("#a-categoria").innerHTML = Object.entries(CATEGORIAS).map(([v,t]) => `<option value="${v}">${t}</option>`).join("");
+
+$("#a-foto").addEventListener("change", () => {
+  const f = $("#a-foto").files[0];
+  if (f) { $("#preview").src = URL.createObjectURL(f); $("#preview").style.display = "block"; }
+});
+
+// La foto se recorta y comprime EN EL NAVEGADOR (canvas): cuadrada
+// 900x900 como las tarjetas, en WebP (o JPEG si el navegador no sabe WebP).
+function procesarFoto(archivo) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const lado = Math.min(img.width, img.height), c = document.createElement("canvas");
+      c.width = c.height = 900;
+      c.getContext("2d").drawImage(img, (img.width-lado)/2, (img.height-lado)/2, lado, lado, 0, 0, 900, 900);
+      const esWebp = c.toDataURL("image/webp").startsWith("data:image/webp");
+      c.toBlob(b => b ? resolve({ blob: b, ext: esWebp ? "webp" : "jpg" }) : reject(new Error("No se pudo procesar la foto")),
+               esWebp ? "image/webp" : "image/jpeg", 0.8);
+    };
+    img.onerror = () => reject(new Error("Foto no válida"));
+    img.src = URL.createObjectURL(archivo);
+  });
+}
+function nuevoId(categoria) {
+  const pref = PREFIJOS[categoria]; let max = 0;
+  for (const p of catalogo.productos) {
+    const m = p.id.match(new RegExp("^" + pref + "-(\\d+)$"));
+    if (m) max = Math.max(max, +m[1]);
+  }
+  return `${pref}-${String(max+1).padStart(3,"0")}`;
+}
+$("#forma-alta").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  try {
+    const nombre = $("#a-nombre").value.trim(), cat = $("#a-categoria").value;
+    const precio = +$("#a-precio").value, stock = +$("#a-stock").value;
+    if (nombre.length < 3 || !(precio > 0)) throw new Error("Revisa nombre y precio");
+    const { blob, ext } = await procesarFoto($("#a-foto").files[0]);
+    const id = nuevoId(cat);
+    catalogo.productos.push({
+      id, categoria: cat, nombre,
+      descripcion: $("#a-desc").value.trim() || PLANTILLAS[cat](nombre),
+      precio, stock, imagen: `fotos/${id}.${ext}`, disponible: true,
+      _fotoLocal: URL.createObjectURL(blob)
+    });
+    fotosNuevas.push({ ruta: `fotos/${id}.${ext}`, blob });
+    e.target.reset(); $("#preview").style.display = "none";
+    pintar(); log(`Pieza ${id} agregada a la lista. Recuerda publicar.`, "ok");
+  } catch (err) { log("⚠ " + err.message, "err"); }
+});
+
+// ---------- Publicar (API de GitHub) ----------
+function log(t, cls) { const l = $("#log"); l.textContent = t; l.className = cls || ""; }
+const b64 = (blob) => new Promise((res) => { const r = new FileReader(); r.onload = () => res(r.result.split(",")[1]); r.readAsDataURL(blob); });
+
+async function gh(ruta, metodo, cuerpo) {
+  const r = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${ruta}`, {
+    method: metodo,
+    headers: { Authorization: "Bearer " + token(), Accept: "application/vnd.github+json" },
+    body: cuerpo ? JSON.stringify(cuerpo) : undefined
+  });
+  if (metodo === "GET" && r.status === 404) return null;
+  if (!r.ok) throw new Error(`GitHub respondió ${r.status} en ${ruta}`);
+  return r.json();
+}
+
+function validar() {
+  for (const p of catalogo.productos) {
+    if (!p.id || !p.nombre || !(p.precio > 0)) throw new Error(`Datos incompletos en ${p.id || "una pieza"}`);
+    if (p.precioAntes !== undefined && !(p.precioAntes > p.precio))
+      throw new Error(`${p.nombre}: el precio "antes" debe ser mayor al actual`);
+  }
+}
+
+async function publicar() {
+  const btn = $("#btn-publicar");
+  try {
+    validar();
+    if (!token()) { log("Modo demostración: todo validado ✓. Con la llave configurada, esto ya estaría publicándose.", "ok"); return; }
+    btn.disabled = true;
+
+    // 1) Subir las fotos nuevas
+    for (const [i, f] of fotosNuevas.entries()) {
+      log(`Subiendo foto ${i+1} de ${fotosNuevas.length}…`);
+      await gh(`${CONFIG.carpeta}/${f.ruta}`, "PUT", {
+        message: `foto: ${f.ruta} (panel)`, branch: CONFIG.rama, content: await b64(f.blob)
+      });
+    }
+    fotosNuevas = [];
+
+    // 2) Subir productos.json (limpiando campos internos del panel)
+    log("Guardando catálogo…");
+    const limpio = JSON.parse(JSON.stringify(catalogo, (k,v) => k.startsWith("_") ? undefined : v));
+    limpio.actualizado = new Date().toISOString().slice(0,10);
+    const actual = await gh(`${CONFIG.carpeta}/productos.json?ref=${CONFIG.rama}`, "GET");
+    await gh(`${CONFIG.carpeta}/productos.json`, "PUT", {
+      message: "catálogo actualizado desde el panel", branch: CONFIG.rama,
+      content: btoa(unescape(encodeURIComponent(JSON.stringify(limpio, null, 2) + "\n"))),
+      sha: actual ? actual.sha : undefined
+    });
+    log(`✅ Publicado. Tu página se actualiza en 1-2 minutos:\n${CONFIG.urlPagina}?v=${Date.now()}`, "ok");
+  } catch (err) {
+    log("⚠ " + err.message + (token() ? "\nSi persiste, avisa a tu proveedor." : ""), "err");
+  } finally { btn.disabled = false; }
+}
+
+avisar(); cargar();
+</script>
+</body>
+</html>
