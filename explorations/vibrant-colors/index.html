@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <link rel="manifest" href="./manifest.json"/>
+  <link rel="manifest" href="../../manifest.json"/>
   <meta name="theme-color" content="#000814" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -1658,7 +1658,7 @@
 
       <!-- NOTICIAS — periódico arquitectónico -->
       <button class="topic-card"
-              style="--tg: linear-gradient(150deg, #1A3A5C 0%, #0A2040 100%)"
+              style="--tg: linear-gradient(150deg, #0C6E8C 0%, #084A62 100%)"
               aria-label="Noticias locales"
               onclick="window.location.href='noticias.html'">
         <div class="topic-icon">
@@ -1678,7 +1678,7 @@
 
       <!-- CLASIFICADOS — etiqueta precio stroke -->
       <button class="topic-card"
-              style="--tg: linear-gradient(150deg, #4A2C08 0%, #2A1804 100%)"
+              style="--tg: linear-gradient(150deg, #C05E00 0%, #884000 100%)"
               aria-label="Clasificados"
               onclick="window.location.href='clasificados.html'">
         <div class="topic-icon">
@@ -1696,7 +1696,7 @@
 
       <!-- VALLARTA — palmera arquitectónica stroke -->
       <button class="topic-card"
-              style="--tg: linear-gradient(150deg, #0E3828 0%, #071E16 100%)"
+              style="--tg: linear-gradient(150deg, #098C6A 0%, #055C44 100%)"
               aria-label="Qué hacer en Puerto Vallarta"
               onclick="window.location.href='vallarta.html'">
         <div class="topic-icon">
@@ -1718,7 +1718,7 @@
 
       <!-- BAHÍA — ancla arquitectónica stroke limpio -->
       <button class="topic-card"
-              style="--tg: linear-gradient(150deg, #0A2A4A 0%, #051828 100%)"
+              style="--tg: linear-gradient(150deg, #0A55A0 0%, #062F68 100%)"
               aria-label="Qué hacer en Bahía de Banderas"
               onclick="window.location.href='bahia.html'">
         <div class="topic-icon">
@@ -1741,7 +1741,7 @@
 
       <!-- EVENTOS — ticket arquitectónico stroke -->
       <button class="topic-card"
-              style="--tg: linear-gradient(150deg, #2A1040 0%, #180824 100%)"
+              style="--tg: linear-gradient(150deg, #8A006E 0%, #5E004C 100%)"
               aria-label="Eventos y espectáculos"
               onclick="window.location.href='eventos.html'">
         <div class="topic-icon">
@@ -1755,6 +1755,60 @@
           </svg>
         </div>
         <span class="topic-name">Eventos</span>
+      </button>
+
+      <!-- INMUEBLES — casa con llave stroke -->
+      <button class="topic-card"
+              style="--tg: linear-gradient(150deg, #B05200 0%, #7A3400 100%)"
+              aria-label="Venta y renta de inmuebles"
+              onclick="window.location.href='inmuebles.html'">
+        <div class="topic-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <!-- Tejado -->
+            <polyline points="2,10 12,2 22,10"/>
+            <!-- Paredes -->
+            <path d="M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/>
+            <!-- Ventana derecha -->
+            <rect x="14" y="12" width="3" height="2.5" rx="0.5"/>
+            <!-- Llave (izquierda) -->
+            <circle cx="8.5" cy="13.5" r="1.5"/>
+            <line x1="10" y1="13.5" x2="12.5" y2="13.5"/>
+            <line x1="12.5" y1="13.5" x2="12.5" y2="12.5"/>
+            <line x1="11.5" y1="13.5" x2="11.5" y2="14.2"/>
+          </svg>
+        </div>
+        <span class="topic-name">Inmuebles</span>
+      </button>
+
+      <!-- TERRENOS — lote con linderos stroke -->
+      <button class="topic-card"
+              style="--tg: linear-gradient(150deg, #3A7A2A 0%, #215014 100%)"
+              aria-label="Venta y renta de terrenos"
+              onclick="window.location.href='terrenos.html'">
+        <div class="topic-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <!-- Horizonte / suelo -->
+            <line x1="2" y1="18" x2="22" y2="18"/>
+            <!-- Lindero izquierdo -->
+            <line x1="5" y1="18" x2="5" y2="7"/>
+            <!-- Lindero derecho -->
+            <line x1="19" y1="18" x2="19" y2="7"/>
+            <!-- Límite superior -->
+            <line x1="5" y1="7" x2="19" y2="7"/>
+            <!-- Estaca izquierda -->
+            <path d="M3.5 7H6.5L5 9.2Z" fill="rgba(255,255,255,0.7)" stroke="none"/>
+            <!-- Estaca derecha -->
+            <path d="M17.5 7H20.5L19 9.2Z" fill="rgba(255,255,255,0.7)" stroke="none"/>
+            <!-- Punto de medición central -->
+            <circle cx="12" cy="13" r="1.6"/>
+            <!-- Cruz de medición -->
+            <line x1="12" y1="10" x2="12" y2="11.4"/>
+            <line x1="12" y1="14.6" x2="12" y2="16"/>
+            <line x1="9.5" y1="13" x2="10.4" y2="13"/>
+            <line x1="13.6" y1="13" x2="14.5" y2="13"/>
+          </svg>
+        </div>
+        <span class="topic-name">Terrenos</span>
       </button>
 
     </div>
