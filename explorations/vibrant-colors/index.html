@@ -15,6 +15,24 @@
   <meta property="og:image" content="img/og-bastion.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
 
+  <!-- ═══════════════════════════════════════════════
+       GOOGLE ANALYTICS 4
+       ① Crea tu propiedad en analytics.google.com
+       ② Reemplaza G-XXXXXXXXXX con tu Measurement ID
+  ════════════════════════════════════════════════ -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX', {
+      page_title: 'Bastión Feed',
+      page_location: window.location.href,
+      /* Reducir datos PII — no enviar IP completa */
+      anonymize_ip: true
+    });
+  </script>
+
   <style>
     /* =============================================
        SISTEMA DE DISEÑO — BASTIÓN
@@ -2295,7 +2313,8 @@
           </span>
           <a class="btn-cta"
              href="https://wa.me/523221000001?text=Hola%2C%20vi%20su%20anuncio%20en%20Basti%C3%B3n.%20Me%20interesa%20informaci%C3%B3n."
-             target="_blank" rel="noopener">
+             target="_blank" rel="noopener"
+             data-biz="propiedades-vallarta-mx">
             <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
             Contactar
           </a>
@@ -2328,7 +2347,8 @@
           </span>
           <a class="btn-cta"
              href="https://wa.me/523221000002?text=Hola%2C%20vi%20su%20anuncio%20en%20Basti%C3%B3n.%20Quisiera%20m%C3%A1s%20informaci%C3%B3n."
-             target="_blank" rel="noopener">
+             target="_blank" rel="noopener"
+             data-biz="moda-pacifico">
             <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
             Contactar
           </a>
@@ -2361,7 +2381,8 @@
           </span>
           <a class="btn-cta"
              href="https://wa.me/523221000003?text=Hola%2C%20vi%20su%20anuncio%20en%20Basti%C3%B3n.%20Quisiera%20informaci%C3%B3n%20sobre%20terrenos."
-             target="_blank" rel="noopener">
+             target="_blank" rel="noopener"
+             data-biz="tierra-pacifico-desarrollos">
             <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
             Contactar
           </a>
@@ -3295,6 +3316,172 @@ function mostrarToast(msg) {
     actualizarBtnNotif('on');
   }
   btn.addEventListener('click', activarNotificaciones);
+})();
+
+/* ═══════════════════════════════════════════════════════
+   BASTIÓN ANALYTICS — módulo centralizado
+   Envía eventos a GA4. Si GA4 no está cargado (offline / bloqueado)
+   los eventos se guardan en sessionStorage para no perderlos.
+═══════════════════════════════════════════════════════ */
+const bAnalytics = (function() {
+
+  const OFFLINE_KEY = 'bastion_analytics_queue';
+
+  /* Contexto común de cada evento */
+  function ctx() {
+    return {
+      platform: 'bastion_pwa',
+      hora_local: new Date().getHours(),      // 0-23
+      dia_semana: new Date().getDay(),         // 0=dom … 6=sab
+      gps_activo: _userLat !== null ? 'si' : 'no'
+    };
+  }
+
+  /* Envío principal */
+  function track(eventName, params = {}) {
+    const payload = { ...ctx(), ...params };
+
+    if (typeof gtag === 'function') {
+      gtag('event', eventName, payload);
+    } else {
+      /* Offline: encolar en sessionStorage */
+      try {
+        const q = JSON.parse(sessionStorage.getItem(OFFLINE_KEY) || '[]');
+        q.push({ eventName, payload, ts: Date.now() });
+        sessionStorage.setItem(OFFLINE_KEY, JSON.stringify(q.slice(-50)));
+      } catch(_) {}
+    }
+
+    /* Debug: descomenta para ver eventos en consola */
+    // console.log('[Bastión]', eventName, payload);
+  }
+
+  /* Reenviar eventos acumulados offline al recuperar conexión */
+  window.addEventListener('online', () => {
+    if (typeof gtag !== 'function') return;
+    try {
+      const q = JSON.parse(sessionStorage.getItem(OFFLINE_KEY) || '[]');
+      q.forEach(({ eventName, payload }) => gtag('event', eventName, payload));
+      sessionStorage.removeItem(OFFLINE_KEY);
+    } catch(_) {}
+  });
+
+  return { track };
+})();
+
+/* ── A) CTA CLICKS — cada tap en botón de WhatsApp ── */
+document.addEventListener('click', e => {
+  const cta = e.target.closest('.btn-cta[data-coupon], .promo-area-cta[data-coupon]');
+  if (!cta) return;
+  const card    = cta.closest('.promo-card, .promo-area-card');
+  const bizName = card?.querySelector('.card-biz, .promo-area-deal')?.textContent?.trim() || 'desconocido';
+  const dist    = card ? (parseFloat(card.dataset.dist) || null) : null;
+  bAnalytics.track('cta_click', {
+    biz_id:    cta.dataset.biz    || 'desconocido',
+    coupon_id: cta.dataset.coupon || 'sin_cupon',
+    biz_name:  bizName,
+    distancia_m: dist ? Math.round(dist) : null,
+    tipo: cta.dataset.coupon ? 'cupon' : 'publicidad'
+  });
+});
+
+/* ── B) CANAL ABIERTO — tap en cualquier topic-card ── */
+document.querySelectorAll('.topic-card').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const name = btn.querySelector('.topic-name')?.textContent?.trim() || 'desconocido';
+    bAnalytics.track('channel_open', { canal: name.toLowerCase() });
+  });
+});
+
+/* ── C) MAPA ABIERTO ── */
+(function() {
+  const origIrAlMapa = window.irAlMapa;
+  window.irAlMapa = function() {
+    bAnalytics.track('map_open', {
+      lat: _userLat ? _userLat.toFixed(4) : null,
+      lng: _userLng ? _userLng.toFixed(4) : null
+    });
+    origIrAlMapa();
+  };
+})();
+
+/* ── D) BÚSQUEDA — query cuando el usuario deja de escribir ── */
+(function() {
+  const input = document.getElementById('searchInput');
+  if (!input) return;
+  let _debounce;
+  input.addEventListener('input', () => {
+    clearTimeout(_debounce);
+    const q = input.value.trim();
+    if (q.length < 2) return;
+    _debounce = setTimeout(() => {
+      const visible = document.querySelectorAll('.promo-card:not(.search-hidden)').length;
+      bAnalytics.track('search_query', { query: q, resultados: visible });
+    }, 800);
+  });
+})();
+
+/* ── E) NOTIFICACIÓN — permiso solicitado / resultado ── */
+(function() {
+  const origActivar = window.activarNotificaciones;
+  if (!origActivar) return;
+  window.activarNotificaciones = async function() {
+    bAnalytics.track('notif_requested');
+    await origActivar();
+    bAnalytics.track('notif_result', {
+      permiso: ('Notification' in window) ? Notification.permission : 'no_soportado'
+    });
+  };
+})();
+
+/* ── F) IMPRESIÓN DE TARJETA — visible ≥ 1 segundo ── */
+(function initImpressions() {
+  if (!('IntersectionObserver' in window)) return;
+  const seen = new Set();
+  const timers = new WeakMap();
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const card = entry.target;
+      const id   = card.dataset.biz || card.querySelector('.card-biz')?.textContent?.trim() || 'ad';
+
+      if (entry.isIntersecting) {
+        /* Iniciar temporizador de 1s */
+        if (!timers.has(card)) {
+          timers.set(card, setTimeout(() => {
+            if (!seen.has(id)) {
+              seen.add(id);
+              const pos  = [...document.querySelectorAll('.promo-card')].indexOf(card);
+              const dist = parseFloat(card.dataset.dist) || null;
+              bAnalytics.track('card_impression', {
+                biz_id:      id,
+                posicion:    pos + 1,
+                distancia_m: dist ? Math.round(dist) : null,
+                tiene_cupon: !!card.querySelector('[data-coupon]')
+              });
+            }
+            timers.delete(card);
+          }, 1000));
+        }
+      } else {
+        /* Salió de vista antes de 1s — cancelar */
+        const t = timers.get(card);
+        if (t) { clearTimeout(t); timers.delete(card); }
+      }
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('.promo-card').forEach(c => io.observe(c));
+})();
+
+/* ── G) APERTURA DE PERFIL DEL PROMOTOR ── */
+(function() {
+  const btn = document.getElementById('profileToggle');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    const open = document.getElementById('profileCollapse')?.classList.contains('open');
+    if (open) bAnalytics.track('promotor_profile_open');
+  });
 })();
 
 /* ── PERFIL TOGGLE — abrir/cerrar info del promotor ── */
