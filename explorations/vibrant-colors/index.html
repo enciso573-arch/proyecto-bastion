@@ -408,6 +408,60 @@
       50%       { opacity: 1;   transform: translateX(1px); }
     }
 
+    /* ── BARRA DE BÚSQUEDA COLAPSABLE ── */
+    .search-bar-wrap {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.28s cubic-bezier(0.4,0,0.2,1);
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      z-index: 89;
+      position: sticky;
+      top: 0;
+    }
+    .search-bar-wrap.open {
+      max-height: 80px;
+    }
+    .search-bar-inner {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px 6px;
+    }
+    .search-bar-icon {
+      width: 16px; height: 16px;
+      fill: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .search-input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 15px;
+      font-family: system-ui, -apple-system, sans-serif;
+      color: var(--text-primary);
+      outline: none;
+      caret-color: #FF8C00;
+    }
+    .search-input::placeholder { color: var(--text-muted); }
+    .search-clear-btn {
+      background: none; border: none;
+      font-size: 13px; color: var(--text-muted);
+      cursor: pointer; padding: 2px 4px;
+      display: none;
+    }
+    .search-clear-btn.visible { display: block; }
+    .search-results-count {
+      font-size: 11px; font-weight: 600;
+      color: var(--text-muted);
+      padding: 0 14px 8px;
+      min-height: 18px;
+    }
+    /* Ocultar tarjetas que no coinciden con búsqueda */
+    .promo-card.search-hidden {
+      display: none;
+    }
+
     /* Botones de ícono (lupa y campana) */
     .header-icon-btn {
       width: 32px; height: 32px;
@@ -1780,12 +1834,24 @@
         <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
       </button>
       <!-- Búsqueda -->
-      <button class="header-icon-btn" aria-label="Buscar promociones">
+      <button class="header-icon-btn" id="searchBtn" aria-label="Buscar promociones">
         <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
       </button>
     </div>
 
   </header>
+
+  <!-- BARRA DE BÚSQUEDA (colapsable) ============= -->
+  <div class="search-bar-wrap" id="searchBarWrap" aria-hidden="true">
+    <div class="search-bar-inner">
+      <svg class="search-bar-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      <input type="search" id="searchInput" class="search-input"
+             placeholder="Buscar negocios, promos, canales…"
+             autocomplete="off" autocorrect="off" spellcheck="false">
+      <button class="search-clear-btn" id="searchClear" aria-label="Limpiar">✕</button>
+    </div>
+    <div class="search-results-count" id="searchCount"></div>
+  </div>
 
   <!-- PERFIL ===================================== -->
   <!--
@@ -3119,8 +3185,8 @@ if ('geolocation' in navigator) {
 /* Navegar al mapa pasando las coords actuales del usuario */
 function irAlMapa() {
   const url = (_userLat !== null)
-    ? `mapa.html?lat=${_userLat.toFixed(6)}&lng=${_userLng.toFixed(6)}`
-    : 'mapa.html';
+    ? `../../mapa.html?lat=${_userLat.toFixed(6)}&lng=${_userLng.toFixed(6)}`
+    : '../../mapa.html';
   window.location.href = url;
 }
 
@@ -3229,6 +3295,95 @@ function mostrarToast(msg) {
     actualizarBtnNotif('on');
   }
   btn.addEventListener('click', activarNotificaciones);
+})();
+
+/* ── PERFIL TOGGLE — abrir/cerrar info del promotor ── */
+(function initProfileToggle() {
+  const btn      = document.getElementById('profileToggle');
+  const collapse = document.getElementById('profileCollapse');
+  if (!btn || !collapse) return;
+  btn.addEventListener('click', () => {
+    const open = collapse.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open);
+    btn.querySelector('svg').style.transform = open ? 'rotate(180deg)' : '';
+  });
+  btn.querySelector('svg').style.transition = 'transform 0.22s ease';
+})();
+
+/* ── BÚSQUEDA — filtro client-side en tiempo real ── */
+(function initSearch() {
+  const searchBtn   = document.getElementById('searchBtn');
+  const wrap        = document.getElementById('searchBarWrap');
+  const input       = document.getElementById('searchInput');
+  const clearBtn    = document.getElementById('searchClear');
+  const countEl     = document.getElementById('searchCount');
+  if (!searchBtn || !wrap || !input) return;
+
+  function filterCards(q) {
+    const query = q.trim().toLowerCase();
+    const cards = document.querySelectorAll('.promo-card');
+    let visible = 0;
+    cards.forEach(card => {
+      const text = card.textContent.toLowerCase();
+      const match = !query || text.includes(query);
+      card.classList.toggle('search-hidden', !match);
+      if (match) visible++;
+    });
+    clearBtn.classList.toggle('visible', q.length > 0);
+    if (query) {
+      countEl.textContent = visible === 0
+        ? 'Sin resultados'
+        : `${visible} resultado${visible !== 1 ? 's' : ''}`;
+    } else {
+      countEl.textContent = '';
+    }
+  }
+
+  searchBtn.addEventListener('click', () => {
+    const open = wrap.classList.toggle('open');
+    wrap.setAttribute('aria-hidden', !open);
+    if (open) { input.focus(); }
+    else { input.value = ''; filterCards(''); }
+  });
+
+  input.addEventListener('input', () => filterCards(input.value));
+
+  clearBtn.addEventListener('click', () => {
+    input.value = '';
+    filterCards('');
+    input.focus();
+  });
+
+  /* Cerrar con Escape */
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      input.value = '';
+      filterCards('');
+      wrap.classList.remove('open');
+      wrap.setAttribute('aria-hidden', 'true');
+    }
+  });
+})();
+
+/* ── CAMPANA DUAL — GPS + alerta de feed al cargar ── */
+(function initCampanaDual() {
+  /* Al cargar la página, si el usuario ya tiene notificaciones activas,
+     simular una alerta de "nuevas promos en tu zona" tras 3 segundos */
+  if ('Notification' in window && Notification.permission === 'granted') {
+    setTimeout(() => {
+      if (_swReg && _swReg.active) {
+        _swReg.showNotification('Bastión — Ofertas activas', {
+          body: 'Hay promociones nuevas en tu zona. Desliza para verlas.',
+          icon: '../../icon-192.png',
+          tag: 'bastion-feed-update',
+          renotify: false
+        });
+      } else {
+        /* Fallback: toast dentro de la app */
+        mostrarToast('🔔 Hay promos nuevas en tu zona');
+      }
+    }, 3000);
+  }
 })();
 
 /* ── PROMO AREA DOTS — sync con scroll ── */
