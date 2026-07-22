@@ -16,6 +16,35 @@
   <meta name="twitter:card" content="summary_large_image" />
 
   <!-- ═══════════════════════════════════════════════
+       SEGURIDAD — Headers de protección
+       (En producción con servidor propio, mover a HTTP headers)
+  ════════════════════════════════════════════════ -->
+  <!-- Bloquea clickjacking — impide que la app se incruste en iframes de terceros -->
+  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
+  <!-- Fuerza HTTPS incluso si el usuario escribe http:// -->
+  <meta http-equiv="Strict-Transport-Security" content="max-age=31536000" />
+  <!-- Evita que el navegador "adivine" el tipo de archivo (MIME sniffing) -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <!-- Content Security Policy — controla qué scripts y recursos pueden cargar -->
+  <meta http-equiv="Content-Security-Policy"
+        content="
+          default-src 'self';
+          script-src  'self' 'unsafe-inline'
+                      https://www.googletagmanager.com
+                      https://www.google-analytics.com;
+          connect-src 'self'
+                      https://api.open-meteo.com
+                      https://www.google-analytics.com
+                      https://region1.google-analytics.com;
+          img-src     'self' data: https:;
+          style-src   'self' 'unsafe-inline';
+          font-src    'self';
+          frame-src   'none';
+          object-src  'none';
+          base-uri    'self';
+        " />
+
+  <!-- ═══════════════════════════════════════════════
        GOOGLE ANALYTICS 4
        ① Crea tu propiedad en analytics.google.com
        ② Reemplaza G-XXXXXXXXXX con tu Measurement ID
@@ -1792,6 +1821,47 @@
       font-weight: 700;
     }
 
+    /* ── BANNER PRIVACIDAD LFPDPPP ── */
+    .privacy-banner {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(15,11,0,0.97);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(255,140,0,0.25);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 9990;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+    .privacy-banner.visible { transform: translateY(0); }
+    .privacy-banner.hidden  { display: none; }
+    .privacy-text {
+      flex: 1;
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.5;
+    }
+    .privacy-text a {
+      color: #FF8C00;
+      text-decoration: underline;
+    }
+    .privacy-accept {
+      background: #FF8C00;
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .privacy-accept:active { filter: brightness(0.9); }
+
   </style>
 </head>
 <body>
@@ -1947,7 +2017,7 @@
             </div>
             <a class="promo-area-cta"
                href="https://wa.me/523221592596?text=Hola%2C%20vengo%20de%20Basti%C3%B3n.%20Quiero%20el%2030%25%20OFF%20en%20Mariscos%20La%20Marina%2C%20c%C3%B3digo%20%23BASTION-101."
-               target="_blank" rel="noopener" data-coupon="#BASTION-101">
+               target="_blank" rel="noopener noreferrer" data-coupon="#BASTION-101">
               <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
               Código
             </a>
@@ -1975,7 +2045,7 @@
             </div>
             <a class="promo-area-cta" style="color:#005A48;"
                href="https://wa.me/523221592596?text=Hola%2C%20vengo%20de%20Basti%C3%B3n.%20Quiero%20el%202x1%20en%20Tacos%20El%20G%C3%BCero%2C%20c%C3%B3digo%20%23BASTION-102."
-               target="_blank" rel="noopener" data-coupon="#BASTION-102">
+               target="_blank" rel="noopener noreferrer" data-coupon="#BASTION-102">
               <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
               Código
             </a>
@@ -2003,7 +2073,7 @@
             </div>
             <a class="promo-area-cta" style="color:#5A1EA8;"
                href="https://wa.me/523221592596?text=Hola%2C%20vengo%20de%20Basti%C3%B3n.%20Quiero%20el%20masaje%20de%2060%20min%20en%20Spa%20Pac%C3%ADfico%2C%20c%C3%B3digo%20%23BASTION-103."
-               target="_blank" rel="noopener" data-coupon="#BASTION-103">
+               target="_blank" rel="noopener noreferrer" data-coupon="#BASTION-103">
               <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
               Código
             </a>
@@ -2031,7 +2101,7 @@
             </div>
             <a class="promo-area-cta" style="color:#0A3A70;"
                href="https://wa.me/523221592596?text=Hola%2C%20vengo%20de%20Basti%C3%B3n.%20Quiero%20las%204%20cervezas%20por%20%24120%20en%20Cervecer%C3%ADa%20del%20Muelle%2C%20c%C3%B3digo%20%23BASTION-104."
-               target="_blank" rel="noopener" data-coupon="#BASTION-104">
+               target="_blank" rel="noopener noreferrer" data-coupon="#BASTION-104">
               <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
               Código
             </a>
@@ -2313,7 +2383,7 @@
           </span>
           <a class="btn-cta"
              href="https://wa.me/523221000001?text=Hola%2C%20vi%20su%20anuncio%20en%20Basti%C3%B3n.%20Me%20interesa%20informaci%C3%B3n."
-             target="_blank" rel="noopener"
+             target="_blank" rel="noopener noreferrer"
              data-biz="propiedades-vallarta-mx">
             <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
             Contactar
@@ -2347,7 +2417,7 @@
           </span>
           <a class="btn-cta"
              href="https://wa.me/523221000002?text=Hola%2C%20vi%20su%20anuncio%20en%20Basti%C3%B3n.%20Quisiera%20m%C3%A1s%20informaci%C3%B3n."
-             target="_blank" rel="noopener"
+             target="_blank" rel="noopener noreferrer"
              data-biz="moda-pacifico">
             <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
             Contactar
@@ -2381,7 +2451,7 @@
           </span>
           <a class="btn-cta"
              href="https://wa.me/523221000003?text=Hola%2C%20vi%20su%20anuncio%20en%20Basti%C3%B3n.%20Quisiera%20informaci%C3%B3n%20sobre%20terrenos."
-             target="_blank" rel="noopener"
+             target="_blank" rel="noopener noreferrer"
              data-biz="tierra-pacifico-desarrollos">
             <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
             Contactar
@@ -2431,7 +2501,7 @@
           </span>
           <a class="btn-cta"
              href="https://wa.me/523221592596?text=Hola%2C%20vengo%20de%20la%20app%20Basti%C3%B3n.%20Quiero%20el%2030%25%20de%20descuento%20en%20Mariscos%20La%20Palapa%2C%20c%C3%B3digo%20%23BASTION-101."
-             target="_blank" rel="noopener"
+             target="_blank" rel="noopener noreferrer"
              data-coupon="#BASTION-101"
              data-biz="mariscos-la-marina">
             <!-- WhatsApp -->
@@ -2485,7 +2555,7 @@
           </span>
           <a class="btn-cta"
              href="https://wa.me/523221592596?text=Hola%2C%20vengo%20de%20la%20app%20Basti%C3%B3n.%20Quiero%20el%202x1%20en%20tacos%20en%20Tacos%20El%20G%C3%BCero%2C%20c%C3%B3digo%20%23BASTION-102."
-             target="_blank" rel="noopener"
+             target="_blank" rel="noopener noreferrer"
              data-coupon="#BASTION-102"
              data-biz="tacos-el-guero">
             <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
@@ -2536,7 +2606,7 @@
           </span>
           <a class="btn-cta"
              href="https://wa.me/523221592596?text=Hola%2C%20vengo%20de%20la%20app%20Basti%C3%B3n.%20Quiero%20el%20masaje%20de%2060%20min%20por%20%24199%20en%20Spa%20Pac%C3%ADfico%2C%20c%C3%B3digo%20%23BASTION-103."
-             target="_blank" rel="noopener"
+             target="_blank" rel="noopener noreferrer"
              data-coupon="#BASTION-103"
              data-biz="spa-pacifico">
             <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
@@ -2587,7 +2657,7 @@
           </span>
           <a class="btn-cta"
              href="https://wa.me/523221592596?text=Hola%2C%20vengo%20de%20la%20app%20Basti%C3%B3n.%20Quiero%20las%204%20cervezas%20por%20%24120%20en%20Cervecer%C3%ADa%20del%20Muelle%2C%20c%C3%B3digo%20%23BASTION-104."
-             target="_blank" rel="noopener"
+             target="_blank" rel="noopener noreferrer"
              data-coupon="#BASTION-104"
              data-biz="cerveceria-del-muelle">
             <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
@@ -2633,7 +2703,7 @@
           </span>
           <a class="btn-cta"
              href="https://wa.me/523221234571?text=Hola%2C%20vengo%20de%20Basti%C3%B3n.%20Quiero%20el%202x1%20en%20pastas%20de%20Pasta%20e%20Basta%2C%20c%C3%B3digo%20%23BASTION-105."
-             target="_blank" rel="noopener"
+             target="_blank" rel="noopener noreferrer"
              data-coupon="#BASTION-105" data-biz="pasta-e-basta">
             <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
             Activar Código
@@ -2675,7 +2745,7 @@
           </span>
           <a class="btn-cta"
              href="https://wa.me/523221234572?text=Hola%2C%20vengo%20de%20Basti%C3%B3n.%20Quiero%20reservar%20el%20tour%20nocturno%20de%20Vallarta%20Bike%2C%20c%C3%B3digo%20%23BASTION-106."
-             target="_blank" rel="noopener"
+             target="_blank" rel="noopener noreferrer"
              data-coupon="#BASTION-106" data-biz="vallarta-bike-tours">
             <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
             Activar Código
@@ -2717,7 +2787,7 @@
           </span>
           <a class="btn-cta"
              href="https://wa.me/523221234573?text=Hola%2C%20vengo%20de%20Basti%C3%B3n.%20Quiero%20el%20facial%20express%20de%20Spa%20Zen%2C%20c%C3%B3digo%20%23BASTION-107."
-             target="_blank" rel="noopener"
+             target="_blank" rel="noopener noreferrer"
              data-coupon="#BASTION-107" data-biz="spa-zen-vallarta">
             <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
             Activar Código
@@ -2759,7 +2829,7 @@
           </span>
           <a class="btn-cta"
              href="https://wa.me/523221234574?text=Hola%2C%20vengo%20de%20Basti%C3%B3n.%20Quiero%20las%20papas%20gratis%20de%20Burgers%20El%20Capit%C3%A1n%2C%20c%C3%B3digo%20%23BASTION-108."
-             target="_blank" rel="noopener"
+             target="_blank" rel="noopener noreferrer"
              data-coupon="#BASTION-108" data-biz="burgers-el-capitan">
             <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
             Activar Código
@@ -2790,6 +2860,15 @@
 
   </main>
 </div><!-- /app-container -->
+
+<!-- AVISO DE PRIVACIDAD (LFPDPPP) ============== -->
+<div class="privacy-banner" id="privacyBanner" role="dialog" aria-label="Aviso de privacidad">
+  <div class="privacy-text">
+    🔒 Usamos tu ubicación para mostrarte promos cercanas y cookies de análisis. Consulta nuestro
+    <a href="../../privacidad.html" target="_blank" rel="noopener noreferrer">aviso de privacidad</a>.
+  </div>
+  <button class="privacy-accept" id="privacyAccept">Entendido</button>
+</div>
 
 <!-- BOTÓN FLOTANTE MAPA ========================= -->
 <div class="map-fab">
@@ -3223,7 +3302,7 @@ const _notifiedIds = new Set(); // evitar spam por negocio
 async function registrarSW() {
   if (!('serviceWorker' in navigator)) return;
   try {
-    _swReg = await navigator.serviceWorker.register('./sw.js');
+    _swReg = await navigator.serviceWorker.register('../../sw.js');
   } catch (e) {
     console.warn('SW no disponible:', e);
   }
@@ -3319,6 +3398,53 @@ function mostrarToast(msg) {
 })();
 
 /* ═══════════════════════════════════════════════════════
+   SEGURIDAD — SESSION ID único por visita
+   Identifica sesiones anómalas (click fraud) sin guardar PII.
+   Se regenera en cada carga de página — no persiste.
+═══════════════════════════════════════════════════════ */
+const BASTION_SESSION_ID = (
+  typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : Date.now().toString(36) + Math.random().toString(36).slice(2)
+);
+
+/* ── Anti-click-fraud: registro de clicks por biz en esta sesión ── */
+const _clickLog = {};   // { biz_id: [timestamp, timestamp, …] }
+const CLICK_LIMIT = 5;  // máx clicks distintos al mismo negocio por sesión
+const CLICK_WINDOW = 60_000; // ventana de 60 segundos
+
+function registrarClick(bizId) {
+  const now   = Date.now();
+  const times = (_clickLog[bizId] || []).filter(t => now - t < CLICK_WINDOW);
+  times.push(now);
+  _clickLog[bizId] = times;
+  return times.length; // devuelve cuántos clicks en la ventana
+}
+
+/* ── Sanitizador para contenido de bots (noticias, eventos, clasificados) ──
+   Nunca usar innerHTML con datos externos. Esta función es el guardián.     */
+const bSanitize = {
+  /* Texto plano: elimina cualquier tag HTML */
+  text(str) {
+    const d = document.createElement('div');
+    d.textContent = String(str || '');
+    return d.textContent;
+  },
+  /* URL: solo permite http/https, bloquea javascript: data: etc. */
+  url(str) {
+    try {
+      const u = new URL(str);
+      return (u.protocol === 'https:' || u.protocol === 'http:') ? str : '#';
+    } catch(_) { return '#'; }
+  },
+  /* Número entero seguro */
+  int(val, fallback = 0) {
+    const n = parseInt(val, 10);
+    return Number.isFinite(n) ? n : fallback;
+  }
+};
+
+/* ═══════════════════════════════════════════════════════
    BASTIÓN ANALYTICS — módulo centralizado
    Envía eventos a GA4. Si GA4 no está cargado (offline / bloqueado)
    los eventos se guardan en sessionStorage para no perderlos.
@@ -3330,10 +3456,11 @@ const bAnalytics = (function() {
   /* Contexto común de cada evento */
   function ctx() {
     return {
-      platform: 'bastion_pwa',
-      hora_local: new Date().getHours(),      // 0-23
-      dia_semana: new Date().getDay(),         // 0=dom … 6=sab
-      gps_activo: _userLat !== null ? 'si' : 'no'
+      platform:    'bastion_pwa',
+      session_id:  BASTION_SESSION_ID,        // anti-fraud
+      hora_local:  new Date().getHours(),     // 0-23
+      dia_semana:  new Date().getDay(),        // 0=dom … 6=sab
+      gps_activo:  _userLat !== null ? 'si' : 'no'
     };
   }
 
@@ -3369,20 +3496,31 @@ const bAnalytics = (function() {
   return { track };
 })();
 
-/* ── A) CTA CLICKS — cada tap en botón de WhatsApp ── */
+/* ── A) CTA CLICKS — cada tap en botón de WhatsApp + anti-fraud ── */
 document.addEventListener('click', e => {
-  const cta = e.target.closest('.btn-cta[data-coupon], .promo-area-cta[data-coupon]');
+  const cta = e.target.closest('.btn-cta, .promo-area-cta');
   if (!cta) return;
+  const bizId   = cta.dataset.biz    || 'desconocido';
   const card    = cta.closest('.promo-card, .promo-area-card');
   const bizName = card?.querySelector('.card-biz, .promo-area-deal')?.textContent?.trim() || 'desconocido';
   const dist    = card ? (parseFloat(card.dataset.dist) || null) : null;
+  const clicks  = registrarClick(bizId);   // anti-fraud: cuántos clicks en 60s
+
   bAnalytics.track('cta_click', {
-    biz_id:    cta.dataset.biz    || 'desconocido',
-    coupon_id: cta.dataset.coupon || 'sin_cupon',
-    biz_name:  bizName,
+    biz_id:      bizId,
+    coupon_id:   cta.dataset.coupon || 'sin_cupon',
+    biz_name:    bizName,
     distancia_m: dist ? Math.round(dist) : null,
-    tipo: cta.dataset.coupon ? 'cupon' : 'publicidad'
+    tipo:        cta.dataset.coupon ? 'cupon' : 'publicidad',
+    clicks_60s:  clicks,                   // >1 = posible fraud
+    sospechoso:  clicks > CLICK_LIMIT ? 'si' : 'no'
   });
+
+  /* Si supera el límite: bloquear el link silenciosamente para esa sesión */
+  if (clicks > CLICK_LIMIT) {
+    e.preventDefault();
+    mostrarToast('Ya enviaste varios mensajes a este negocio. Espera un momento.');
+  }
 });
 
 /* ── B) CANAL ABIERTO — tap en cualquier topic-card ── */
@@ -3571,6 +3709,29 @@ document.querySelectorAll('.topic-card').forEach(btn => {
       }
     }, 3000);
   }
+})();
+
+/* ── BANNER PRIVACIDAD — muestra solo si no aceptó antes ── */
+(function initPrivacyBanner() {
+  const banner = document.getElementById('privacyBanner');
+  const btn    = document.getElementById('privacyAccept');
+  if (!banner || !btn) return;
+
+  const CONSENT_KEY = 'bastion_privacy_v1';
+  if (localStorage.getItem(CONSENT_KEY)) {
+    banner.classList.add('hidden');
+    return;
+  }
+
+  /* Mostrar con leve retraso para no competir con el loader inicial */
+  setTimeout(() => banner.classList.add('visible'), 1500);
+
+  btn.addEventListener('click', () => {
+    localStorage.setItem(CONSENT_KEY, '1');
+    banner.classList.remove('visible');
+    setTimeout(() => banner.classList.add('hidden'), 350);
+    bAnalytics.track('privacy_consent_accepted');
+  });
 })();
 
 /* ── PROMO AREA DOTS — sync con scroll ── */

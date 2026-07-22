@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aviso de Privacidad — Bastión</title>
+  <style>
+    :root {
+      --bg: #0F0B00;
+      --card: #1A1400;
+      --accent: #FF8C00;
+      --text: #FFFFFF;
+      --muted: rgba(255,255,255,0.55);
+      --border: rgba(255,140,0,0.15);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      padding: 0 0 60px;
+    }
+    .header {
+      background: linear-gradient(135deg, #FF7A00, #FFB020 45%, #00BFA0);
+      padding: 20px 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header-back {
+      background: rgba(0,0,0,0.20);
+      border: none;
+      border-radius: 50%;
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0;
+    }
+    .header-back svg { width: 18px; height: 18px; fill: #fff; }
+    .header h1 { font-size: 18px; font-weight: 800; color: #fff; }
+    .content { padding: 24px 20px; max-width: 680px; margin: 0 auto; }
+    .section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px 20px;
+      margin-bottom: 14px;
+    }
+    .section h2 {
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .section p, .section li { color: var(--muted); font-size: 14px; }
+    .section ul { padding-left: 18px; }
+    .section li { margin-bottom: 6px; }
+    .highlight {
+      background: rgba(255,140,0,0.10);
+      border-left: 3px solid var(--accent);
+      padding: 12px 14px;
+      border-radius: 8px;
+      margin-top: 10px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.80);
+    }
+    .updated {
+      text-align: center;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 24px;
+    }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <button class="header-back" onclick="history.back()" aria-label="Regresar">
+    <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+  </button>
+  <h1>Aviso de Privacidad</h1>
+</div>
+
+<div class="content">
+
+  <div class="section">
+    <h2>Responsable</h2>
+    <p><strong>Bastión — Promociones en tu Ruta</strong> es responsable del tratamiento de los datos personales que se recaban a través de esta aplicación, con operación en Puerto Vallarta, Jalisco, México.</p>
+    <p style="margin-top:8px">Contacto: <a href="mailto:privacidad@bastion.mx">privacidad@bastion.mx</a></p>
+  </div>
+
+  <div class="section">
+    <h2>Datos que recopilamos</h2>
+    <ul>
+      <li><strong>Ubicación GPS</strong> — solo para calcular distancias a negocios cercanos. Nunca se almacena en nuestros servidores ni se comparte con terceros.</li>
+      <li><strong>Datos de navegación</strong> — páginas vistas, canales abiertos, botones presionados. Se envían de forma anónima a Google Analytics 4 con IP anonimizada.</li>
+      <li><strong>Datos de registro (anunciantes)</strong> — nombre, teléfono, correo, nombre del negocio y zona de operación. Se usan exclusivamente para gestionar su cuenta en la plataforma.</li>
+    </ul>
+    <div class="highlight">
+      🔒 La ubicación del pasajero <strong>nunca sale de tu dispositivo</strong>. Toda la lógica de distancia se calcula localmente en el navegador.
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Finalidades del tratamiento</h2>
+    <ul>
+      <li>Mostrar promociones y publicidad de negocios cercanos a tu ubicación</li>
+      <li>Enviar notificaciones push cuando hay ofertas en tu ruta (solo si das permiso explícito)</li>
+      <li>Medir el rendimiento de la plataforma para mejorar el servicio</li>
+      <li>Entregar reportes de alcance a los anunciantes (datos agregados, sin identificar usuarios)</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Transferencia de datos</h2>
+    <p>No vendemos, cedemos ni transferimos datos personales a terceros, salvo:</p>
+    <ul>
+      <li><strong>Google Analytics 4</strong> — análisis de uso anónimo. Consulta la <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">política de Google</a>.</li>
+      <li><strong>WhatsApp</strong> — cuando el usuario toca el botón de contacto, se abre la app de WhatsApp con el número del anunciante. Esta acción es iniciada por el usuario.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Tus derechos (ARCO)</h2>
+    <p>De conformidad con la <strong>Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP)</strong>, tienes derecho a:</p>
+    <ul>
+      <li><strong>Acceso</strong> — conocer qué datos tenemos sobre ti</li>
+      <li><strong>Rectificación</strong> — corregir datos inexactos</li>
+      <li><strong>Cancelación</strong> — solicitar que eliminemos tus datos</li>
+      <li><strong>Oposición</strong> — oponerte al tratamiento de tus datos</li>
+    </ul>
+    <p style="margin-top:10px">Para ejercer estos derechos escríbenos a <a href="mailto:privacidad@bastion.mx">privacidad@bastion.mx</a>. Responderemos en un plazo máximo de 20 días hábiles.</p>
+  </div>
+
+  <div class="section">
+    <h2>Cookies y almacenamiento local</h2>
+    <p>Usamos <strong>localStorage</strong> del navegador para recordar que aceptaste este aviso y para guardar preferencias de la app (sin datos personales identificables). Puedes limpiar estos datos desde la configuración de tu navegador en cualquier momento.</p>
+  </div>
+
+  <div class="section">
+    <h2>Cambios a este aviso</h2>
+    <p>Cualquier modificación a este aviso se publicará en esta misma página con la fecha de actualización. El uso continuo de la aplicación tras la publicación de cambios implica la aceptación de los mismos.</p>
+  </div>
+
+  <p class="updated">Última actualización: julio 2026 · Bastión v1.0</p>
+
+</div>
+</body>
+</html>
