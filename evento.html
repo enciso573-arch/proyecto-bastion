@@ -827,9 +827,21 @@ function actualizarContador(total) {
 /* Incrementar y escuchar el contador en Firebase */
 (function initContador() {
   const ref = db.ref('evento/contador');
-  ref.transaction(val => (val || 0) + 1, (err, committed, snap) => {
-    if (!err && committed) actualizarContador(snap.val());
-  });
+  const yaContado = localStorage.getItem('bastion_evento_contado');
+
+  if (!yaContado) {
+    /* Primera visita — incrementar */
+    ref.transaction(val => (val || 0) + 1, (err, committed, snap) => {
+      if (!err && committed) {
+        localStorage.setItem('bastion_evento_contado', '1');
+        actualizarContador(snap.val());
+      }
+    });
+  } else {
+    /* Visita repetida — solo leer el valor actual sin incrementar */
+    ref.once('value', snap => actualizarContador(snap.val() || 0));
+  }
+
   /* Escuchar actualizaciones en tiempo real de otros usuarios */
   ref.on('value', snap => {
     const v = snap.val() || 0;
