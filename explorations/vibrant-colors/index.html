@@ -849,7 +849,7 @@
        ÁREA PROMOCIONAL — Hero de ofertas activas
     ============================================= */
     .promo-area-section {
-      background: linear-gradient(180deg, #0F0B00 0%, #0C1510 100%);
+      background: linear-gradient(180deg, #FFF4E6 0%, #F0F2F5 100%);
       padding: 0 0 18px;
       position: relative;
       overflow: hidden;
@@ -860,7 +860,7 @@
       top: -40px; left: -10%;
       width: 75%;
       height: 220px;
-      background: radial-gradient(ellipse, rgba(255,140,0,0.22) 0%, transparent 70%);
+      background: radial-gradient(ellipse, rgba(255,140,0,0.18) 0%, transparent 70%);
       pointer-events: none;
     }
     .promo-area-section::after {
@@ -869,7 +869,7 @@
       top: -10px; right: -15%;
       width: 65%;
       height: 180px;
-      background: radial-gradient(ellipse, rgba(0,191,160,0.15) 0%, transparent 70%);
+      background: radial-gradient(ellipse, rgba(0,191,160,0.12) 0%, transparent 70%);
       pointer-events: none;
     }
     .promo-area-header {
@@ -884,7 +884,7 @@
       font-weight: 800;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.50);
+      color: rgba(90,50,0,0.60);
       display: flex;
       align-items: center;
       gap: 7px;
@@ -904,7 +904,7 @@
     .promo-area-count {
       font-size: 9.5px;
       font-weight: 700;
-      color: rgba(255,255,255,0.30);
+      color: rgba(90,50,0,0.45);
     }
     .promo-area-track {
       display: flex;
@@ -1035,7 +1035,7 @@
     .promo-area-dot {
       width: 5px; height: 5px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.18);
+      background: rgba(90,50,0,0.20);
       transition: all 0.28s ease;
     }
     .promo-area-dot.active {
@@ -2201,83 +2201,111 @@
     </div>
   </section>
 
-  <!-- PUBLICIDAD NORMAL ========================== -->
-  <div class="section-divider">
-    <span class="section-divider-label">Publicidad</span>
-    <div class="section-divider-line"></div>
-    <span class="section-divider-badge">Negocios locales</span>
-  </div>
-  <div class="ad-feed" aria-label="Publicidad de negocios locales">
+  <!-- PUBLICIDAD — mismas tarjetas, espacios vendidos ============= -->
+  <div class="promo-feed" aria-label="Publicidad de negocios locales" style="padding-top:0">
 
-    <!-- ANUNCIO 1 — Inmuebles -->
-    <a class="ad-card"
-       href="https://wa.me/523221000001?text=Hola%2C%20vi%20su%20anuncio%20en%20Basti%C3%B3n.%20Me%20interesa%20informaci%C3%B3n%20sobre%20sus%20propiedades."
-       target="_blank" rel="noopener">
-      <div class="ad-logo" style="--logo-grad: linear-gradient(135deg,#B05200,#FF8C00)">
-        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    <!-- AD 1 — Inmuebles -->
+    <article class="promo-card">
+      <div class="card-mascot" style="--mascot-grad: linear-gradient(135deg, #B05200 0%, #FF8C00 55%, #FFB020 100%);">
+        <span class="mascot-badge" style="background:rgba(255,255,255,0.18);color:#fff;border:1px solid rgba(255,255,255,0.30);">PUBLICIDAD</span>
+        <img class="biz-photo" src="img/biz-inmuebles.jpg" alt="Propiedades Vallarta MX" loading="lazy"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="biz-photo-placeholder" style="display:none">
+          <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+          <span>Foto del<br>negocio</span>
+        </div>
       </div>
-      <div class="ad-body">
-        <div class="ad-cat">🏠 Inmuebles · Zona Romántica</div>
-        <div class="ad-name">Propiedades Vallarta MX</div>
-        <div class="ad-desc">Compra, venta y renta de casas, departamentos y locales en Puerto Vallarta y Bahía.</div>
+      <div class="card-content">
+        <div class="content-top">
+          <span class="card-cat">🏠 Inmuebles · Zona Romántica</span>
+          <span class="card-biz">Propiedades Vallarta MX</span>
+          <h2 class="card-title">Compra, venta y renta en Puerto Vallarta y Bahía</h2>
+          <p class="card-desc">Casas, departamentos y locales comerciales. Asesoría personalizada sin costo.</p>
+        </div>
+        <div class="content-bottom">
+          <span class="dist-chip">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+            Zona Romántica
+          </span>
+          <a class="btn-cta"
+             href="https://wa.me/523221000001?text=Hola%2C%20vi%20su%20anuncio%20en%20Basti%C3%B3n.%20Me%20interesa%20informaci%C3%B3n."
+             target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+            Contactar
+          </a>
+        </div>
       </div>
-      <div class="ad-cta-icon">
-        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
-      </div>
-    </a>
+    </article>
 
-    <!-- ANUNCIO 2 — Boutique -->
-    <a class="ad-card"
-       href="https://wa.me/523221000002?text=Hola%2C%20vi%20su%20anuncio%20en%20Basti%C3%B3n.%20Quisiera%20m%C3%A1s%20informaci%C3%B3n."
-       target="_blank" rel="noopener">
-      <div class="ad-logo" style="--logo-grad: linear-gradient(135deg,#7C3AED,#3B82F6)">
-        <svg viewBox="0 0 24 24"><path d="M19 6H17.17L15.59 4.41C15.22 4.04 14.72 3.83 14.17 3.83H9.83C9.28 3.83 8.78 4.04 8.41 4.41L6.83 6H5C3.9 6 3 6.9 3 8V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V8C21 6.9 20.1 6 19 6ZM12 17C9.79 17 8 15.21 8 13C8 10.79 9.79 9 12 9C14.21 9 16 10.79 16 13C16 15.21 14.21 17 12 17Z"/></svg>
+    <!-- AD 2 — Boutique -->
+    <article class="promo-card">
+      <div class="card-mascot" style="--mascot-grad: linear-gradient(135deg, #5C2FC2 0%, #8B5CF6 55%, #C084FC 100%);">
+        <span class="mascot-badge" style="background:rgba(255,255,255,0.18);color:#fff;border:1px solid rgba(255,255,255,0.30);">PUBLICIDAD</span>
+        <img class="biz-photo" src="img/biz-boutique.jpg" alt="Moda Pacífico" loading="lazy"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="biz-photo-placeholder" style="display:none">
+          <svg viewBox="0 0 24 24"><path d="M19 6H17.17L15.59 4.41C15.22 4.04 14.72 3.83 14.17 3.83H9.83C9.28 3.83 8.78 4.04 8.41 4.41L6.83 6H5C3.9 6 3 6.9 3 8V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V8C21 6.9 20.1 6 19 6ZM12 17C9.79 17 8 15.21 8 13C8 10.79 9.79 9 12 9C14.21 9 16 10.79 16 13C16 15.21 14.21 17 12 17Z"/></svg>
+          <span>Foto del<br>negocio</span>
+        </div>
       </div>
-      <div class="ad-body">
-        <div class="ad-cat">👗 Boutique · Malecón</div>
-        <div class="ad-name">Moda Pacífico</div>
-        <div class="ad-desc">Ropa de diseñador local, artesanías y accesorios. Nueva colección de temporada disponible.</div>
+      <div class="card-content">
+        <div class="content-top">
+          <span class="card-cat">👗 Boutique · Malecón</span>
+          <span class="card-biz">Moda Pacífico</span>
+          <h2 class="card-title">Nueva colección de temporada disponible</h2>
+          <p class="card-desc">Diseñador local, artesanías y accesorios únicos. Envíos a toda la Riviera.</p>
+        </div>
+        <div class="content-bottom">
+          <span class="dist-chip">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+            Malecón
+          </span>
+          <a class="btn-cta"
+             href="https://wa.me/523221000002?text=Hola%2C%20vi%20su%20anuncio%20en%20Basti%C3%B3n.%20Quisiera%20m%C3%A1s%20informaci%C3%B3n."
+             target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+            Contactar
+          </a>
+        </div>
       </div>
-      <div class="ad-cta-icon">
-        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
-      </div>
-    </a>
+    </article>
 
-    <!-- ANUNCIO 3 — Terrenos -->
-    <a class="ad-card"
-       href="https://wa.me/523221000003?text=Hola%2C%20vi%20su%20anuncio%20en%20Basti%C3%B3n.%20Quisiera%20informaci%C3%B3n%20sobre%20terrenos."
-       target="_blank" rel="noopener">
-      <div class="ad-logo" style="--logo-grad: linear-gradient(135deg,#3A7A2A,#5AAA40)">
-        <svg viewBox="0 0 24 24"><path d="M20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69zm-2 5.86V18h-3.45L12 20.45 9.45 18H6v-3.45L3.55 12 6 9.45V6h3.45L12 3.55 14.55 6H18v3.45L20.45 12 18 14.55z"/></svg>
+    <!-- AD 3 — Terrenos -->
+    <article class="promo-card">
+      <div class="card-mascot" style="--mascot-grad: linear-gradient(135deg, #215014 0%, #3A7A2A 55%, #5AAA40 100%);">
+        <span class="mascot-badge" style="background:rgba(255,255,255,0.18);color:#fff;border:1px solid rgba(255,255,255,0.30);">PUBLICIDAD</span>
+        <img class="biz-photo" src="img/biz-terrenos.jpg" alt="Tierra Pacífico Desarrollos" loading="lazy"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="biz-photo-placeholder" style="display:none">
+          <svg viewBox="0 0 24 24"><path d="M20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69zm-2 5.86V18h-3.45L12 20.45 9.45 18H6v-3.45L3.55 12 6 9.45V6h3.45L12 3.55 14.55 6H18v3.45L20.45 12 18 14.55z"/></svg>
+          <span>Foto del<br>negocio</span>
+        </div>
       </div>
-      <div class="ad-body">
-        <div class="ad-cat">🌱 Terrenos · Bahía de Banderas</div>
-        <div class="ad-name">Tierra Pacífico Desarrollos</div>
-        <div class="ad-desc">Terrenos residenciales y comerciales en Punta Mita, Sayulita y Riviera Nayarit.</div>
+      <div class="card-content">
+        <div class="content-top">
+          <span class="card-cat">🌱 Terrenos · Bahía de Banderas</span>
+          <span class="card-biz">Tierra Pacífico Desarrollos</span>
+          <h2 class="card-title">Terrenos en Punta Mita, Sayulita y Riviera Nayarit</h2>
+          <p class="card-desc">Residenciales y comerciales. Financiamiento disponible. Visita con cita previa.</p>
+        </div>
+        <div class="content-bottom">
+          <span class="dist-chip">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+            Bahía de Banderas
+          </span>
+          <a class="btn-cta"
+             href="https://wa.me/523221000003?text=Hola%2C%20vi%20su%20anuncio%20en%20Basti%C3%B3n.%20Quisiera%20informaci%C3%B3n%20sobre%20terrenos."
+             target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+            Contactar
+          </a>
+        </div>
       </div>
-      <div class="ad-cta-icon">
-        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.127.555 4.127 1.524 5.87L.057 23.882l6.01-1.467A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22a9.95 9.95 0 01-5.18-1.38l-.37-.213-3.567.868.887-3.566-.23-.382A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
-      </div>
-    </a>
+    </article>
 
-  </div>
+  </div><!-- /.publicidad -->
 
-  <!-- CÓDIGOS & CUPONES ACTIVOS =================== -->
-  <div class="section-divider" style="padding-top:20px;">
-    <span class="section-divider-label">Cupones activos</span>
-    <div class="section-divider-line"></div>
-    <span class="section-divider-badge">Con código</span>
-  </div>
-  <div class="codigos-header">
-    <span class="codigos-icon">🎟️</span>
-    <div class="codigos-text">
-      <div class="codigos-title">Códigos disponibles en tu ruta</div>
-      <div class="codigos-sub">Reclama antes de llegar • Válido al presentar código</div>
-    </div>
-    <span class="codigos-pill">8 activos</span>
-  </div>
-
-  <!-- FEED ======================================= -->
+  <!-- FEED — Cupones y promos con código ========= -->
   <main class="promo-feed">
 
     <!--
@@ -3018,45 +3046,55 @@ function fmtDist(m) {
 
 /* Actualiza dist-chips + badge FAB + reordena feed por distancia */
 let _userLat = null, _userLng = null;
+let _sortedOnce = false; /* reorden DOM solo en primer fix — evita destellos */
 
 function actualizarBadgeMapa(lat, lng) {
   _userLat = lat; _userLng = lng;
 
-  /* ── Actualizar dist-chip de cada tarjeta ── */
-  const feed = document.querySelector('.promo-feed');
-  const cards = [...feed.querySelectorAll('.promo-card[data-lat]')];
+  /* ── Actualizar dist-chip de cada tarjeta (in-place, sin mover DOM) ── */
+  const feeds = document.querySelectorAll('.promo-feed');
+  const allCards = [];
+  feeds.forEach(feed => {
+    feed.querySelectorAll('.promo-card[data-lat]').forEach(c => allCards.push(c));
+  });
 
-  cards.forEach(card => {
+  allCards.forEach(card => {
     const cLat = parseFloat(card.dataset.lat);
     const cLng = parseFloat(card.dataset.lng);
     const dist = haversine(lat, lng, cLat, cLng);
-    card.dataset.dist = dist; // guardamos para el sort
+    card.dataset.dist = dist;
 
     const chip = card.querySelector('.dist-chip');
     if (chip) {
       const pin = `<svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>`;
       chip.innerHTML = `${pin} ${fmtDist(dist)}`;
-      /* Resaltar si está muy cerca */
       chip.style.color = dist <= 300 ? '#34D36A' : '';
       chip.style.borderColor = dist <= 300 ? 'rgba(52,211,106,0.30)' : '';
     }
   });
 
-  /* ── Reordenar: activos cercanos primero ── */
-  const statusOrder = card => {
-    const sc = card.querySelector('.status-chip');
-    if (!sc) return 2;
-    if (sc.classList.contains('active')) return 0;
-    if (sc.classList.contains('soon'))   return 1;
-    return 2;
-  };
-  const feedEmpty = feed.querySelector('.feed-empty');
-  cards.sort((a, b) => {
-    const so = statusOrder(a) - statusOrder(b);
-    if (so !== 0) return so;
-    return (parseFloat(a.dataset.dist) || 9999) - (parseFloat(b.dataset.dist) || 9999);
-  });
-  cards.forEach(c => feed.insertBefore(c, feedEmpty));
+  /* ── Reordenar solo la primera vez, luego los chips se actualizan sin mover DOM ── */
+  if (!_sortedOnce) {
+    _sortedOnce = true;
+    const mainFeed = document.querySelector('main.promo-feed');
+    if (mainFeed) {
+      const cards = [...mainFeed.querySelectorAll('.promo-card[data-lat]')];
+      const statusOrder = card => {
+        const sc = card.querySelector('.status-chip');
+        if (!sc) return 2;
+        if (sc.classList.contains('active')) return 0;
+        if (sc.classList.contains('soon'))   return 1;
+        return 2;
+      };
+      const feedEmpty = mainFeed.querySelector('.feed-empty');
+      cards.sort((a, b) => {
+        const so = statusOrder(a) - statusOrder(b);
+        if (so !== 0) return so;
+        return (parseFloat(a.dataset.dist) || 9999) - (parseFloat(b.dataset.dist) || 9999);
+      });
+      cards.forEach(c => mainFeed.insertBefore(c, feedEmpty));
+    }
+  }
 
   /* ── Badge FAB ── */
   const cerca  = cards.filter(c => (parseFloat(c.dataset.dist) || 9999) <= 500);
