@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Bastión — Evento Pre-Lanzamiento</title>
+  <meta name="description" content="Sé el primero. Recomienda tu lugar favorito de Puerto Vallarta y Bahía de Banderas."/>
+  <meta name="theme-color" content="#FF8C00"/>
+  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN"/>
+  <meta http-equiv="X-Content-Type-Options" content="nosniff"/>
+
+  <!-- ══ FIREBASE (reemplaza con tu configuración) ══════════════
+       1. Ve a console.firebase.google.com
+       2. Nuevo proyecto → Realtime Database → Crear base de datos
+       3. Copia la config y pégala abajo
+  ═══════════════════════════════════════════════════════════ -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey:            "TU_API_KEY",
+      authDomain:        "TU_PROYECTO.firebaseapp.com",
+      databaseURL:       "https://TU_PROYECTO-default-rtdb.firebaseio.com",
+      projectId:         "TU_PROYECTO",
+      storageBucket:     "TU_PROYECTO.appspot.com",
+      messagingSenderId: "TU_SENDER_ID",
+      appId:             "TU_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+  </script>
+
+  <!-- ══ GOOGLE PLACES AUTOCOMPLETE ═══════════════════════════
+       1. Ve a console.cloud.google.com
+       2. APIs & Services → Places API → Habilitar
+       3. Crea una API Key y reemplaza TU_GOOGLE_API_KEY
+  ═══════════════════════════════════════════════════════════ -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=TU_GOOGLE_API_KEY&libraries=places&language=es&region=MX" defer></script>
+
+  <!-- GA4 (mismo ID que la app principal) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX', { anonymize_ip: true });
+  </script>
+
+  <style>
+    :root {
+      --orange:   #FF8C00;
+      --orange-d: #B05200;
+      --teal:     #00BFA0;
+      --teal-d:   #008C74;
+      --bg:       #F0F2F5;
+      --card:     #FFFFFF;
+      --dark:     #0F0B00;
+      --text:     #1A1200;
+      --muted:    #6B6B6B;
+      --border:   rgba(0,0,0,0.08);
+      --radius:   20px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      font-family: system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      overscroll-behavior: none;
+      min-height: 100dvh;
+    }
+
+    /* ══ HERO ══════════════════════════════════════════ */
+    .hero {
+      background: linear-gradient(150deg, #FF7A00 0%, #FFB020 45%, #00BFA0 100%);
+      padding: 48px 20px 36px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(255,255,255,0.14) 0%, transparent 70%);
+    }
+    .hero-logo {
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 10px;
+      position: relative;
+    }
+    .hero-title {
+      font-size: 28px;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.15;
+      letter-spacing: -0.5px;
+      position: relative;
+    }
+    .hero-sub {
+      margin-top: 8px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.80);
+      position: relative;
+    }
+
+    /* ══ CONTADOR ANIMADO ══════════════════════════════ */
+    .counter-wrap {
+      background: var(--dark);
+      margin: 0 16px;
+      margin-top: -22px;
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+      position: relative;
+      z-index: 2;
+    }
+    .counter-icon {
+      font-size: 32px;
+      animation: bounce-in 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+      flex-shrink: 0;
+    }
+    @keyframes bounce-in {
+      0%   { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .counter-text { flex: 1; }
+    .counter-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 2px;
+    }
+    .counter-number {
+      font-size: 36px;
+      font-weight: 900;
+      color: var(--orange);
+      line-height: 1;
+      letter-spacing: -1px;
+      font-variant-numeric: tabular-nums;
+    }
+    .counter-you {
+      font-size: 12px;
+      color: rgba(255,255,255,0.55);
+      margin-top: 3px;
+    }
+    .counter-you strong { color: var(--teal); }
+    .counter-bar {
+      height: 3px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 2px;
+      margin-top: 14px;
+      overflow: hidden;
+    }
+    .counter-progress {
+      height: 100%;
+      background: linear-gradient(90deg, var(--orange), var(--teal));
+      border-radius: 2px;
+      width: 0%;
+      transition: width 1.8s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    /* ══ SECCIONES ═════════════════════════════════════ */
+    .section { padding: 24px 16px 0; }
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .section-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: var(--orange);
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    /* ══ SPOTS DE FOTO ══════════════════════════════════ */
+    .spots-track {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      padding-bottom: 4px;
+    }
+    .spots-track::-webkit-scrollbar { display: none; }
+    .spot-card {
+      flex-shrink: 0;
+      width: 200px;
+      height: 140px;
+      border-radius: 16px;
+      position: relative;
+      scroll-snap-align: start;
+      overflow: hidden;
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 0;
+    }
+    .spot-bg {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .spot-placeholder {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 48px;
+    }
+    .spot-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 30%, rgba(0,0,0,0.70) 100%);
+    }
+    .spot-info {
+      position: absolute;
+      bottom: 10px; left: 12px; right: 12px;
+      display: flex; align-items: flex-end; justify-content: space-between;
+    }
+    .spot-name {
+      font-size: 12px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.3;
+    }
+    .spot-votes {
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.80);
+      white-space: nowrap;
+    }
+    .spot-card.voted .spot-overlay {
+      background: linear-gradient(180deg, rgba(255,140,0,0.25) 0%, rgba(0,0,0,0.65) 100%);
+    }
+    .spot-voted-badge {
+      position: absolute;
+      top: 8px; right: 8px;
+      background: var(--orange);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 20px;
+      opacity: 0;
+      transform: scale(0.7);
+      transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .spot-card.voted .spot-voted-badge { opacity: 1; transform: scale(1); }
+
+    /* ══ RECOMIENDA TU LUGAR ════════════════════════════ */
+    .recommend-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .place-search-wrap {
+      padding: 16px 16px 0;
+    }
+    .place-search-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .place-input-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 0 14px;
+      border: 1.5px solid var(--border);
+      transition: border-color 0.2s;
+    }
+    .place-input-row:focus-within { border-color: var(--orange); }
+    .place-input-row svg { width: 16px; height: 16px; fill: var(--muted); flex-shrink: 0; }
+    #placeInput {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--text);
+      padding: 13px 0;
+      outline: none;
+    }
+    #placeInput::placeholder { color: #ABABAB; }
+
+    /* Preview del lugar seleccionado */
+    .place-preview {
+      margin: 12px 16px 0;
+      background: linear-gradient(135deg, rgba(255,140,0,0.08), rgba(0,191,160,0.08));
+      border: 1px solid rgba(255,140,0,0.18);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: none;
+      align-items: center;
+      gap: 12px;
+    }
+    .place-preview.visible { display: flex; }
+    .place-preview-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--orange), var(--teal));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .place-preview-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.3;
+    }
+    .place-preview-addr {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* Estrellas por métrica */
+    .metrics-wrap { padding: 14px 16px; }
+    .metric-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .metric-row:last-child { border-bottom: none; }
+    .metric-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .stars-row {
+      display: flex;
+      gap: 4px;
+    }
+    .star-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 2px;
+      transition: transform 0.12s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .star-btn:active { transform: scale(0.85); }
+    .star-btn svg {
+      width: 26px; height: 26px;
+      fill: #E0E0E0;
+      transition: fill 0.15s ease;
+    }
+    .star-btn.active svg { fill: #FFB020; }
+
+    .submit-place-btn {
+      display: block;
+      width: calc(100% - 32px);
+      margin: 0 16px 16px;
+      padding: 15px;
+      background: linear-gradient(135deg, var(--orange), #FFB020);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 800;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      text-align: center;
+      transition: transform 0.15s, filter 0.15s;
+      opacity: 0.45;
+      pointer-events: none;
+    }
+    .submit-place-btn.ready {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .submit-place-btn:active { transform: scale(0.97); filter: brightness(0.93); }
+
+    /* ══ ÉXITO ══════════════════════════════════════════ */
+    .success-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding: 28px 20px;
+      text-align: center;
+      gap: 10px;
+    }
+    .success-screen.visible { display: flex; }
+    .success-emoji { font-size: 52px; animation: bounce-in 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
+    .success-title { font-size: 18px; font-weight: 900; color: var(--text); }
+    .success-sub   { font-size: 13px; color: var(--muted); line-height: 1.5; }
+    .success-rate-more {
+      margin-top: 8px;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 50px;
+      padding: 12px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--orange);
+      cursor: pointer;
+      border-color: rgba(255,140,0,0.30);
+    }
+
+    /* ══ CALIFICA LO QUE OTROS RECOMENDARON ════════════ */
+    .community-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-bottom: 40px;
+    }
+    .community-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 14px 16px;
+    }
+    .community-card-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .community-icon {
+      width: 42px; height: 42px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .community-name {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.3;
+    }
+    .community-addr {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .community-ratings-summary {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .rating-chip {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .rating-chip .star-fill { color: #FFB020; }
+    .community-rate-btn {
+      display: block;
+      width: 100%;
+      margin-top: 12px;
+      padding: 11px;
+      background: var(--bg);
+      border: 1.5px solid rgba(255,140,0,0.25);
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--orange);
+      cursor: pointer;
+      text-align: center;
+    }
+    .community-rate-btn.rated {
+      background: rgba(255,140,0,0.08);
+      color: var(--muted);
+      border-color: var(--border);
+      pointer-events: none;
+    }
+
+    /* ══ MODAL CALIFICACIÓN RÁPIDA ══════════════════════ */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(6px);
+      z-index: 900;
+      display: flex;
+      align-items: flex-end;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: auto; }
+    .modal-sheet {
+      background: var(--card);
+      border-radius: 24px 24px 0 0;
+      padding: 20px 20px 40px;
+      width: 100%;
+      transform: translateY(100%);
+      transition: transform 0.32s cubic-bezier(0.4,0,0.2,1);
+    }
+    .modal-overlay.open .modal-sheet { transform: translateY(0); }
+    .modal-handle {
+      width: 36px; height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin: 0 auto 16px;
+    }
+    .modal-biz-name {
+      font-size: 17px;
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+    .modal-biz-addr { font-size: 12px; color: var(--muted); margin-bottom: 18px; }
+    .modal-submit {
+      display: block; width: 100%;
+      margin-top: 20px;
+      padding: 15px;
+      background: linear-gradient(135deg, var(--orange), #FFB020);
+      color: #fff;
+      font-size: 15px; font-weight: 800;
+      border: none; border-radius: 50px;
+      cursor: pointer;
+    }
+    .modal-submit:active { filter: brightness(0.92); }
+
+    /* ══ EMPTY STATE ════════════════════════════════════ */
+    .empty-community {
+      text-align: center;
+      padding: 30px 20px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .empty-community .emoji { font-size: 36px; display: block; margin-bottom: 8px; }
+
+    /* ══ FOOTER ═════════════════════════════════════════ */
+    .event-footer {
+      background: var(--dark);
+      text-align: center;
+      padding: 28px 20px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.40);
+    }
+    .event-footer strong { color: var(--orange); }
+  </style>
+</head>
+<body>
+
+<!-- ══ HERO ══════════════════════════════════════════════ -->
+<div class="hero">
+  <div class="hero-logo">⚡ Bastión</div>
+  <h1 class="hero-title">¿Cuál es tu lugar<br>favorito?</h1>
+  <p class="hero-sub">Recomiéndalo. La comunidad lo califica.</p>
+</div>
+
+<!-- ══ CONTADOR ANIMADO ═══════════════════════════════════ -->
+<div class="counter-wrap">
+  <div class="counter-icon">🧭</div>
+  <div class="counter-text">
+    <div class="counter-label">Exploradores en el evento</div>
+    <div class="counter-number" id="counterNum">---</div>
+    <div class="counter-you" id="counterYou">Cargando…</div>
+    <div class="counter-bar">
+      <div class="counter-progress" id="counterProgress"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SPOTS DE FOTO ══════════════════════════════════════ -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-title">📸 Spots para foto</span>
+    <span class="section-badge">Vota</span>
+  </div>
+  <div class="spots-track" id="spotsTrack">
+
+    <button class="spot-card" data-spot="malecon" onclick="votarSpot(this)">
+      <div class="spot-placeholder" style="background:linear-gradient(135deg,#0A55A0,#00BFA0)">🌅</div>
+      <div class="spot-overlay"></div>
+      <div class="spot-voted-badge">✓ Votado</div>
+      <div class="spot-info">
+        <span class="spot-name">Malecón<br>de Vallarta</span>
+        <span class="spot-votes" id="votes-malecon">-- votos</span>
+      </div>
+    </button>
+
+    <button class="spot-card" data-spot="arcos" onclick="votarSpot(this)">
+      <div class="spot-placeholder" style="background:linear-gradient(135deg,#B05200,#FF8C00)">🏛️</div>
+      <div class="spot-overlay"></div>
+      <div class="spot-voted-badge">✓ Votado</div>
+      <div class="spot-info">
+        <span class="spot-name">Los Arcos<br>del Malecón</span>
+        <span class="spot-votes" id="votes-arcos">-- votos</span>
+      </div>
+    </button>
+
+    <button class="spot-card" data-spot="playadm" onclick="votarSpot(this)">
+      <div class="spot-placeholder" style="background:linear-gradient(135deg,#3A7A2A,#00BFA0)">🏖️</div>
+      <div class="spot-overlay"></div>
+      <div class="spot-voted-badge">✓ Votado</div>
+      <div class="spot-info">
+        <span class="spot-name">Playa de<br>los Muertos</span>
+        <span class="spot-votes" id="votes-playadm">-- votos</span>
+      </div>
+    </button>
+
+    <button class="spot-card" data-spot="sayulita" onclick="votarSpot(this)">
+      <div class="spot-placeholder" style="background:linear-gradient(135deg,#8A006E,#FF8C00)">🤿</div>
+      <div class="spot-overlay"></div>
+      <div class="spot-voted-badge">✓ Votado</div>
+      <div class="spot-info">
+        <span class="spot-name">Sayulita<br>Centro</span>
+        <span class="spot-votes" id="votes-sayulita">-- votos</span>
+      </div>
+    </button>
+
+    <button class="spot-card" data-spot="puntamita" onclick="votarSpot(this)">
+      <div class="spot-placeholder" style="background:linear-gradient(135deg,#0C6E8C,#00BFA0)">🐋</div>
+      <div class="spot-overlay"></div>
+      <div class="spot-voted-badge">✓ Votado</div>
+      <div class="spot-info">
+        <span class="spot-name">Punta Mita<br>Lookout</span>
+        <span class="spot-votes" id="votes-puntamita">-- votos</span>
+      </div>
+    </button>
+
+  </div>
+</div>
+
+<!-- ══ RECOMIENDA TU LUGAR ════════════════════════════════ -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-title">🌟 Recomienda un lugar</span>
+  </div>
+
+  <div class="recommend-card" id="recommendCard">
+
+    <!-- Estado: formulario -->
+    <div id="formState">
+      <div class="place-search-wrap">
+        <div class="place-search-label">¿Qué lugar no te puedes perder?</div>
+        <div class="place-input-row">
+          <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          <input type="text" id="placeInput"
+                 placeholder="Escribe un restaurante, bar, playa, spa…"
+                 autocomplete="off" autocorrect="off" spellcheck="false"/>
+        </div>
+      </div>
+
+      <!-- Preview del lugar seleccionado desde Google -->
+      <div class="place-preview" id="placePreview">
+        <div class="place-preview-icon" id="placeEmoji">📍</div>
+        <div>
+          <div class="place-preview-name" id="placeName"></div>
+          <div class="place-preview-addr" id="placeAddr"></div>
+        </div>
+      </div>
+
+      <!-- Métricas de calificación -->
+      <div class="metrics-wrap" id="metricsWrap" style="display:none">
+        <div class="metric-row" data-metric="atencion">
+          <span class="metric-label">🤝 Atención</span>
+          <div class="stars-row" data-metric="atencion"></div>
+        </div>
+        <div class="metric-row" data-metric="calidad">
+          <span class="metric-label">✨ Calidad</span>
+          <div class="stars-row" data-metric="calidad"></div>
+        </div>
+        <div class="metric-row" data-metric="ambiente">
+          <span class="metric-label">🌟 Ambiente</span>
+          <div class="stars-row" data-metric="ambiente"></div>
+        </div>
+        <div class="metric-row" data-metric="precio">
+          <span class="metric-label">💰 Precio / Valor</span>
+          <div class="stars-row" data-metric="precio"></div>
+        </div>
+        <div class="metric-row" data-metric="recomendaria">
+          <span class="metric-label">❤️ ¿Lo recomendarías?</span>
+          <div class="stars-row" data-metric="recomendaria"></div>
+        </div>
+      </div>
+
+      <button class="submit-place-btn" id="submitPlaceBtn" onclick="enviarRecomendacion()">
+        Publicar recomendación →
+      </button>
+    </div>
+
+    <!-- Estado: éxito -->
+    <div class="success-screen" id="successState">
+      <div class="success-emoji">🎉</div>
+      <div class="success-title">¡Gracias por compartir!</div>
+      <div class="success-sub">Tu lugar ya aparece en la lista.<br>Otros exploradores podrán calificarlo.</div>
+      <button class="success-rate-more" onclick="resetForm()">+ Recomienda otro lugar</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ LO QUE RECOMIENDA LA COMUNIDAD ════════════════════ -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-title">🏆 La comunidad recomienda</span>
+    <span class="section-badge" id="communityCount">0</span>
+  </div>
+  <div class="community-list" id="communityList">
+    <div class="empty-community">
+      <span class="emoji">🗺️</span>
+      Sé el primero en recomendar un lugar.
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL CALIFICACIÓN RÁPIDA ══════════════════════════ -->
+<div class="modal-overlay" id="rateModal" onclick="cerrarModal(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-biz-name" id="modalBizName"></div>
+    <div class="modal-biz-addr" id="modalBizAddr"></div>
+    <div id="modalMetrics">
+      <div class="metric-row" data-metric="atencion">
+        <span class="metric-label">🤝 Atención</span>
+        <div class="stars-row" data-metric="atencion"></div>
+      </div>
+      <div class="metric-row" data-metric="calidad">
+        <span class="metric-label">✨ Calidad</span>
+        <div class="stars-row" data-metric="calidad"></div>
+      </div>
+      <div class="metric-row" data-metric="ambiente">
+        <span class="metric-label">🌟 Ambiente</span>
+        <div class="stars-row" data-metric="ambiente"></div>
+      </div>
+      <div class="metric-row" data-metric="precio">
+        <span class="metric-label">💰 Precio / Valor</span>
+        <div class="stars-row" data-metric="precio"></div>
+      </div>
+      <div class="metric-row" data-metric="recomendaria">
+        <span class="metric-label">❤️ ¿Lo recomendarías?</span>
+        <div class="stars-row" data-metric="recomendaria"></div>
+      </div>
+    </div>
+    <button class="modal-submit" id="modalSubmitBtn" onclick="enviarCalificacion()">
+      Publicar calificación →
+    </button>
+  </div>
+</div>
+
+<!-- ══ FOOTER ═════════════════════════════════════════════ -->
+<div class="event-footer">
+  <strong>Bastión</strong> llega pronto a Puerto Vallarta y Bahía de Banderas.<br>
+  Promociones en tiempo real · A bordo de tu transporte.
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════
+   SESSION
+════════════════════════════════════════════════════════ */
+const SESSION_ID = (typeof crypto !== 'undefined' && crypto.randomUUID)
+  ? crypto.randomUUID()
+  : Date.now().toString(36) + Math.random().toString(36).slice(2);
+
+/* ════════════════════════════════════════════════════════
+   CONTADOR DE EXPLORADORES
+════════════════════════════════════════════════════════ */
+const META_GOAL = 500; // objetivo del evento para la barra de progreso
+
+function animarContador(desde, hasta) {
+  const el  = document.getElementById('counterNum');
+  const dur = 1400;
+  const start = performance.now();
+  function step(now) {
+    const t   = Math.min((now - start) / dur, 1);
+    const ease = 1 - Math.pow(1 - t, 3);
+    el.textContent = Math.round(desde + (hasta - desde) * ease).toLocaleString('es-MX');
+    if (t < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function actualizarContador(total) {
+  const youEl   = document.getElementById('counterYou');
+  const progress = document.getElementById('counterProgress');
+  animarContador(
+    parseInt(document.getElementById('counterNum').textContent.replace(/\D/g,'')) || 0,
+    total
+  );
+  youEl.innerHTML = `Eres el explorador <strong>#${total.toLocaleString('es-MX')}</strong> en llegar 🚀`;
+  progress.style.width = Math.min((total / META_GOAL) * 100, 100) + '%';
+  gtag?.('event', 'qr_scan', { total_exploradores: total });
+}
+
+/* Incrementar y escuchar el contador en Firebase */
+(function initContador() {
+  const ref = db.ref('evento/contador');
+  ref.transaction(val => (val || 0) + 1, (err, committed, snap) => {
+    if (!err && committed) actualizarContador(snap.val());
+  });
+  /* Escuchar actualizaciones en tiempo real de otros usuarios */
+  ref.on('value', snap => {
+    const v = snap.val() || 0;
+    const current = parseInt(document.getElementById('counterNum').textContent.replace(/\D/g,'')) || 0;
+    if (v > current) actualizarContador(v);
+  });
+})();
+
+/* ════════════════════════════════════════════════════════
+   SPOTS DE FOTO
+════════════════════════════════════════════════════════ */
+const _votedSpots = JSON.parse(localStorage.getItem('bastion_spots') || '[]');
+
+/* Marcar spots ya votados al cargar */
+_votedSpots.forEach(spotId => {
+  const card = document.querySelector(`.spot-card[data-spot="${spotId}"]`);
+  if (card) card.classList.add('voted');
+});
+
+/* Escuchar votos en tiempo real */
+['malecon','arcos','playadm','sayulita','puntamita'].forEach(id => {
+  db.ref(`evento/spots/${id}`).on('value', snap => {
+    const v = snap.val() || 0;
+    const el = document.getElementById(`votes-${id}`);
+    if (el) el.textContent = `${v} voto${v !== 1 ? 's' : ''}`;
+  });
+});
+
+function votarSpot(card) {
+  const spotId = card.dataset.spot;
+  if (card.classList.contains('voted')) return;
+  card.classList.add('voted');
+  _votedSpots.push(spotId);
+  localStorage.setItem('bastion_spots', JSON.stringify(_votedSpots));
+  db.ref(`evento/spots/${spotId}`).transaction(v => (v || 0) + 1);
+  gtag?.('event', 'spot_vote', { spot: spotId });
+}
+
+/* ════════════════════════════════════════════════════════
+   GOOGLE PLACES AUTOCOMPLETE
+════════════════════════════════════════════════════════ */
+let selectedPlace = null;
+const ratings     = { atencion: 0, calidad: 0, ambiente: 0, precio: 0, recomendaria: 0 };
+
+/* Iniciar autocomplete una vez que cargue el script de Google */
+window.initGooglePlaces = function() {
+  const input = document.getElementById('placeInput');
+  const ac = new google.maps.places.Autocomplete(input, {
+    componentRestrictions: { country: 'mx' },
+    fields: ['name', 'formatted_address', 'types', 'geometry', 'rating'],
+    bounds: new google.maps.LatLngBounds(
+      { lat: 20.50, lng: -105.45 },  // SW — Bahía de Banderas
+      { lat: 20.80, lng: -105.10 }   // NE — Puerto Vallarta
+    ),
+    strictBounds: false
+  });
+
+  ac.addListener('place_changed', () => {
+    const place = ac.getPlace();
+    if (!place.name) return;
+    selectedPlace = {
+      nombre:     place.name,
+      direccion:  place.formatted_address || '',
+      tipo:       (place.types || ['lugar'])[0],
+      lat:        place.geometry?.location?.lat() || null,
+      lng:        place.geometry?.location?.lng() || null
+    };
+
+    /* Preview */
+    document.getElementById('placeName').textContent = place.name;
+    document.getElementById('placeAddr').textContent = place.formatted_address || '';
+    document.getElementById('placeEmoji').textContent = emojiParaTipo(place.types);
+    document.getElementById('placePreview').classList.add('visible');
+    document.getElementById('metricsWrap').style.display = '';
+    renderStars(document.getElementById('metricsWrap'));
+    checkSubmitReady();
+  });
+};
+
+/* Emoji según tipo de lugar */
+function emojiParaTipo(types) {
+  if (!types) return '📍';
+  if (types.includes('restaurant') || types.includes('food')) return '🍽️';
+  if (types.includes('bar') || types.includes('night_club')) return '🍹';
+  if (types.includes('spa') || types.includes('beauty_salon')) return '💆';
+  if (types.includes('lodging')) return '🏨';
+  if (types.includes('beach')) return '🏖️';
+  if (types.includes('store') || types.includes('shopping_mall')) return '🛍️';
+  if (types.includes('tourist_attraction')) return '🌟';
+  return '📍';
+}
+
+/* Fallback: si Google Maps no carga, mostrar input libre */
+setTimeout(() => {
+  if (typeof google === 'undefined') {
+    const label = document.querySelector('.place-search-label');
+    if (label) label.textContent = '¿Cuál es tu lugar favorito? (escribe el nombre)';
+    const input = document.getElementById('placeInput');
+    input.addEventListener('input', () => {
+      if (input.value.length > 2) {
+        selectedPlace = { nombre: input.value.trim(), direccion: '', tipo: 'lugar', lat: null, lng: null };
+        document.getElementById('placeName').textContent = input.value.trim();
+        document.getElementById('placeAddr').textContent = 'Puerto Vallarta / Bahía de Banderas';
+        document.getElementById('placeEmoji').textContent = '📍';
+        document.getElementById('placePreview').classList.add('visible');
+        document.getElementById('metricsWrap').style.display = '';
+        renderStars(document.getElementById('metricsWrap'));
+        checkSubmitReady();
+      }
+    });
+  }
+}, 4000);
+
+/* ════════════════════════════════════════════════════════
+   SISTEMA DE ESTRELLAS
+════════════════════════════════════════════════════════ */
+function renderStars(container) {
+  container.querySelectorAll('.stars-row').forEach(row => {
+    if (row.children.length) return; // ya renderizado
+    const metric = row.dataset.metric;
+    for (let i = 1; i <= 5; i++) {
+      const btn = document.createElement('button');
+      btn.className = 'star-btn';
+      btn.dataset.val = i;
+      btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+      btn.addEventListener('click', () => {
+        const val = parseInt(btn.dataset.val);
+        ratings[metric] = val;
+        /* Actualizar visual */
+        row.querySelectorAll('.star-btn').forEach((b, idx) => {
+          b.classList.toggle('active', idx < val);
+        });
+        checkSubmitReady();
+        /* Háptico si disponible */
+        navigator.vibrate?.(20);
+      });
+      row.appendChild(btn);
+    }
+  });
+}
+
+function checkSubmitReady() {
+  const allRated = Object.values(ratings).every(v => v > 0);
+  const hasPlace = !!selectedPlace;
+  const btn = document.getElementById('submitPlaceBtn');
+  if (btn) btn.classList.toggle('ready', allRated && hasPlace);
+}
+
+/* ════════════════════════════════════════════════════════
+   ENVIAR RECOMENDACIÓN
+════════════════════════════════════════════════════════ */
+function enviarRecomendacion() {
+  if (!selectedPlace) return;
+  const allRated = Object.values(ratings).every(v => v > 0);
+  if (!allRated) { alert('Califica todas las métricas ⭐'); return; }
+
+  const data = {
+    ...selectedPlace,
+    ratings: { ...ratings },
+    votos:   1,
+    ts:      Date.now(),
+    session: SESSION_ID
+  };
+
+  db.ref('evento/lugares').push(data)
+    .then(() => {
+      document.getElementById('formState').style.display  = 'none';
+      document.getElementById('successState').classList.add('visible');
+      gtag?.('event', 'lugar_recomendado', {
+        lugar: selectedPlace.nombre,
+        tipo: selectedPlace.tipo
+      });
+    })
+    .catch(() => alert('Error al guardar. Verifica tu conexión.'));
+}
+
+function resetForm() {
+  selectedPlace = null;
+  Object.keys(ratings).forEach(k => ratings[k] = 0);
+  document.getElementById('placeInput').value   = '';
+  document.getElementById('placePreview').classList.remove('visible');
+  document.getElementById('metricsWrap').style.display = 'none';
+  document.getElementById('metricsWrap').querySelectorAll('.stars-row').forEach(r => r.innerHTML = '');
+  document.getElementById('submitPlaceBtn').classList.remove('ready');
+  document.getElementById('formState').style.display  = '';
+  document.getElementById('successState').classList.remove('visible');
+}
+
+/* ════════════════════════════════════════════════════════
+   LISTA DE LA COMUNIDAD — tiempo real desde Firebase
+════════════════════════════════════════════════════════ */
+const ICONOS = { restaurant:'🍽️', bar:'🍹', spa:'💆', lodging:'🏨', beach:'🏖️', store:'🛍️', lugar:'📍' };
+const _ratedPlaces = JSON.parse(localStorage.getItem('bastion_rated') || '[]');
+
+db.ref('evento/lugares').orderByChild('ts').limitToLast(20)
+  .on('value', snap => {
+    const list   = document.getElementById('communityList');
+    const countEl = document.getElementById('communityCount');
+    const lugares = [];
+
+    snap.forEach(child => {
+      lugares.unshift({ key: child.key, ...child.val() });
+    });
+
+    countEl.textContent = lugares.length;
+
+    if (!lugares.length) {
+      list.innerHTML = `<div class="empty-community"><span class="emoji">🗺️</span>Sé el primero en recomendar un lugar.</div>`;
+      return;
+    }
+
+    list.innerHTML = '';
+    lugares.forEach(lugar => {
+      const avg = Object.values(lugar.ratings || {}).reduce((a,b)=>a+b,0) / 5;
+      const alreadyRated = _ratedPlaces.includes(lugar.key);
+      const icon  = ICONOS[lugar.tipo] || '📍';
+      const color = colorParaTipo(lugar.tipo);
+      const card  = document.createElement('div');
+      card.className = 'community-card';
+      card.innerHTML = `
+        <div class="community-card-top">
+          <div class="community-icon" style="background:${color}">${icon}</div>
+          <div>
+            <div class="community-name">${lugar.nombre}</div>
+            <div class="community-addr">${lugar.direccion || 'Puerto Vallarta / Bahía de Banderas'}</div>
+          </div>
+        </div>
+        <div class="community-ratings-summary">
+          ${renderMetricChips(lugar.ratings)}
+          <div class="rating-chip"><span class="star-fill">⭐</span>${avg.toFixed(1)} promedio</div>
+        </div>
+        <button class="community-rate-btn${alreadyRated ? ' rated' : ''}"
+                onclick="abrirModal('${lugar.key}','${lugar.nombre}','${(lugar.direccion||'').replace(/'/g,'&#39;')}')">
+          ${alreadyRated ? '✓ Ya calificaste este lugar' : 'Calificar este lugar →'}
+        </button>
+      `;
+      list.appendChild(card);
+    });
+  });
+
+function renderMetricChips(r) {
+  if (!r) return '';
+  const labels = { atencion:'🤝', calidad:'✨', ambiente:'🌟', precio:'💰', recomendaria:'❤️' };
+  return Object.entries(r).map(([k,v]) =>
+    `<div class="rating-chip"><span class="star-fill">${labels[k]||''}</span>${v}/5</div>`
+  ).join('');
+}
+
+function colorParaTipo(tipo) {
+  const m = { restaurant:'linear-gradient(135deg,#B05200,#FF8C00)', bar:'linear-gradient(135deg,#8A006E,#C084FC)', spa:'linear-gradient(135deg,#0C6E8C,#00BFA0)', lodging:'linear-gradient(135deg,#0A55A0,#00BFA0)', beach:'linear-gradient(135deg,#3A7A2A,#00BFA0)', store:'linear-gradient(135deg,#5C2FC2,#8B5CF6)' };
+  return m[tipo] || 'linear-gradient(135deg,#FF8C00,#FFB020)';
+}
+
+/* ════════════════════════════════════════════════════════
+   MODAL CALIFICACIÓN RÁPIDA
+════════════════════════════════════════════════════════ */
+let _modalKey = null;
+const modalRatings = { atencion:0, calidad:0, ambiente:0, precio:0, recomendaria:0 };
+
+function abrirModal(key, nombre, addr) {
+  _modalKey = key;
+  Object.keys(modalRatings).forEach(k => modalRatings[k] = 0);
+  document.getElementById('modalBizName').textContent = nombre;
+  document.getElementById('modalBizAddr').textContent = addr;
+  /* Limpiar estrellas del modal */
+  document.querySelectorAll('#modalMetrics .stars-row').forEach(r => {
+    r.innerHTML = '';
+    const metric = r.dataset.metric;
+    for (let i = 1; i <= 5; i++) {
+      const btn = document.createElement('button');
+      btn.className = 'star-btn';
+      btn.dataset.val = i;
+      btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+      btn.addEventListener('click', () => {
+        const val = parseInt(btn.dataset.val);
+        modalRatings[metric] = val;
+        r.querySelectorAll('.star-btn').forEach((b,idx) => b.classList.toggle('active', idx < val));
+        navigator.vibrate?.(20);
+      });
+      r.appendChild(btn);
+    }
+  });
+  document.getElementById('rateModal').classList.add('open');
+}
+
+function cerrarModal(e) {
+  if (e.target === document.getElementById('rateModal')) {
+    document.getElementById('rateModal').classList.remove('open');
+  }
+}
+
+function enviarCalificacion() {
+  if (!_modalKey) return;
+  const allRated = Object.values(modalRatings).every(v => v > 0);
+  if (!allRated) { alert('Califica todas las métricas ⭐'); return; }
+
+  /* Acumular calificación en Firebase usando transacción */
+  const ref = db.ref(`evento/lugares/${_modalKey}/ratings`);
+  ref.transaction(current => {
+    if (!current) return { ...modalRatings };
+    const merged = {};
+    Object.keys(modalRatings).forEach(k => {
+      merged[k] = Math.round(((current[k] || modalRatings[k]) + modalRatings[k]) / 2);
+    });
+    return merged;
+  });
+
+  _ratedPlaces.push(_modalKey);
+  localStorage.setItem('bastion_rated', JSON.stringify(_ratedPlaces));
+  document.getElementById('rateModal').classList.remove('open');
+  gtag?.('event', 'lugar_calificado', { lugar_key: _modalKey });
+}
+
+/* ════════════════════════════════════════════════════════
+   INICIALIZAR STARS EN FORMULARIO PRINCIPAL (sin Google aún)
+════════════════════════════════════════════════════════ */
+window.addEventListener('load', () => {
+  /* Inicializar Google Places si ya cargó */
+  if (typeof google !== 'undefined' && google.maps) {
+    window.initGooglePlaces();
+  }
+});
+</script>
+
+<!-- Callback de Google Maps -->
+<script>
+  window.onGoogleMapsLoad = window.initGooglePlaces;
+</script>
+</body>
+</html>
