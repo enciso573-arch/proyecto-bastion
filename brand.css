@@ -1,0 +1,49 @@
+/* ============================================
+   BASTIÓN — Design Tokens (Paleta Naranja)
+   https://enciso573-arch.github.io/proyecto-bastion/brand.css
+   ============================================ */
+
+:root {
+
+  /* ── Colores principales ─────────────────── */
+  --bastion-orange:        #FF8C00;
+  --bastion-orange-dark:   #B05200;
+  --bastion-orange-light:  #FFB020;
+  --bastion-orange-warm:   #FF7A00;
+
+  /* ── Acento teal ─────────────────────────── */
+  --bastion-teal:          #00BFA0;
+  --bastion-teal-dark:     #008C74;
+
+  /* ── Fondos ──────────────────────────────── */
+  --bastion-bg:            #F0F2F5;
+  --bastion-card:          #FFFFFF;
+  --bastion-dark:          #0F0B00;
+  --bastion-cream:         #FFF4E6;
+
+  /* ── Texto ───────────────────────────────── */
+  --bastion-text:          #1A1200;
+  --bastion-muted:         #6B6B6B;
+  --bastion-white:         #FFFFFF;
+
+  /* ── Gradientes ──────────────────────────── */
+  --bastion-gradient-hero:   linear-gradient(150deg, #FF7A00 0%, #FFB020 45%, #00BFA0 100%);
+  --bastion-gradient-orange: linear-gradient(135deg, #FF7A00 0%, #FFB020 100%);
+  --bastion-gradient-teal:   linear-gradient(135deg, #00BFA0 0%, #008C74 100%);
+  --bastion-gradient-card:   linear-gradient(180deg, #FFF4E6 0%, #F0F2F5 100%);
+
+  /* ── Tipografía ──────────────────────────── */
+  --bastion-font:          system-ui, -apple-system, sans-serif;
+  --bastion-weight-normal: 400;
+  --bastion-weight-medium: 500;
+
+  /* ── Radios ──────────────────────────────── */
+  --bastion-radius-card:   20px;
+  --bastion-radius-btn:    50px;
+  --bastion-radius-sm:     12px;
+
+  /* ── Sombras ─────────────────────────────── */
+  --bastion-shadow-card:   0 2px 12px rgba(0,0,0,0.07);
+  --bastion-shadow-float:  0 8px 32px rgba(0,0,0,0.14);
+
+}
